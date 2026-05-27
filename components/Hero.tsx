@@ -111,25 +111,49 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
   const [snapFloat, setSnapFloat] = useState(0);
   const [activeIdx, setActiveIdx] = useState(0);
 
+  // Discrete-step cursor model with a center deadzone — the centered video
+  // stays put when the cursor is anywhere in the center 50% of the hero. Push
+  // toward the edges to advance one cell at a time at a comfortable cadence.
+  // Clicking a side cell still jumps directly via `manualTarget`.
   useEffect(() => {
     let raf: number;
+    let target = 0;
+    let lastStep = 0;
+    const DEADZONE = 0.25; // half-width of the center deadzone in screen units
+    const STEP_SLOW = 700; // ms between auto-steps when cursor is just past deadzone
+    const STEP_FAST = 220; // ms between auto-steps near the screen edge
+
     const tick = () => {
-      let targetIdx: number;
-      if (manualTarget.current !== null && performance.now() < manualUntil.current) {
-        targetIdx = manualTarget.current;
+      const now = performance.now();
+
+      if (manualTarget.current !== null && now < manualUntil.current) {
+        target = manualTarget.current;
       } else {
-        manualTarget.current = null;
-        targetIdx = Math.floor(cursorX.current * N);
-        if (targetIdx < 0) targetIdx = 0;
-        if (targetIdx >= N) targetIdx = N - 1;
+        if (manualTarget.current !== null) {
+          // Inherit the last manual target so click+drift doesn't jump back.
+          target = manualTarget.current;
+          manualTarget.current = null;
+        }
+        if (insideZone.current) {
+          const offset = cursorX.current - 0.5; // -0.5 .. +0.5
+          const absOffset = Math.abs(offset);
+          if (absOffset > DEADZONE) {
+            const t = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
+            const stepInterval = STEP_SLOW - (STEP_SLOW - STEP_FAST) * t;
+            if (now - lastStep > stepInterval) {
+              lastStep = now;
+              target = ((target + Math.sign(offset)) % N + N) % N;
+            }
+          }
+        }
       }
+
       setSnapFloat((prev) => {
-        const raw = targetIdx - prev;
+        const raw = target - prev;
         const wrapped = ((raw % N) + N + N / 2) % N - N / 2;
         return prev + wrapped * 0.18;
       });
-      const wrappedIdx = ((Math.round(targetIdx) % N) + N) % N;
-      setActiveIdx(wrappedIdx);
+      setActiveIdx(((target % N) + N) % N);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

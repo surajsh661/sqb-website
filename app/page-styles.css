@@ -1159,7 +1159,7 @@
 }
 .vt-art {
   position: relative;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 3 / 4;
   border-radius: 8px; overflow: hidden;
   background: linear-gradient(135deg, #1a1410, #2a1f15);
   margin-bottom: 14px;
@@ -1172,7 +1172,7 @@
 .vt-art img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center 35%;
+  object-fit: cover; object-position: center 18%;
   display: block;
   background: #0a0807;
 }

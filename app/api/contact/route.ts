@@ -54,10 +54,17 @@ export async function POST(req: Request) {
       html,
     });
     if ((result as any).error) {
-      return NextResponse.json({ error: 'send failed' }, { status: 502 });
+      // Surface Resend's actual reason in Vercel logs so the cause is debuggable.
+      const reason = (result as any).error;
+      console.error('[contact] resend rejected:', JSON.stringify(reason));
+      return NextResponse.json(
+        { error: 'send failed', detail: reason?.message || reason?.name || 'unknown' },
+        { status: 502 },
+      );
     }
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: 'send failed' }, { status: 502 });
+  } catch (err: any) {
+    console.error('[contact] threw:', err?.message || err);
+    return NextResponse.json({ error: 'send failed', detail: err?.message }, { status: 502 });
   }
 }

@@ -299,12 +299,48 @@ export const SQB_FILMS: Film[] = [
     impact: 'Brand launch film',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'CLIENT', name: 'C.VOX' }],
   },
+  {
+    id: 'ai-realistic-flagship',
+    title: 'REALISTIC AI — FLAGSHIP REEL',
+    category: 'AI FILM REEL', year: '2026', runtime: '1:00',
+    genres: ['ai', 'film'],
+    type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J',
+    client: "S'QB Labs", talent: 'Generative ensemble',
+    lede: 'Generative cinema indistinguishable from a shot film.',
+    body: 'Real-reference performances staged inside fully art-directed worlds. Built end-to-end inside our AI pipeline.',
+    timeline: '6 weeks', release: 'OTT-grade reel — 2026',
+    impact: 'Flagship AI reel',
+    credits: [
+      { role: 'AI SUPERVISOR', name: "S'QB LABS" },
+      { role: 'DIRECTOR', name: "S'QB" },
+    ],
+  },
 ];
 
-// HERO films — Vimeo + Drive only, horizontal-only (no vertical, no YouTube)
-export const SQB_HERO_FILMS: Film[] = SQB_FILMS.filter(
-  (f) => !(f.genres || []).includes('vertical') && f.type !== 'yt',
-);
+// Explicit curated list of films featured in the homepage hero carousel.
+// Order = display order. Edit this to change what shows on the homepage.
+const HERO_FEATURED_IDS: string[] = [
+  'muthoot-sunheri-soch',
+  'naturaltein-bumrah',
+  'pw-dvc',
+  'revolution-edu-scam',
+  'gfg-aparshakti-2',
+  'kabeera-tseries',
+  'sunstone-lsg',
+  'ai-realistic-flagship',
+  'gfg-aparshakti-3',
+];
+
+// HERO films — explicit curated list (edit HERO_FEATURED_IDS above to change).
+// Falls back to all non-vertical films if the curated list is empty.
+export const SQB_HERO_FILMS: Film[] = (() => {
+  const byId = new Map(SQB_FILMS.map((f) => [f.id, f] as const));
+  const picked = HERO_FEATURED_IDS
+    .map((id) => byId.get(id))
+    .filter((f): f is Film => !!f);
+  if (picked.length > 0) return picked;
+  return SQB_FILMS.filter((f) => !(f.genres || []).includes('vertical'));
+})();
 
 // Verticals exposed for home-page section
 export const SQB_VERTICALS: Vertical[] = SQB_FILMS
