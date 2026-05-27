@@ -276,32 +276,38 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
             const eps = film.episodes;
             const half = Math.ceil(eps.length / 2);
             const rows = [eps.slice(0, half), eps.slice(half)];
+            const renderCard = (ep: { id: string; label: string }, key: string) => (
+              <a
+                className="ce-card"
+                key={key}
+                href={`https://www.youtube.com/watch?v=${ep.id}${film.playlistId ? '&list=' + film.playlistId : ''}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div className="ce-thumb">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://i.ytimg.com/vi/${ep.id}/hqdefault.jpg`}
+                    alt={ep.label}
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                  />
+                  <div className="ce-shade" />
+                  <div className="ce-play" aria-hidden="true">▶</div>
+                </div>
+                <div className="ce-label">{ep.label}</div>
+              </a>
+            );
             return (
               <div className="ce-rows">
                 {rows.map((row, ri) => (
-                  <div className="ce-row" key={ri}>
-                    {row.map((ep) => (
-                      <a
-                        className="ce-card"
-                        key={ep.id}
-                        href={`https://www.youtube.com/watch?v=${ep.id}${film.playlistId ? '&list=' + film.playlistId : ''}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <div className="ce-thumb">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={`https://i.ytimg.com/vi/${ep.id}/hqdefault.jpg`}
-                            alt={ep.label}
-                            referrerPolicy="no-referrer"
-                            loading="lazy"
-                          />
-                          <div className="ce-shade" />
-                          <div className="ce-play" aria-hidden="true">▶</div>
-                        </div>
-                        <div className="ce-label">{ep.label}</div>
-                      </a>
-                    ))}
+                  // Two passes of the row run side-by-side so the CSS animation
+                  // can translate exactly -50% and loop seamlessly. Hover pauses.
+                  <div className={'ce-row' + (ri === 1 ? ' reverse' : '')} key={ri}>
+                    <div className="ce-track">
+                      {row.map((ep) => renderCard(ep, 'a-' + ep.id))}
+                      {row.map((ep) => renderCard(ep, 'b-' + ep.id))}
+                    </div>
                   </div>
                 ))}
               </div>

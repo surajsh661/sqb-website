@@ -855,28 +855,32 @@ body.no-grain::before { display: none; }
 }
 .ce-rows { display: flex; flex-direction: column; gap: 18px; }
 .ce-row {
+  overflow: hidden;
+  /* Fade the edges so cards scroll in/out gracefully. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.ce-track {
   display: flex;
   gap: 14px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 12px;
-  /* Subtle scrollbar that still cues "there's more" */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(245,197,24,0.35) transparent;
+  width: max-content;
+  animation: ceSlideLeft 70s linear infinite;
+  will-change: transform;
 }
-.ce-row::-webkit-scrollbar { height: 6px; }
-.ce-row::-webkit-scrollbar-track { background: transparent; }
-.ce-row::-webkit-scrollbar-thumb {
-  background: rgba(245,197,24,0.32);
-  border-radius: 999px;
+.ce-row.reverse .ce-track { animation: ceSlideRight 70s linear infinite; }
+.ce-row:hover .ce-track { animation-play-state: paused; }
+@keyframes ceSlideLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-.ce-row::-webkit-scrollbar-thumb:hover { background: rgba(245,197,24,0.55); }
+@keyframes ceSlideRight {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
 
 .ce-card {
-  flex: 0 0 calc((100% - 14px * 4) / 5); /* 5 visible per row at large widths */
-  min-width: 220px;
-  scroll-snap-align: start;
+  flex: 0 0 240px;
+  min-width: 240px;
   display: block;
   text-decoration: none;
   color: inherit;
@@ -922,11 +926,11 @@ body.no-grain::before { display: none; }
 .ce-card:hover .ce-label { color: var(--accent); }
 
 @media (max-width: 900px) {
-  .ce-card { flex-basis: calc((100% - 14px * 2) / 3); min-width: 180px; }
+  .ce-card { flex-basis: 200px; min-width: 200px; }
 }
 @media (max-width: 600px) {
   .case-episodes { padding: 60px 20px 40px; }
-  .ce-card { flex-basis: calc((100% - 14px) / 2); min-width: 150px; }
+  .ce-card { flex-basis: 170px; min-width: 170px; }
 }
 
 .case-next {

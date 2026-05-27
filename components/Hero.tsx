@@ -165,31 +165,56 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
     return () => cancelAnimationFrame(raf);
   }, [N]);
 
-  // Vimeo/YouTube keepalive — light, infrequent. Touches all currently-mounted iframes.
+  // Center-only playback. With 6 muted iframes mounted, browsers will quietly
+  // stop autoplaying some of them and the video-decode load makes sliding
+  // choppy. So we drive playback ourselves: command the center iframe to
+  // play, command everything else to pause. Iframes stay mounted (no reload,
+  // no jump-to-zero on next visit) but only one is actively decoding video.
   useEffect(() => {
-    const ping = () => {
-      document.querySelectorAll<HTMLIFrameElement>('iframe.frame-video').forEach((iframe) => {
+    const apply = () => {
+      const slots = cellSlotsRef.current;
+      for (let i = 0; i < slots.length; i++) {
+        const slot = slots[i];
+        if (!slot) continue;
+        const iframe = slot.querySelector<HTMLIFrameElement>('iframe.frame-video');
+        if (!iframe || !iframe.contentWindow) continue;
+        const isCenter = i === activeIdxRef.current;
+        const src = iframe.src || '';
         try {
-          const src = iframe.src || '';
           if (src.includes('youtube')) {
-            iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
-            iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'mute', args: [] }), '*');
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: isCenter ? 'playVideo' : 'pauseVideo', args: [] }),
+              '*',
+            );
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'mute', args: [] }),
+              '*',
+            );
           } else if (src.includes('vimeo')) {
-            iframe.contentWindow?.postMessage(JSON.stringify({ method: 'play' }), '*');
-            iframe.contentWindow?.postMessage(JSON.stringify({ method: 'setMuted', value: true }), '*');
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ method: isCenter ? 'play' : 'pause' }),
+              '*',
+            );
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ method: 'setMuted', value: true }),
+              '*',
+            );
           }
         } catch {}
-      });
+      }
     };
-    const iv = setInterval(ping, 4000);
-    ping();
-    const onVis = () => { if (!document.hidden) ping(); };
+
+    // Run on activeIdx change, on first mount, and periodically as a safety
+    // net (browsers sometimes pause iframes after long idle).
+    apply();
+    const iv = setInterval(apply, 4000);
+    const onVis = () => { if (!document.hidden) apply(); };
     document.addEventListener('visibilitychange', onVis);
     return () => {
       clearInterval(iv);
       document.removeEventListener('visibilitychange', onVis);
     };
-  }, []);
+  }, [activeIdx]);
 
   const onCellClick = (i: number) => {
     const wrapped = wrapDelta(i - snapFloat.current, N);
