@@ -13,10 +13,6 @@ function videoSrc(film: Film) {
 
 const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 2;
 
-// How far from the centered cell to keep iframes mounted. Cells outside this
-// window show only the still thumbnail — keeps the GPU/CPU work bounded.
-const IFRAME_NEIGHBOR_RADIUS = 1;
-
 interface Props {
   films: Film[];
   onPick: (film: Film) => void;
@@ -207,12 +203,6 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
 
   const centerFilm = films[activeIdx];
 
-  // Decide which cells render iframes. Recomputed only when activeIdx changes.
-  const shouldHaveIframe = (i: number) => {
-    const delta = wrapDelta(i - activeIdx, N);
-    return Math.abs(delta) <= IFRAME_NEIGHBOR_RADIUS;
-  };
-
   return (
     <section className="hero" data-screen-label="01 Hero">
       <div className="ambient-stage" aria-hidden="true">
@@ -227,39 +217,37 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
 
       <div className="hero-zone" ref={zoneRef}>
         <div className="video-track">
-          {films.map((film, i) => {
-            const hasIframe = shouldHaveIframe(i);
-            return (
+          {films.map((film, i) => (
+            <div
+              key={film.id}
+              ref={(el) => { cellSlotsRef.current[i] = el; }}
+              className="cell-slot"
+              style={{ width: cellW }}
+            >
               <div
-                key={film.id}
-                ref={(el) => { cellSlotsRef.current[i] = el; }}
-                className="cell-slot"
-                style={{ width: cellW }}
+                ref={(el) => { videoCellsRef.current[i] = el; }}
+                className="video-cell"
+                onClick={() => onCellClick(i)}
               >
-                <div
-                  ref={(el) => { videoCellsRef.current[i] = el; }}
-                  className="video-cell"
-                  onClick={() => onCellClick(i)}
-                >
-                  <div className="frame">
-                    <HeroThumb film={film} className="frame-poster" />
-                    {hasIframe && (
-                      <iframe
-                        key={film.videoId}
-                        className="frame-video"
-                        src={videoSrc(film)}
-                        title={film.title}
-                        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                        loading="eager"
-                        frameBorder={0}
-                      />
-                    )}
-                    <div className="frame-tint" />
-                  </div>
+                <div className="frame">
+                  <HeroThumb film={film} className="frame-poster" />
+                  {/* All hero iframes stay mounted for the lifetime of the
+                      page — unmounting/remounting on slider step would
+                      restart playback from t=0. */}
+                  <iframe
+                    key={film.videoId}
+                    className="frame-video"
+                    src={videoSrc(film)}
+                    title={film.title}
+                    allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                    loading="eager"
+                    frameBorder={0}
+                  />
+                  <div className="frame-tint" />
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
 
