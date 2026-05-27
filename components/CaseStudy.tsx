@@ -15,7 +15,7 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
   const playerRef = useRef<any>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
   // Audio ON by default — the user's click on the hero counts as a fresh
-  // gesture, so browsers normally allow unmuted autoplay through this path.
+  // gesture, so browsers normally allow programmatic unmute through this path.
   const [audioOn, setAudioOn] = useState(true);
   const [paused, setPaused] = useState(false);
 
@@ -29,18 +29,55 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
     });
   }, [open, film?.id]);
 
-  // Init the Vimeo SDK ref so the Mute / Play toggles can drive the player
-  // without reloading the iframe.
+  // After the iframe mounts, wire up the player API and unmute via SDK /
+  // postMessage. The src URL stays muted so the initial frame is guaranteed
+  // to autoplay; we only flip the audio bit through the API. That avoids the
+  // restart-on-mute-toggle problem.
   useEffect(() => {
-    if (!open || !film || film.type !== 'vm') return;
-    const w = window as any;
-    if (!w.Vimeo || !w.Vimeo.Player) return;
-    const t = setTimeout(() => {
-      const f = iframeRef.current;
-      if (!f) return;
-      try { playerRef.current = new w.Vimeo.Player(f); } catch {}
-    }, 120);
-    return () => { clearTimeout(t); playerRef.current = null; };
+    if (!open || !film) return;
+
+    if (film.type === 'vm') {
+      const w = window as any;
+      if (!w.Vimeo || !w.Vimeo.Player) return;
+      const t = setTimeout(() => {
+        const f = iframeRef.current;
+        if (!f) return;
+        try {
+          const player = new w.Vimeo.Player(f);
+          playerRef.current = player;
+          player.setMuted(false)
+            .then(() => player.play())
+            .catch(() => {
+              // Browser blocked unmute — reflect that in the UI so the icon
+              // matches reality and the user can tap to enable.
+              setAudioOn(false);
+            });
+        } catch {
+          setAudioOn(false);
+        }
+      }, 150);
+      return () => { clearTimeout(t); playerRef.current = null; };
+    }
+
+    if (film.type === 'yt') {
+      const t = setTimeout(() => {
+        const f = iframeRef.current;
+        if (!f || !f.contentWindow) { setAudioOn(false); return; }
+        try {
+          f.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'unMute', args: [] }),
+            '*',
+          );
+          f.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
+            '*',
+          );
+        } catch {
+          setAudioOn(false);
+        }
+      }, 800);
+      return () => clearTimeout(t);
+    }
   }, [open, film?.id]);
 
   const toggleMute = (e?: React.MouseEvent) => {
@@ -92,14 +129,16 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
   const idx = films.findIndex((f) => f.id === film.id);
   const next = films[(idx + 1) % films.length];
 
+  // Build the iframe src ONCE per film (no audio in the URL — we drive that
+  // through the SDK / postMessage so the iframe never reloads on toggle).
   let src: string;
   if (film.type === 'vm') {
-    src = `https://player.vimeo.com/video/${film.videoId}?autoplay=1&loop=1&muted=${audioOn ? 0 : 1}&controls=0&dnt=1&playsinline=1&title=0&byline=0&portrait=0`;
+    src = `https://player.vimeo.com/video/${film.videoId}?autoplay=1&loop=1&muted=1&controls=0&dnt=1&playsinline=1&title=0&byline=0&portrait=0`;
   } else if (film.type === 'gd') {
     src = `https://drive.google.com/file/d/${film.videoId}/preview`;
   } else {
     const origin = typeof window !== 'undefined' ? encodeURIComponent(window.location.origin) : '';
-    src = `https://www.youtube-nocookie.com/embed/${film.videoId}?autoplay=1&mute=${audioOn ? 0 : 1}&loop=1&playlist=${film.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${origin}`;
+    src = `https://www.youtube-nocookie.com/embed/${film.videoId}?autoplay=1&mute=1&loop=1&playlist=${film.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${origin}`;
   }
   const isVertical = (film.genres || []).includes('vertical') || film.aspect === '9:16';
   const canControl = film.type !== 'gd';
