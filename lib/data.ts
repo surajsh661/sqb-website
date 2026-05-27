@@ -326,18 +326,20 @@ const HERO_FEATURED_IDS: string[] = [
   'revolution-edu-scam',
   'kabeera-tseries',
   'sunstone-lsg',
-  'ai-realistic-flagship',
 ];
 
 // HERO films — explicit curated list (edit HERO_FEATURED_IDS above to change).
-// Falls back to all non-vertical films if the curated list is empty.
+// Drive videos are always excluded — they don't autoplay reliably in the carousel.
+// Falls back to all Vimeo/YouTube non-vertical films if the curated list is empty.
 export const SQB_HERO_FILMS: Film[] = (() => {
   const byId = new Map(SQB_FILMS.map((f) => [f.id, f] as const));
   const picked = HERO_FEATURED_IDS
     .map((id) => byId.get(id))
-    .filter((f): f is Film => !!f);
+    .filter((f): f is Film => !!f && f.type !== 'gd');
   if (picked.length > 0) return picked;
-  return SQB_FILMS.filter((f) => !(f.genres || []).includes('vertical'));
+  return SQB_FILMS.filter(
+    (f) => !(f.genres || []).includes('vertical') && f.type !== 'gd',
+  );
 })();
 
 // Verticals exposed for home-page section
