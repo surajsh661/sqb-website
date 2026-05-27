@@ -492,31 +492,35 @@ export const SQB_CREATORS: Creator[] = [
   },
 ];
 
-// Sizes are all 1.00 — the marquee container normalises height so each logo
-// renders at the same on-screen size regardless of the source PNG dimensions.
-// keepDetails: true on a logo keeps its internal art intact (rendered as
-// desaturated greyscale) instead of being flattened to a silhouette.
+// `size` is an optical-balance scale (applied as a CSS transform on the img)
+// to compensate for source PNGs that bake in different amounts of internal
+// padding. Most can stay at 1.00; logos whose visible art occupies less of
+// their canvas get bumped up so they read at the same on-screen size as the
+// tightly-cropped ones.
+//
+// keepDetails: true → render the original art (desaturated) instead of
+// flattening to a silhouette. Use for illustrative/detailed marks.
 export const SQB_LOGOS: ClientLogo[] = [
   { name: 'Muthoot Finance',    src: '/clients/muthoot.png',   size: 1.00, keepDetails: true },
-  { name: 'RedFM',              src: '/clients/redfm.png',     size: 1.00 },
+  { name: 'RedFM',              src: '/clients/redfm.png',     size: 1.10 },
   { name: 'Haldiram’s',         src: '/clients/haldiram.png',  size: 1.00 },
   { name: 'Subway',             src: '/clients/subway.png',    size: 1.00 },
-  { name: 'T-Series',           src: '/clients/tseries.png',   size: 1.00 },
-  { name: 'PhysicsWallah',      src: '/clients/pw.png',        size: 1.00 },
-  { name: 'Sunstone',           src: '/clients/sunstone.png',  size: 1.00 },
-  { name: 'GeeksforGeeks',      src: '/clients/gfg.png',       size: 1.00 },
-  { name: 'Unacademy',          src: '/clients/unacademy.png', size: 1.00 },
-  { name: 'Vahaflix',           src: '/clients/vahaflix.png',  size: 1.00 },
-  { name: 'Dashtoon',           src: '/clients/dashtoon.png',  size: 1.00, keepDetails: true },
-  { name: 'Indiefolio',         src: '/clients/indiefolio.png',size: 1.00 },
-  { name: 'Industree',          src: '/clients/industree.png', size: 1.00, keepDetails: true },
-  { name: 'LAPCA',              src: '/clients/lapca.png',     size: 1.00 },
-  { name: 'ViralO',             src: '/clients/viralo.png',    size: 1.00, keepDetails: true },
-  { name: 'Appx',               src: '/clients/appx.png',      size: 1.00 },
-  { name: 'Ayush',              src: '/clients/ayush.png',     size: 1.00 },
-  { name: 'CAC',                src: '/clients/cac.png',       size: 1.00 },
-  { name: 'DCC',                src: '/clients/dcc.png',       size: 1.00 },
-  { name: 'SpeakIn',            src: '/clients/speakin.png',   size: 1.00 },
-  { name: 'S&F',                src: '/clients/snf.png',       size: 1.00 },
-  { name: 'TEDx',               src: '/clients/tedx.png',      size: 1.00 },
+  { name: 'T-Series',           src: '/clients/tseries.png',   size: 1.25 },
+  { name: 'PhysicsWallah',      src: '/clients/pw.png',        size: 1.40 },
+  { name: 'Sunstone',           src: '/clients/sunstone.png',  size: 1.15 },
+  { name: 'GeeksforGeeks',      src: '/clients/gfg.png',       size: 1.40 },
+  { name: 'Unacademy',          src: '/clients/unacademy.png', size: 1.45 },
+  { name: 'Vahaflix',           src: '/clients/vahaflix.png',  size: 1.05 },
+  { name: 'Dashtoon',           src: '/clients/dashtoon.png',  size: 1.10, keepDetails: true },
+  { name: 'Indiefolio',         src: '/clients/indiefolio.png',size: 1.10 },
+  { name: 'Industree',          src: '/clients/industree.png', size: 1.10, keepDetails: true },
+  { name: 'LAPCA',              src: '/clients/lapca.png',     size: 1.10 },
+  { name: 'ViralO',             src: '/clients/viralo.png',    size: 1.10, keepDetails: true },
+  { name: 'Appx',               src: '/clients/appx.png',      size: 1.20 },
+  { name: 'Ayush',              src: '/clients/ayush.png',     size: 1.10 },
+  { name: 'CAC',                src: '/clients/cac.png',       size: 1.20 },
+  { name: 'DCC',                src: '/clients/dcc.png',       size: 1.20 },
+  { name: 'SpeakIn',            src: '/clients/speakin.png',   size: 1.25 },
+  { name: 'S&F',                src: '/clients/snf.png',       size: 1.20 },
+  { name: 'TEDx',               src: '/clients/tedx.png',      size: 1.10 },
 ];

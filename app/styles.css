@@ -1024,17 +1024,19 @@ body.no-grain::before { display: none; }
 
 .client-logo {
   flex: 0 0 auto;
-  height: 56px;                          /* one normalized rendered height for every logo */
+  height: 68px;                          /* normalized rendered height for every logo */
   display: flex; align-items: center; justify-content: center;
-  opacity: 0.7; transition: opacity .3s, filter .3s;
-  padding: 0 22px;
+  opacity: 0.78; transition: opacity .3s, filter .3s;
+  padding: 0 26px;
+  overflow: visible;                     /* per-logo transform: scale() can extend past container */
 }
 .client-logo:hover { opacity: 1; }
 .client-logo img {
   height: 100%;
   width: auto;
-  max-width: 180px;
+  max-width: 240px;
   object-fit: contain;
+  transform-origin: center;
   /* Default: flatten to a uniform silhouette (white on dark, black on light). */
   filter: grayscale(1) brightness(0) invert(calc(1 - var(--invert)));
   transition: filter .3s ease, opacity .3s ease;
@@ -1625,10 +1627,10 @@ video.frame-video {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; padding-top: 40px; }
   .footer-bottom { flex-direction: column; gap: 8px; align-items: flex-start; padding-top: 24px; font-size: 10px; }
 
-  /* Client logo marquee — smaller logos */
+  /* Client logo marquee — smaller logos on mobile */
   .logo-marquee { padding: 18px 0; }
-  .client-logo { height: 44px !important; padding: 0 10px; }
-  .client-logo img { max-height: 36px !important; max-width: 110px; }
+  .client-logo { height: 52px !important; padding: 0 14px; }
+  .client-logo img { max-width: 150px; }
 
   /* Manifesto */
   .manifesto h2 { font-size: clamp(40px, 11vw, 80px); margin-top: 24px; }

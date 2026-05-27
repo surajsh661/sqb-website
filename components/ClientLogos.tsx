@@ -20,6 +20,7 @@ export default function ClientLogos() {
             <img
               src={c.src}
               alt={c.name}
+              style={{ transform: `scale(${c.size || 1})` }}
               onError={(e) => {
                 const img = e.target as HTMLImageElement;
                 img.style.display = 'none';
