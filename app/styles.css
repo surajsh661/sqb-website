@@ -811,6 +811,124 @@ body.no-grain::before { display: none; }
 .credits-grid .credit .role { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-dim); margin-bottom: 8px; }
 .credits-grid .credit .name { font-family: 'Anton', sans-serif; font-size: 28px; text-transform: uppercase; }
 
+/* ===== Series catalog (episode index) inside a case study ===== */
+.case-episodes {
+  padding: 80px 32px 60px;
+  border-top: 1px solid var(--rule);
+}
+.ce-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 32px; margin-bottom: 36px; flex-wrap: wrap;
+}
+.ce-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--fg-dim); margin-bottom: 12px;
+}
+.ce-title {
+  font-family: var(--display-font, 'Anton'), sans-serif;
+  font-size: clamp(36px, 4.5vw, 64px);
+  line-height: 0.95; letter-spacing: -0.01em; text-transform: uppercase;
+  color: var(--fg);
+}
+.ce-title em { color: var(--accent); font-style: normal; }
+.ce-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fg-dim); margin-top: 10px;
+}
+.ce-watchall {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  transition: background .25s ease, color .25s ease, transform .15s ease;
+  white-space: nowrap;
+}
+.ce-watchall:hover {
+  background: var(--accent);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+.ce-rows { display: flex; flex-direction: column; gap: 18px; }
+.ce-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  /* Subtle scrollbar that still cues "there's more" */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245,197,24,0.35) transparent;
+}
+.ce-row::-webkit-scrollbar { height: 6px; }
+.ce-row::-webkit-scrollbar-track { background: transparent; }
+.ce-row::-webkit-scrollbar-thumb {
+  background: rgba(245,197,24,0.32);
+  border-radius: 999px;
+}
+.ce-row::-webkit-scrollbar-thumb:hover { background: rgba(245,197,24,0.55); }
+
+.ce-card {
+  flex: 0 0 calc((100% - 14px * 4) / 5); /* 5 visible per row at large widths */
+  min-width: 220px;
+  scroll-snap-align: start;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.ce-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0a0807;
+  border: 1px solid rgba(245,197,24,0.10);
+}
+.ce-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .45s cubic-bezier(.22,1,.36,1);
+}
+.ce-card:hover .ce-thumb img { transform: scale(1.06); }
+.ce-shade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.55) 100%);
+}
+.ce-play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: #fff;
+  opacity: 0; transition: opacity .2s ease;
+  background: rgba(0,0,0,0.32);
+}
+.ce-card:hover .ce-play { opacity: 1; }
+.ce-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--fg);
+  margin-top: 10px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ce-card:hover .ce-label { color: var(--accent); }
+
+@media (max-width: 900px) {
+  .ce-card { flex-basis: calc((100% - 14px * 2) / 3); min-width: 180px; }
+}
+@media (max-width: 600px) {
+  .case-episodes { padding: 60px 20px 40px; }
+  .ce-card { flex-basis: calc((100% - 14px) / 2); min-width: 150px; }
+}
+
 .case-next {
   padding: 100px 32px; border-top: 1px solid var(--rule);
   display: flex; align-items: center; justify-content: space-between;

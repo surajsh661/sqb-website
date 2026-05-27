@@ -251,6 +251,65 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
         </div>
       </div>
 
+      {film.episodes && film.episodes.length > 0 && (
+        <section className="case-episodes">
+          <div className="ce-head">
+            <div>
+              <div className="ce-eyebrow">SERIES CATALOG</div>
+              <h3 className="ce-title">EPISODE <em>INDEX</em></h3>
+              <div className="ce-sub">
+                {film.episodes.length} episodes · click any tile to watch on YouTube
+              </div>
+            </div>
+            {film.playlistId && (
+              <a
+                className="ce-watchall"
+                href={`https://www.youtube.com/playlist?list=${film.playlistId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WATCH FULL PLAYLIST ↗
+              </a>
+            )}
+          </div>
+          {(() => {
+            const eps = film.episodes;
+            const half = Math.ceil(eps.length / 2);
+            const rows = [eps.slice(0, half), eps.slice(half)];
+            return (
+              <div className="ce-rows">
+                {rows.map((row, ri) => (
+                  <div className="ce-row" key={ri}>
+                    {row.map((ep) => (
+                      <a
+                        className="ce-card"
+                        key={ep.id}
+                        href={`https://www.youtube.com/watch?v=${ep.id}${film.playlistId ? '&list=' + film.playlistId : ''}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <div className="ce-thumb">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`https://i.ytimg.com/vi/${ep.id}/hqdefault.jpg`}
+                            alt={ep.label}
+                            referrerPolicy="no-referrer"
+                            loading="lazy"
+                          />
+                          <div className="ce-shade" />
+                          <div className="ce-play" aria-hidden="true">▶</div>
+                        </div>
+                        <div className="ce-label">{ep.label}</div>
+                      </a>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
+        </section>
+      )}
+
       <div className="case-next" onClick={() => onPick(next)}>
         <div>
           <div className="next-label">NEXT FEATURE — {next.category}</div>

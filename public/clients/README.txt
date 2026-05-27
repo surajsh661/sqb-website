@@ -3,10 +3,11 @@ Drop your client-logo PNG files in this folder.
 The "Trusted by Global Brands" marquee on the homepage looks for files
 named exactly like this (lowercase, no spaces, .png extension):
 
-  haldiram.png    subway.png      tseries.png     pw.png
-  sunstone.png    gfg.png         unacademy.png   vahaflix.png
-  wtf.png         appx.png        ayush.png       cac.png
-  dcc.png         speakin.png     snf.png         tedx.png
+  muthoot.png     redfm.png       haldiram.png    subway.png
+  tseries.png     pw.png          sunstone.png    gfg.png
+  unacademy.png   vahaflix.png    wtf.png         appx.png
+  ayush.png       cac.png         dcc.png         speakin.png
+  snf.png         tedx.png
 
 Recommended:
 - Transparent background PNG

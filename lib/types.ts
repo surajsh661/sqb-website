@@ -6,6 +6,13 @@ export type Genre =
 
 export interface Credit { role: string; name: string }
 
+export interface Episode {
+  /** YouTube video ID */
+  id: string;
+  /** Short label shown under the thumbnail */
+  label: string;
+}
+
 export interface Film {
   id: string;
   title: string;
@@ -26,6 +33,10 @@ export interface Film {
   impact?: string;
   aspect?: string;
   credits: Credit[];
+  /** YouTube playlist ID — for the "watch all" link */
+  playlistId?: string;
+  /** Episode catalog rendered below the case-study credits */
+  episodes?: Episode[];
 }
 
 export interface AILabItem { id: string; title: string; type: VideoType; videoId: string }
