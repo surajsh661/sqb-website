@@ -324,11 +324,9 @@ const HERO_FEATURED_IDS: string[] = [
   'naturaltein-bumrah',
   'pw-dvc',
   'revolution-edu-scam',
-  'gfg-aparshakti-2',
   'kabeera-tseries',
   'sunstone-lsg',
   'ai-realistic-flagship',
-  'gfg-aparshakti-3',
 ];
 
 // HERO films — explicit curated list (edit HERO_FEATURED_IDS above to change).

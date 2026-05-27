@@ -119,9 +119,9 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
     let raf: number;
     let target = 0;
     let lastStep = 0;
-    const DEADZONE = 0.25; // half-width of the center deadzone in screen units
-    const STEP_SLOW = 700; // ms between auto-steps when cursor is just past deadzone
-    const STEP_FAST = 220; // ms between auto-steps near the screen edge
+    const DEADZONE = 0.40; // half-width of the center deadzone in screen units (no stepping inside the outer 80% of the screen — only the last ~10% on each edge triggers)
+    const STEP_SLOW = 900; // ms between auto-steps when cursor is just past deadzone
+    const STEP_FAST = 280; // ms between auto-steps near the screen edge
 
     const tick = () => {
       const now = performance.now();
