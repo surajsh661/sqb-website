@@ -67,28 +67,37 @@ export default function Verticals() {
         <div className="blurb">9:16 stories built for the medium they live in.</div>
       </div>
       <div className="vrow">
-        {order.map((v, i) => (
-          <div
-            className={'vcard' + (i === 2 ? ' center' : '')}
-            key={v.id}
-            title={v.title}
-            onClick={() => setActive(v)}
-            role="button"
-            tabIndex={0}
-          >
-            <iframe
-              src={videoSrc({ type: v.type, videoId: v.videoId }, { bg: true })}
-              title={v.title}
-              allow="autoplay; encrypted-media"
-              loading={i === 2 ? 'eager' : 'lazy'}
-            />
-            <div className="vlabel">
-              <span className="tag">{v.tag}</span>
-              <div className="ttl">{v.title}</div>
-            </div>
-            <div className="vplay" aria-hidden="true">▶</div>
-          </div>
-        ))}
+        {/* Cards are rendered twice — desktop just shows the first 5 in the
+            static row (the duplicates overflow off-screen and are hidden by
+            .vrow's overflow on mobile); mobile uses CSS to animate the inner
+            track into a seamless marquee using both passes. */}
+        <div className="vrow-track">
+          {[...order, ...order].map((v, i) => {
+            const localIdx = i % order.length;
+            return (
+              <div
+                className={'vcard' + (localIdx === 2 ? ' center' : '')}
+                key={v.id + '-' + i}
+                title={v.title}
+                onClick={() => setActive(v)}
+                role="button"
+                tabIndex={0}
+              >
+                <iframe
+                  src={videoSrc({ type: v.type, videoId: v.videoId }, { bg: true })}
+                  title={v.title}
+                  allow="autoplay; encrypted-media"
+                  loading={localIdx === 2 && i < order.length ? 'eager' : 'lazy'}
+                />
+                <div className="vlabel">
+                  <span className="tag">{v.tag}</span>
+                  <div className="ttl">{v.title}</div>
+                </div>
+                <div className="vplay" aria-hidden="true">▶</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
       <div className="vrow-controls">
         <button onClick={() => rotate(-1)} aria-label="prev">←</button>

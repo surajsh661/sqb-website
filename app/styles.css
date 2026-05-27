@@ -562,10 +562,18 @@ body.no-grain::before { display: none; }
 }
 
 .vrow {
-  display: flex; gap: 18px; padding: 60px 32px 80px;
+  display: flex; padding: 60px 32px 80px;
   align-items: center; justify-content: center;
   perspective: 1400px;
 }
+.vrow-track {
+  display: flex; gap: 18px;
+  align-items: center;
+  flex: 0 0 auto;
+}
+/* Hide the duplicate cards on desktop — they exist only to let the mobile
+   marquee loop seamlessly. */
+.vrow-track > .vcard:nth-child(n + 6) { display: none; }
 .vcard {
   flex: 0 0 auto;
   width: 220px; aspect-ratio: 9 / 16;
@@ -1131,6 +1139,9 @@ body.no-grain::before { display: none; }
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   border: 0;
+  /* Block scroll/swipe inside the IG embed — see note in the other
+     .bts-frame iframe rule below. */
+  pointer-events: none;
 }
 .bts-vignette {
   position: absolute; inset: 0; pointer-events: none;
@@ -1377,6 +1388,10 @@ video.frame-video {
   position: absolute; inset: -1px;
   width: calc(100% + 2px); height: calc(100% + 2px);
   border: 0;
+  /* Block pointer interaction with the Instagram embed — its internal
+     swipe / scroll controls were stealing page-scroll gestures. Autoplay
+     still happens because the embed kicks it off itself. */
+  pointer-events: none;
 }
 .bts-vignette {
   position: absolute; inset: 0; pointer-events: none;
@@ -1540,7 +1555,8 @@ video.frame-video {
 .footer-cta-logo .fcl-glow { display: none !important; }
 
 @media (max-width: 800px) {
-  .video-cell { height: 56vh; margin: 0 6px; }
+  /* No height override on .video-cell — the JS-driven --sqb-cellH gives a
+     proper 16:9 cell; overriding it to 56vh produced tall letterboxed bars. */
   .nav-center { display: none; }
   .stats, .case-body, .credits-grid, .footer-grid, .categories { grid-template-columns: 1fr; }
   .case-hero { padding: 0 20px 40px; }
@@ -1566,7 +1582,7 @@ video.frame-video {
   .menu-trigger { padding: 8px 12px; gap: 8px; }
 
   /* Hero — make the carousel a bit shorter, drop the cursor hint */
-  .hero { height: 90vh; }
+  .hero { height: 75vh; }
   .cursor-hint { display: none; }
   .hero-tagline { font-size: 11px; bottom: 10px; }
   .hero-title-wrap { left: 18px; right: 18px; bottom: 80px; }
@@ -1586,10 +1602,39 @@ video.frame-video {
   .stat:last-child { border-bottom: 0; }
   .stat .num { font-size: clamp(56px, 18vw, 100px); }
 
-  /* Verticals carousel — single visible card */
-  .verticals .vrow { gap: 12px; padding: 0 18px; }
-  .verticals .vcard { flex: 0 0 80vw; }
-  .verticals .vcard.center { flex-basis: 88vw; }
+  /* Verticals — auto-scrolling marquee on mobile. Duplicates already
+     rendered in the markup; show them, drop the fan transforms, and animate
+     the track left by -50% for a seamless loop. */
+  .verticals .vrow {
+    padding: 30px 0 50px;
+    overflow: hidden;
+    perspective: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .vrow-track {
+    width: max-content;
+    gap: 14px;
+    animation: vSlide 45s linear infinite;
+    will-change: transform;
+  }
+  .vrow:hover .vrow-track { animation-play-state: paused; }
+  .vrow-track > .vcard:nth-child(n + 6) { display: block; }
+  .verticals .vcard,
+  .verticals .vcard:nth-child(1),
+  .verticals .vcard:nth-child(2),
+  .verticals .vcard:nth-child(3),
+  .verticals .vcard:nth-child(4),
+  .verticals .vcard:nth-child(5) {
+    width: 55vw; flex: 0 0 55vw;
+    transform: none;
+  }
+  /* Manual nav arrows on the verticals row don't make sense in marquee mode. */
+  .verticals .vrow-controls { display: none; }
+@keyframes vSlide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
 
   /* Categories — single column */
   .categories { grid-template-columns: 1fr; gap: 0; }
@@ -1655,8 +1700,7 @@ video.frame-video {
 
 /* PHONE ≤ 600px */
 @media (max-width: 600px) {
-  .hero { height: 86vh; }
-  .video-cell { height: 50vh; }
+  .hero { height: 70vh; }
 
   .topbar { padding: 10px 14px; }
   .logo-mark { gap: 6px; }

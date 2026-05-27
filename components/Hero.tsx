@@ -56,7 +56,10 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  const cellW = Math.min(containerW * 0.6, (containerH * 0.68 * 16) / 9);
+  // On narrow screens (phones) we want the centered video to fill more of the
+  // viewport width; on desktop it's 60% so the side cells peek through.
+  const widthFraction = containerW < 700 ? 0.86 : 0.6;
+  const cellW = Math.min(containerW * widthFraction, (containerH * 0.68 * 16) / 9);
   const cellH = (cellW * 9) / 16;
   cellWRef.current = cellW;
 
