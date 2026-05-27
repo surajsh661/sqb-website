@@ -104,7 +104,7 @@ Vercel is the company that makes Next.js. They host Next.js sites for free, and 
      git add .
      git commit -m "Initial commit"
      git branch -M main
-     git remote add origin https://github.com/YOUR-USERNAME/sqb-website.git
+     git remote add origin https://github.com/surajsh661/sqb-website.git
      git push -u origin main
      ```
 2. Sign up at <https://vercel.com> using your GitHub account.
