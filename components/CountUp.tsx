@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 interface Props {
-  end: string | number;
+  end?: string | number;
   suffix?: string;
   duration?: number;
   from?: number;
