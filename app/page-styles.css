@@ -1640,3 +1640,98 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   85%  { opacity: 0.25; }
   100% { transform: translate(-50%, -420px) scale(0.85) rotate(-3deg); opacity: 0; }
 }
+
+/* ============================================================
+   Sub-page mobile pass (Work / AI Lab / Social)
+   ============================================================ */
+@media (max-width: 900px) {
+  /* Shared sub-page nav */
+  .sqb-nav { padding: 12px 18px; }
+  .sqb-nav .lm img { height: 32px; }
+  .sqb-nav .lm .stack .tg { font-size: 9px; }
+  .sqb-nav .nav { display: none; }
+  .sqb-nav .right { gap: 8px; }
+  .sqb-nav .reach-out-btn { padding: 8px 14px; font-size: 10px; }
+
+  /* WORK — vision hero */
+  .work-vision { padding: 90px 18px 60px; }
+  .wv-title { font-size: clamp(44px, 12vw, 88px); }
+  .wv-blurb { font-size: 15px; }
+  .wv-cta { padding: 12px 18px; font-size: 11px; }
+
+  /* WORK — capabilities grid */
+  .work-cap { padding: 70px 18px; }
+  .wc-title { font-size: clamp(36px, 10vw, 64px); }
+  .wc-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .wc-cell { padding: 22px 18px; }
+
+  /* WORK — scale + barrel: stack and hide the upper barrel which
+     is decorative; main barrel reduces height. */
+  .work-scale { grid-template-columns: 1fr; padding: 70px 18px; gap: 32px; }
+  .ws-left { text-align: left; }
+  .ws-num { font-size: clamp(80px, 22vw, 140px); }
+  .ws-title { font-size: clamp(36px, 10vw, 64px); }
+  .ws-barrel-stage.upper { display: none; }
+  .ws-barrel-stage.main { height: 320px; }
+
+  /* WORK — films grid */
+  .work-films { padding: 70px 18px; }
+  .wf-head { grid-template-columns: 1fr; gap: 16px; }
+  .wf-title { font-size: clamp(40px, 12vw, 72px); }
+  .wf-filters { flex-wrap: wrap; gap: 8px; }
+  .wf-chip { padding: 6px 12px; font-size: 10px; }
+  .wf-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .film-title { font-size: 14px; }
+  .film-row { font-size: 9px; }
+
+  /* WORK — Cocoon flagship */
+  .cocoon { padding: 70px 18px; }
+  .cocoon-head { grid-template-columns: 1fr; gap: 24px; }
+  .cocoon-title { font-size: clamp(56px, 16vw, 100px); }
+  .cocoon-rating { justify-self: start; }
+  .cocoon-rating .cr-num { font-size: clamp(60px, 16vw, 96px); }
+  .cocoon-actions { flex-wrap: wrap; gap: 10px; }
+  .cocoon-btn { padding: 10px 16px; font-size: 11px; }
+  .cm-grid { grid-template-columns: 1fr; gap: 16px; }
+
+  /* WORK — vertical cinema marquee */
+  .vc-inner { padding: 0 18px; }
+  .vc-head-row { grid-template-columns: 1fr; gap: 14px; }
+  .vc-title { font-size: clamp(44px, 12vw, 80px); }
+  .vc-marquee { padding: 12px 0 24px; }
+  .vc-ticket { width: 60vw; min-width: 220px; }
+
+  /* AI LAB */
+  .ailab-hero { padding: 90px 18px 50px; }
+  .ai-headline-title { font-size: clamp(32px, 9vw, 60px); }
+  .ai-headline-blurb { font-size: 14px; }
+  .ai-picker { grid-template-columns: 1fr; height: auto; gap: 12px; }
+  .ai-pane { height: 32vh; }
+  .ai-pane.expand, .ai-pane.shrink { flex: 1 1 auto; }
+  .ai-track-section { padding: 70px 18px; }
+  .ai-track-section h2 { font-size: clamp(40px, 11vw, 64px); }
+  .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* SOCIAL */
+  .social-hero { padding: 90px 18px 70px; }
+  .sh-inner { grid-template-columns: 1fr; gap: 32px; }
+  .sh-title { font-size: clamp(38px, 11vw, 64px); }
+  .sh-blurb { font-size: 15px; }
+  .sh-stats { gap: 20px; flex-wrap: wrap; }
+  .sh-stats .n { font-size: clamp(28px, 8vw, 44px); }
+  .sh-stream { height: 220px !important; display: none; } /* hide decorative icons on mobile */
+
+  .creator { padding: 60px 18px; }
+  .creator-head { grid-template-columns: 1fr; }
+  .creator-name { font-size: clamp(40px, 12vw, 72px); }
+  .creator-marquee-track { gap: 12px; }
+  .creator-thumb { width: 220px; }
+}
+
+@media (max-width: 600px) {
+  .wc-grid { grid-template-columns: 1fr; }
+  .wf-grid { grid-template-columns: 1fr; }
+  .ai-track-grid { grid-template-columns: 1fr; }
+  .ws-barrel-stage.main { height: 260px; }
+  .vc-ticket { width: 78vw; }
+}
