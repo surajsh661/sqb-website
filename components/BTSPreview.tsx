@@ -1,0 +1,44 @@
+'use client';
+import { SQB_BTS } from '@/lib/data';
+import type { BTS } from '@/lib/types';
+
+const srcFor = (b: BTS) =>
+  b.type === 'vm'
+    ? `https://player.vimeo.com/video/${b.videoId}?background=1&autoplay=1&loop=1&muted=1&controls=0&dnt=1&autopause=0`
+    : b.type === 'gd'
+    ? `https://drive.google.com/file/d/${b.videoId}/preview`
+    : b.type === 'ig'
+    ? `https://www.instagram.com/reel/${b.videoId}/embed/`
+    : `https://www.youtube.com/embed/${b.videoId}?autoplay=1&mute=1&loop=1&playlist=${b.videoId}&controls=0&modestbranding=1&showinfo=0&rel=0&playsinline=1`;
+
+export default function BTSPreview() {
+  const items = SQB_BTS;
+  const renderCard = (b: BTS, key: string) => (
+    <div className="bts-card" key={key}>
+      <div className="bts-frame">
+        <iframe src={srcFor(b)} title={b.title} allow="autoplay; encrypted-media" loading="lazy" />
+        <div className="bts-vignette" />
+      </div>
+      <div className="bts-meta">
+        <span className="bts-tag">{b.tag}</span>
+        <div className="bts-title">{b.title}</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <section className="bts" data-screen-label="09 BTS">
+      <div className="bts-head">
+        <div className="eyebrow"><span className="num">09</span> <span>BEHIND THE SCENES</span></div>
+        <h2>FROM THE <em>FLOOR</em>.</h2>
+        <p className="bts-blurb">Rigs, blocks, grade rooms, AI lab nights. The work behind the work.</p>
+      </div>
+      <div className="bts-marquee">
+        <div className="bts-marquee-track">
+          {items.map((b, i) => renderCard(b, 'a' + i))}
+          {items.map((b, i) => renderCard(b, 'b' + i))}
+        </div>
+      </div>
+    </section>
+  );
+}
