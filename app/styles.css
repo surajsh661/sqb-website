@@ -630,13 +630,20 @@ body.no-grain::before { display: none; }
 }
 .logo-marquee.rev .logo-track { animation-direction: reverse; animation-duration: 50s; }
 .client-logo {
-  flex: 0 0 auto; height: 60px; display: flex; align-items: center;
-  opacity: 0.55; transition: opacity .4s, filter .4s;
+  flex: 0 0 auto; height: 56px; display: flex; align-items: center;
+  opacity: 0.7; transition: opacity .4s, filter .4s;
+  padding: 0 22px;
 }
 .client-logo:hover { opacity: 1; }
 .client-logo img {
-  max-height: 60px; max-width: 160px; object-fit: contain;
+  height: 100%; width: auto; max-width: 180px; object-fit: contain;
   filter: grayscale(1) brightness(0) invert(calc(1 - var(--invert)));
+}
+.client-logo.keep-detail img {
+  filter: grayscale(1) brightness(1.05) contrast(1.05);
+}
+[data-theme="light"] .client-logo.keep-detail img {
+  filter: grayscale(1) brightness(0.95) contrast(1.05);
 }
 .client-logo .text-logo {
   font-family: 'Anton', sans-serif; font-size: 32px;
@@ -1017,21 +1024,30 @@ body.no-grain::before { display: none; }
 
 .client-logo {
   flex: 0 0 auto;
+  height: 56px;                          /* one normalized rendered height for every logo */
   display: flex; align-items: center; justify-content: center;
   opacity: 0.7; transition: opacity .3s, filter .3s;
-  padding: 0 14px;
+  padding: 0 22px;
 }
 .client-logo:hover { opacity: 1; }
 .client-logo img {
-  width: auto; object-fit: contain;
-  /* Force every logo to a uniform silhouette: white in dark mode, black in light.
-     grayscale(1) first kills any residual colour (some PNGs sneak through
-     brightness(0) when they carry anti-aliased coloured edges); brightness(0)
-     then crushes to black; invert(1) flips it to white when --invert=0 (dark). */
+  height: 100%;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  /* Default: flatten to a uniform silhouette (white on dark, black on light). */
   filter: grayscale(1) brightness(0) invert(calc(1 - var(--invert)));
   transition: filter .3s ease, opacity .3s ease;
 }
-.client-logo:hover img { filter: grayscale(1) brightness(0) invert(calc(1 - var(--invert))); }
+/* keepDetails: skip the brightness(0) flatten so internal detail survives.
+   Just desaturate + a small brightness lift so the original art reads on
+   the dark background without being crushed to a silhouette. */
+.client-logo.keep-detail img {
+  filter: grayscale(1) brightness(1.05) contrast(1.05);
+}
+[data-theme="light"] .client-logo.keep-detail img {
+  filter: grayscale(1) brightness(0.95) contrast(1.05);
+}
 .client-logo .text-logo {
   font-family: 'Anton', sans-serif; font-size: 32px;
   letter-spacing: 0.02em; text-transform: uppercase; color: var(--fg);

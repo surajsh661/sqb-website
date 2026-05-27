@@ -10,26 +10,26 @@ export default function ClientLogos() {
   const Row = ({ reverse, list }: { reverse?: boolean; list: typeof logos }) => (
     <div className={'logo-marquee' + (reverse ? ' rev' : '')}>
       <div className="logo-track">
-        {[...list, ...list].map((c, i) => {
-          const s = (c.size || 1) * 60;
-          return (
-            <div className="client-logo" key={i} title={c.name} style={{ height: s + 14 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={c.src}
-                alt={c.name}
-                style={{ maxHeight: s }}
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.style.display = 'none';
-                  if (img.parentElement) {
-                    img.parentElement.innerHTML = `<span class="text-logo">${c.name}</span>`;
-                  }
-                }}
-              />
-            </div>
-          );
-        })}
+        {[...list, ...list].map((c, i) => (
+          <div
+            className={'client-logo' + (c.keepDetails ? ' keep-detail' : '')}
+            key={i}
+            title={c.name}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={c.src}
+              alt={c.name}
+              onError={(e) => {
+                const img = e.target as HTMLImageElement;
+                img.style.display = 'none';
+                if (img.parentElement) {
+                  img.parentElement.innerHTML = `<span class="text-logo">${c.name}</span>`;
+                }
+              }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

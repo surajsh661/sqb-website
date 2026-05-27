@@ -68,7 +68,15 @@ export interface BTS {
 
 export interface GenreOption { key: Genre; label: string }
 
-export interface ClientLogo { name: string; src: string; size: number }
+export interface ClientLogo {
+  name: string;
+  src: string;
+  size: number;
+  /** When true, render the original art (just desaturated) instead of the
+      flat brightness(0)+invert silhouette — for logos whose internal detail
+      would be lost in the silhouette flatten. */
+  keepDetails?: boolean;
+}
 
 export interface Creator {
   id: string;
