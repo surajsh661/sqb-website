@@ -46,9 +46,11 @@ function VideoCell({
         <HeroThumb film={film} className="frame-poster" />
         {!isDrive && (
           <iframe
-            key={film.videoId + '-' + (isCenter ? (isCenterAudio ? 'on' : 'off') : 'm')}
+            // Key is intentionally fixed per video so playback continues
+            // smoothly as the cell slides between center and side positions.
+            key={film.videoId}
             className="frame-video"
-            src={videoSrc(film, muted)}
+            src={videoSrc(film, true)}
             title={film.title}
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             loading="eager"
@@ -151,7 +153,11 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
       setSnapFloat((prev) => {
         const raw = target - prev;
         const wrapped = ((raw % N) + N + N / 2) % N - N / 2;
-        return prev + wrapped * 0.18;
+        // Gentler lerp than the prototype's 0.18 — each step's slide stays
+        // alive long enough to overlap the next step at fast cadence, which
+        // turns the discrete "step ... pause ... step" rhythm into one
+        // continuous glide.
+        return prev + wrapped * 0.09;
       });
       setActiveIdx(((target % N) + N) % N);
       raf = requestAnimationFrame(tick);

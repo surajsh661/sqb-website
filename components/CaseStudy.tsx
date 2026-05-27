@@ -14,16 +14,23 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const playerRef = useRef<any>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const [audioOn, setAudioOn] = useState(false);
+  // Audio ON by default — the user's click on the hero counts as a fresh
+  // gesture, so browsers normally allow unmuted autoplay through this path.
+  const [audioOn, setAudioOn] = useState(true);
+  const [paused, setPaused] = useState(false);
 
+  // Reset audio + scroll-to-top when opening / switching films
   useEffect(() => {
     if (!open || !film) return;
-    setAudioOn(false);
+    setAudioOn(true);
+    setPaused(false);
     requestAnimationFrame(() => {
       if (rootRef.current) rootRef.current.scrollTop = 0;
     });
   }, [open, film?.id]);
 
+  // Init the Vimeo SDK ref so the Mute / Play toggles can drive the player
+  // without reloading the iframe.
   useEffect(() => {
     if (!open || !film || film.type !== 'vm') return;
     const w = window as any;
@@ -34,24 +41,51 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
       try { playerRef.current = new w.Vimeo.Player(f); } catch {}
     }, 120);
     return () => { clearTimeout(t); playerRef.current = null; };
-  }, [open, film?.id, audioOn]);
+  }, [open, film?.id]);
 
-  const toggleMute = () => {
+  const toggleMute = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (!film) return;
     const next = !audioOn;
-    if (next) {
-      setAudioOn(true);
-    } else {
-      if (film.type === 'vm' && playerRef.current) {
-        playerRef.current.setMuted(true).catch(() => {});
-      } else if (film.type === 'yt') {
-        iframeRef.current?.contentWindow?.postMessage(
-          JSON.stringify({ event: 'command', func: 'mute', args: [] }),
-          '*',
-        );
-      }
-      setAudioOn(false);
+    if (film.type === 'vm' && playerRef.current) {
+      playerRef.current.setMuted(!next).catch(() => {});
+      setAudioOn(next);
+      return;
     }
+    if (film.type === 'yt') {
+      const f = iframeRef.current;
+      f?.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func: next ? 'unMute' : 'mute', args: [] }),
+        '*',
+      );
+      setAudioOn(next);
+      return;
+    }
+    // Drive can't be controlled via API — flip state for UI only.
+    setAudioOn(next);
+  };
+
+  const togglePlayPause = () => {
+    if (!film) return;
+    const goingToPause = !paused;
+    if (film.type === 'vm' && playerRef.current) {
+      if (goingToPause) playerRef.current.pause().catch(() => {});
+      else playerRef.current.play().catch(() => {});
+    } else if (film.type === 'yt') {
+      const f = iframeRef.current;
+      f?.contentWindow?.postMessage(
+        JSON.stringify({
+          event: 'command',
+          func: goingToPause ? 'pauseVideo' : 'playVideo',
+          args: [],
+        }),
+        '*',
+      );
+    } else {
+      // Drive previews don't expose play/pause via postMessage.
+      return;
+    }
+    setPaused(goingToPause);
   };
 
   if (!film) return null;
@@ -68,6 +102,7 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
     src = `https://www.youtube-nocookie.com/embed/${film.videoId}?autoplay=1&mute=${audioOn ? 0 : 1}&loop=1&playlist=${film.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${origin}`;
   }
   const isVertical = (film.genres || []).includes('vertical') || film.aspect === '9:16';
+  const canControl = film.type !== 'gd';
 
   return (
     <div
@@ -83,31 +118,48 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
         <div className="bg">
           <iframe
             ref={iframeRef}
-            key={film.id + '-' + (audioOn ? 'on' : 'off')}
+            key={film.id}
             src={src}
             title={film.title}
             allow="autoplay; encrypted-media; picture-in-picture"
           />
-          {film.type !== 'gd' && (
-            <button
-              className={'case-mute' + (!audioOn ? ' pulse' : ' on')}
-              onClick={toggleMute}
-              aria-label={audioOn ? 'Mute' : 'Unmute'}
-            >
-              {!audioOn ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                  <line x1="23" y1="9" x2="17" y2="15" />
-                  <line x1="17" y1="9" x2="23" y2="15" />
-                </svg>
-              ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
-                </svg>
-              )}
-              <span className="cm-label">{audioOn ? 'SOUND ON' : 'TAP FOR SOUND'}</span>
-            </button>
+          {canControl && (
+            <>
+              {/* Invisible click capture for play/pause toggle. */}
+              <button
+                className="case-tap"
+                onClick={togglePlayPause}
+                aria-label={paused ? 'Play' : 'Pause'}
+              >
+                {paused && (
+                  <span className="case-tap-glyph" aria-hidden="true">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+
+              <button
+                className={'case-mute' + (audioOn ? ' on' : '')}
+                onClick={toggleMute}
+                aria-label={audioOn ? 'Mute' : 'Unmute'}
+                title={audioOn ? 'Mute' : 'Unmute'}
+              >
+                {audioOn ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <line x1="23" y1="9" x2="17" y2="15" />
+                    <line x1="17" y1="9" x2="23" y2="15" />
+                  </svg>
+                )}
+              </button>
+            </>
           )}
         </div>
         <div className="content">
