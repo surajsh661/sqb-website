@@ -13,28 +13,36 @@ const srcFor = (b: BTS) =>
 
 export default function BTSPreview() {
   const items = SQB_BTS;
-  const renderCard = (b: BTS, key: string) => (
-    <div className="bts-card" key={key}>
-      <div className="bts-frame">
-        <iframe
-          src={srcFor(b)}
-          title={b.title}
-          allow="autoplay; encrypted-media"
-          loading="lazy"
-          /* scrolling="no" is the only reliable way to stop an Instagram embed
-             from scrolling its own content vertically and stealing page-scroll
-             gestures. Deprecated in HTML5 but still respected by every major
-             browser. */
-          scrolling="no"
-        />
-        <div className="bts-vignette" />
+  const renderCard = (b: BTS, key: string) => {
+    const isIg = b.type === 'ig';
+    return (
+      <div className="bts-card" key={key}>
+        <div className="bts-frame">
+          <iframe
+            src={srcFor(b)}
+            title={b.title}
+            allow="autoplay; encrypted-media"
+            loading="lazy"
+            /* scrolling="no" stops the embed from scrolling its own content
+               vertically and stealing page-scroll. Deprecated but every browser
+               still honours it. */
+            scrolling="no"
+            /* For Instagram only: a sandbox that allows the embed's scripts +
+               same-origin requests + presentation API (fullscreen video) but
+               explicitly does NOT include allow-top-navigation / allow-popups,
+               so the "View on Instagram" link inside the widget can't kick the
+               whole page over to instagram.com. */
+            sandbox={isIg ? 'allow-scripts allow-same-origin allow-presentation' : undefined}
+          />
+          <div className="bts-vignette" />
+        </div>
+        <div className="bts-meta">
+          <span className="bts-tag">{b.tag}</span>
+          <div className="bts-title">{b.title}</div>
+        </div>
       </div>
-      <div className="bts-meta">
-        <span className="bts-tag">{b.tag}</span>
-        <div className="bts-title">{b.title}</div>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <section className="bts" data-screen-label="09 BTS">
