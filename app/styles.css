@@ -1139,9 +1139,14 @@ body.no-grain::before { display: none; }
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   border: 0;
-  /* Block scroll/swipe inside the IG embed — see note in the other
-     .bts-frame iframe rule below. */
-  pointer-events: none;
+}
+/* Same transparent click-blocker pattern as the .bts-frame::after rule in
+   the other (later) ruleset — keeps the embed running but stops the user
+   from interacting with it. */
+.bts-frame::after {
+  content: ""; position: absolute; inset: 0; z-index: 5;
+  pointer-events: auto;
+  background: transparent;
 }
 .bts-vignette {
   position: absolute; inset: 0; pointer-events: none;
@@ -1388,10 +1393,15 @@ video.frame-video {
   position: absolute; inset: -1px;
   width: calc(100% + 2px); height: calc(100% + 2px);
   border: 0;
-  /* Block pointer interaction with the Instagram embed — its internal
-     swipe / scroll controls were stealing page-scroll gestures. Autoplay
-     still happens because the embed kicks it off itself. */
-  pointer-events: none;
+}
+/* Transparent overlay that sits on top of each BTS iframe to absorb user
+   gestures (swipe, scroll, click). The iframe itself stays interactive so
+   the Instagram widget keeps autoplaying its own video — we just stop
+   in-embed scroll from hijacking page-scroll on mobile. */
+.bts-frame::after {
+  content: ""; position: absolute; inset: 0; z-index: 5;
+  pointer-events: auto;
+  background: transparent;
 }
 .bts-vignette {
   position: absolute; inset: 0; pointer-events: none;
