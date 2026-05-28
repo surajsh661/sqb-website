@@ -1,71 +1,17 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
 import { SQB_TEAM } from '@/lib/data';
 
-const founderRadius = 130;
-const founderPositions = [
-  { cx: -founderRadius - 8, cy: 0, size: 240 },
-  { cx: founderRadius + 8, cy: 0, size: 240 },
-];
-
-const teamPositions = [
-  { cx: -480, cy: -180, size: 110 },
-  { cx: -360, cy: 170, size: 92 },
-  { cx: -560, cy: 60, size: 78 },
-  { cx: -240, cy: -240, size: 86 },
-  { cx: 240, cy: -240, size: 86 },
-  { cx: 360, cy: 170, size: 92 },
-  { cx: 560, cy: 60, size: 78 },
-  { cx: 480, cy: -180, size: 110 },
-];
-
-const ENGINE_REACH = 380;
+// Bios live here for now — easy to edit. Energetic / young / positive / bold.
+// Replace with the real LinkedIn-sourced copy when you're ready.
+const BIOS: Record<string, string> = {
+  f1:
+    "Founder, director, writer — Suraj is the lens behind every S’QB film. He’s directed national TVCs for Muthoot Finance, PhysicsWallah, Sunstone × LSG and T-Series; shot a ten-episode 8.3-IMDb web series (Cocoon) end-to-end; and screenplay-visualised the 22-episode Sunheri Soch AI cinema series for the country’s largest gold-finance brand. Filmmaker first, AI-obsessed second. Believes the story is the budget — and that the best frames are the ones nobody else thought to shoot.",
+  f2:
+    "Founder, producer, head of operations — Shubham runs the production engine that turns S’QB scripts into shoots into final cuts. From IPL broadcasts with LSG to a nine-month docu-cinema run with RedFM, every shoot day, render queue and delivery deadline goes through him. Knows how to wrangle a unit at 6am, a vendor at midnight, and a brand timeline that should’ve been impossible last week. The studio ships because Shubham makes sure nothing falls.",
+};
 
 export default function Engine() {
-  const stageRef = useRef<HTMLDivElement | null>(null);
-  const [m, setM] = useState({ x: 0.5, y: 0.5 });
-  const team = SQB_TEAM.team;
-
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-    let raf: number;
-    const target = { x: 0.5, y: 0.5 };
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      target.x = (e.clientX - r.left) / r.width;
-      target.y = (e.clientY - r.top) / r.height;
-    };
-    const onLeave = () => { target.x = 0.5; target.y = 0.5; };
-    el.addEventListener('mousemove', onMove);
-    el.addEventListener('mouseleave', onLeave);
-    const tick = () => {
-      setM((prev) => ({
-        x: prev.x + (target.x - prev.x) * 0.08,
-        y: prev.y + (target.y - prev.y) * 0.08,
-      }));
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => {
-      el.removeEventListener('mousemove', onMove);
-      el.removeEventListener('mouseleave', onLeave);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  const reactive = (cx: number, cy: number) => {
-    const mx = (m.x - 0.5) * 1200;
-    const my = (m.y - 0.5) * 600;
-    const dx = mx - cx, dy = my - cy;
-    const d = Math.sqrt(dx * dx + dy * dy);
-    const reach = ENGINE_REACH;
-    const closeness = Math.max(0, 1 - d / reach);
-    const scale = 1 + closeness * 0.55;
-    const tx = -dx * closeness * 0.08;
-    const ty = -dy * closeness * 0.08;
-    return { transform: `translate(calc(-50% + ${cx + tx}px), calc(-50% + ${cy + ty}px)) scale(${scale})` };
-  };
+  const [suraj, shubham] = SQB_TEAM.founders;
 
   return (
     <section className="engine" data-screen-label="07 The Engine">
@@ -74,42 +20,34 @@ export default function Engine() {
           <span className="num">07</span> <span>THE PEOPLE</span>
         </div>
         <h2>THE <em>ENGINE</em></h2>
-        <div className="sub">FILMMAKERS FIRST · AI OPERATORS SECOND</div>
+        <div className="sub">FOUNDERS · FILMMAKERS FIRST · AI OPERATORS SECOND</div>
       </div>
-      <div className="stage" ref={stageRef}>
-        {founderPositions.map((p, i) => {
-          const f = SQB_TEAM.founders[i];
-          return (
-            <div
-              key={'f' + i}
-              className="circle founder"
-              style={{ width: p.size, height: p.size, top: '50%', left: '50%', ...reactive(p.cx, p.cy) }}
-            >
-              <div className="ph">
-                <span className="role">{f.role}</span>
-                {f.name}
-              </div>
-            </div>
-          );
-        })}
-        {teamPositions.map((p, i) => (
-          <div
-            key={'t' + i}
-            className="circle"
-            style={{ width: p.size, height: p.size, top: '50%', left: '50%', ...reactive(p.cx, p.cy) }}
-          >
-            <div className="ph">
-              <span className="role">{team[i]?.name || 'TEAM'}</span>
-              IMG
-            </div>
-          </div>
-        ))}
+
+      <div className="engine-row">
+        <div className="founder-bio left">
+          <p>{BIOS[suraj.id]}</p>
+        </div>
+
+        <div className="founder-portrait">
+          <span className="fp-role">{suraj.role}</span>
+          <span className="fp-name">{suraj.name}</span>
+        </div>
+
+        <div className="founder-portrait">
+          <span className="fp-role">{shubham.role}</span>
+          <span className="fp-name">{shubham.name}</span>
+        </div>
+
+        <div className="founder-bio right">
+          <p>{BIOS[shubham.id]}</p>
+        </div>
       </div>
+
       <div className="footnote">
         <div className="rule" />
         <p>
-          Two founders. A small core of operators, writers, editors and AI supervisors who can hold a
-          camera at 6am and a render queue at midnight.
+          Two founders. A tight core of operators, writers, editors and AI supervisors who can hold
+          a camera at 6am and a render queue at midnight.
         </p>
       </div>
     </section>

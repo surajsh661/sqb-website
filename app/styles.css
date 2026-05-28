@@ -490,41 +490,72 @@ body.no-grain::before { display: none; }
   color: var(--fg-dim); margin-top: 14px;
 }
 
-.engine .stage {
-  position: relative; height: 620px;
-  display: flex; align-items: center; justify-content: center;
+/* Engine — two founders centred, bios on the outside curving around each
+   circle via CSS shape-outside on a phantom floated element. */
+.engine-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 40px 60px 60px;
+  max-width: 1500px;
+  margin: 0 auto;
 }
-.circle {
-  position: absolute; border-radius: 50%;
-  background: var(--ink-2); overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid var(--rule);
-  transition: transform .45s cubic-bezier(.22,1,.36,1),
-              filter .45s, box-shadow .45s, border-color .45s;
-  will-change: transform;
-}
-.circle .circle-img {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; z-index: 1;
-}
-.circle .circle-img + .ph { z-index: 2; }
-.circle:has(.circle-img) .ph {
-  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.7));
-  position: absolute; inset: 0; padding-top: 70%; color: #fff;
-}
-.circle .ph {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--fg-dim); text-align: center;
-  padding: 0 10px;
-}
-.circle .ph .role { color: var(--accent); display: block; margin-bottom: 4px; }
-.circle.founder {
+.founder-portrait {
+  flex-shrink: 0;
+  width: 300px; height: 300px;
   border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--ink-2);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 0 24px;
   box-shadow: 0 0 0 1px var(--bg) inset, 0 30px 80px rgba(0,0,0,0.4);
+  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s;
 }
-.circle.founder .ph { font-size: 13px; }
-.circle.founder .ph .role { font-size: 10px; }
+.founder-portrait:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 0 1px var(--bg) inset, 0 40px 100px rgba(245,197,24,0.18);
+}
+.founder-portrait .fp-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.founder-portrait .fp-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 32px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--fg);
+}
+
+.founder-bio {
+  flex: 1 1 0;
+  max-width: 420px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; line-height: 1.7;
+  color: var(--fg-dim);
+}
+.founder-bio p { margin: 0; }
+/* The float here doesn't render — it's a phantom shape that pushes the
+   surrounding text to curve around it. circle(50%) makes the wrap area a
+   circle the size of the floated box; shape-margin gives breathing room. */
+.founder-bio.left p::before {
+  content: "";
+  float: right;
+  width: 260px; height: 320px;
+  shape-outside: circle(50%);
+  shape-margin: 28px;
+}
+.founder-bio.right p::before {
+  content: "";
+  float: left;
+  width: 260px; height: 320px;
+  shape-outside: circle(50%);
+  shape-margin: 28px;
+}
+.founder-bio.right p { text-align: right; }
 
 .engine .footnote {
   text-align: center; margin-top: 100px;
@@ -1641,12 +1672,26 @@ video.frame-video {
   .cat { padding: 22px 0; border-bottom: 1px solid var(--rule); border-right: 0; }
   .cat .name { font-size: clamp(28px, 9vw, 52px); }
 
-  /* Engine — scale the absolute-positioned stage down to fit narrow screens */
-  .engine .stage {
-    transform: scale(0.55);
-    transform-origin: center top;
-    height: 360px;
+  /* Engine — stack founders + bios vertically on tablet/phone, drop the
+     shape-outside curve (the wrap doesn't read well below ~720px wide). */
+  .engine-row {
+    flex-direction: column; gap: 28px; padding: 30px 18px 50px;
   }
+  .founder-portrait { width: 220px; height: 220px; }
+  .founder-portrait .fp-name { font-size: 26px; }
+  .founder-bio {
+    max-width: 100%; text-align: left;
+    font-size: 15px;
+  }
+  .founder-bio.left p::before,
+  .founder-bio.right p::before { display: none; }
+  .founder-bio.right p { text-align: left; }
+  /* Mobile reading order: Suraj circle → Suraj bio → Shubham circle → Shubham bio */
+  .engine-row .founder-portrait:nth-of-type(1) { order: 1; }
+  .engine-row .founder-bio.left { order: 2; }
+  .engine-row .founder-portrait:nth-of-type(2) { order: 3; }
+  .engine-row .founder-bio.right { order: 4; }
+
   .engine .heading h2 { font-size: clamp(48px, 12vw, 80px); }
   .engine .footnote p { font-size: 14px; }
 
@@ -1715,8 +1760,9 @@ video.frame-video {
   /* Manifesto */
   .manifesto h2 { font-size: clamp(32px, 11vw, 60px); }
 
-  /* Engine — further scale down */
-  .engine .stage { transform: scale(0.45); height: 300px; }
+  /* Engine — slightly smaller portrait on phone */
+  .founder-portrait { width: 190px; height: 190px; }
+  .founder-portrait .fp-name { font-size: 22px; }
 
   /* Footer — single column */
   .footer-grid { grid-template-columns: 1fr; }
