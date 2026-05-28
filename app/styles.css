@@ -490,20 +490,30 @@ body.no-grain::before { display: none; }
   color: var(--fg-dim); margin-top: 14px;
 }
 
-/* Engine — two founders centred, bios on the outside curving around each
-   circle via CSS shape-outside on a phantom floated element. */
+/* Engine — two founders centred, bios filling the outer halves curving
+   around each circle via CSS shape-outside on a phantom floated element. */
 .engine-row {
-  display: flex;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-content: center;
-  gap: 24px;
-  padding: 40px 60px 60px;
   max-width: 1500px;
   margin: 0 auto;
+  padding: 50px 40px 70px;
+  min-height: 440px;
+}
+.founder-pair {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 18px;
+  z-index: 2;
+  pointer-events: none;
 }
 .founder-portrait {
-  flex-shrink: 0;
-  width: 300px; height: 300px;
+  pointer-events: auto;
+  width: 320px; height: 320px;
   border: 2px solid var(--accent);
   border-radius: 50%;
   background: var(--ink-2);
@@ -531,29 +541,30 @@ body.no-grain::before { display: none; }
 }
 
 .founder-bio {
-  flex: 1 1 0;
-  max-width: 420px;
   font-family: 'Inter', sans-serif;
-  font-size: 14px; line-height: 1.7;
+  font-size: 14.5px; line-height: 1.7;
   color: var(--fg-dim);
 }
+.founder-bio.left { grid-column: 1; padding-left: 8px; padding-right: 0; }
+.founder-bio.right { grid-column: 2; padding-left: 0; padding-right: 8px; }
 .founder-bio p { margin: 0; }
-/* The float here doesn't render — it's a phantom shape that pushes the
-   surrounding text to curve around it. circle(50%) makes the wrap area a
-   circle the size of the floated box; shape-margin gives breathing room. */
+/* The float doesn't render anything — it's a phantom shape sized like the
+   founder portrait that pushes the bio text to wrap around its left/right
+   curve. Floated to the right (or left, on the mirrored side) so the
+   resulting curve in the text physically aligns with the founder circle. */
 .founder-bio.left p::before {
   content: "";
   float: right;
-  width: 260px; height: 320px;
+  width: 320px; height: 320px;
   shape-outside: circle(50%);
-  shape-margin: 28px;
+  shape-margin: 26px;
 }
 .founder-bio.right p::before {
   content: "";
   float: left;
-  width: 260px; height: 320px;
+  width: 320px; height: 320px;
   shape-outside: circle(50%);
-  shape-margin: 28px;
+  shape-margin: 26px;
 }
 .founder-bio.right p { text-align: right; }
 

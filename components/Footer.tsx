@@ -29,20 +29,50 @@ export default function Footer() {
         </div>
         <div>
           <h4>FOUNDERS</h4>
-          <a>SURAJ</a>
-          <a>SHUBHAM SHAH</a>
+          <a
+            href="https://www.linkedin.com/in/suraj-sharma-91b004195/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            SURAJ ↗
+          </a>
+          <a
+            href="https://www.linkedin.com/in/shubham-shah-a9629b1b4/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            SHUBHAM SHAH ↗
+          </a>
         </div>
         <div>
           <h4>CONTACT</h4>
-          <a>+91 90130 82883</a>
-          <a>+91 72178 17383</a>
-          <a>HELLO@SQBPICTURES.COM</a>
+          <a href="tel:+919013082883">+91 90130 82883</a>
+          <a href="tel:+917217817383">+91 72178 17383</a>
+          <a href="mailto:hello@sqbpictures.com">HELLO@SQBPICTURES.COM</a>
         </div>
         <div>
           <h4>FOLLOW</h4>
-          <a>INSTAGRAM ↗</a>
-          <a>YOUTUBE ↗</a>
-          <a>LINKEDIN ↗</a>
+          <a
+            href="https://www.instagram.com/sqbpictures/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            INSTAGRAM ↗
+          </a>
+          <a
+            href="https://www.youtube.com/@sqbpictures"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            YOUTUBE ↗
+          </a>
+          <a
+            href="https://www.linkedin.com/company/sqbpictures/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LINKEDIN ↗
+          </a>
         </div>
       </div>
       <div className="footer-bottom">
