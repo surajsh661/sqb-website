@@ -13,6 +13,7 @@ import TicketMenu from '@/components/TicketMenu';
 import CaseStudy from '@/components/CaseStudy';
 import ClientLogos from '@/components/ClientLogos';
 import CountUp from '@/components/CountUp';
+import ManifestoHeadline from '@/components/ManifestoHeadline';
 import { SQB_FILMS, SQB_HERO_FILMS } from '@/lib/data';
 import { setupReveal } from '@/lib/video-utils';
 import type { Film, Genre } from '@/lib/types';
@@ -73,11 +74,7 @@ export default function HomePage() {
 
       <section className="section manifesto" data-screen-label="02 Manifesto">
         <div className="eyebrow"><span className="num">02</span> <span>WHAT WE BELIEVE</span></div>
-        <h2>
-          We love <em>filmmaking</em> first <br />
-          and <span className="ai">AI</span> second. <br />
-          And we&apos;re at the <em>cutting edge</em> of both.
-        </h2>
+        <ManifestoHeadline />
         <p>
           S&apos;QB Pictures is a Delhi–Mumbai studio building India&apos;s most ambitious AI-enabled
           films, ads and shows for the country&apos;s biggest brands. Story, performance and craft
