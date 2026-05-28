@@ -1139,14 +1139,11 @@ body.no-grain::before { display: none; }
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   border: 0;
-}
-/* Same transparent click-blocker pattern as the .bts-frame::after rule in
-   the other (later) ruleset — keeps the embed running but stops the user
-   from interacting with it. */
-.bts-frame::after {
-  content: ""; position: absolute; inset: 0; z-index: 5;
-  pointer-events: auto;
-  background: transparent;
+  /* Paired with scrolling="no" on the iframe element: tells the browser
+     to treat vertical pan gestures on this iframe as page-scroll instead
+     of letting the embed's internal scroll capture them. Iframe stays
+     interactive so taps still trigger playback. */
+  touch-action: pan-y;
 }
 .bts-vignette {
   position: absolute; inset: 0; pointer-events: none;
@@ -1393,15 +1390,8 @@ video.frame-video {
   position: absolute; inset: -1px;
   width: calc(100% + 2px); height: calc(100% + 2px);
   border: 0;
-}
-/* Transparent overlay that sits on top of each BTS iframe to absorb user
-   gestures (swipe, scroll, click). The iframe itself stays interactive so
-   the Instagram widget keeps autoplaying its own video — we just stop
-   in-embed scroll from hijacking page-scroll on mobile. */
-.bts-frame::after {
-  content: ""; position: absolute; inset: 0; z-index: 5;
-  pointer-events: auto;
-  background: transparent;
+  /* See note on the matching rule earlier in the file. */
+  touch-action: pan-y;
 }
 .bts-vignette {
   position: absolute; inset: 0; pointer-events: none;

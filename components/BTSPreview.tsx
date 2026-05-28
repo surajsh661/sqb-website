@@ -16,7 +16,17 @@ export default function BTSPreview() {
   const renderCard = (b: BTS, key: string) => (
     <div className="bts-card" key={key}>
       <div className="bts-frame">
-        <iframe src={srcFor(b)} title={b.title} allow="autoplay; encrypted-media" loading="lazy" />
+        <iframe
+          src={srcFor(b)}
+          title={b.title}
+          allow="autoplay; encrypted-media"
+          loading="lazy"
+          /* scrolling="no" is the only reliable way to stop an Instagram embed
+             from scrolling its own content vertically and stealing page-scroll
+             gestures. Deprecated in HTML5 but still respected by every major
+             browser. */
+          scrolling="no"
+        />
         <div className="bts-vignette" />
       </div>
       <div className="bts-meta">
