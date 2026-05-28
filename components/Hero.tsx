@@ -3,12 +3,24 @@ import { useEffect, useRef, useState } from 'react';
 import HeroThumb from './HeroThumb';
 import type { Film } from '@/lib/types';
 
+// Map a videoId to a deterministic-but-arbitrary start offset (5–30 seconds).
+// We hash the id rather than calling Math.random() so the URL stays stable
+// across re-renders — otherwise React would tear down and reload the iframe
+// every time, which would yank the video back to t=0.
+function startOffsetSeconds(videoId: string): number {
+  let h = 0;
+  for (let i = 0; i < videoId.length; i++) h = (h << 5) - h + videoId.charCodeAt(i);
+  return 5 + (Math.abs(h) % 26); // 5..30 inclusive
+}
+
 function videoSrc(film: Film) {
+  const t = startOffsetSeconds(film.videoId);
   if (film.type === 'vm') {
-    return `https://player.vimeo.com/video/${film.videoId}?background=1&autoplay=1&loop=1&muted=1&controls=0&dnt=1&autopause=0&playsinline=1&transparent=0`;
+    // Vimeo respects #t=Ns even in background mode and seeks immediately on load.
+    return `https://player.vimeo.com/video/${film.videoId}?background=1&autoplay=1&loop=1&muted=1&controls=0&dnt=1&autopause=0&playsinline=1&transparent=0#t=${t}s`;
   }
   const origin = typeof window !== 'undefined' ? encodeURIComponent(window.location.origin) : '';
-  return `https://www.youtube-nocookie.com/embed/${film.videoId}?autoplay=1&mute=1&loop=1&playlist=${film.videoId}&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1&origin=${origin}`;
+  return `https://www.youtube-nocookie.com/embed/${film.videoId}?autoplay=1&mute=1&loop=1&playlist=${film.videoId}&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1&origin=${origin}&start=${t}`;
 }
 
 const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 2;
