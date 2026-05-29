@@ -118,25 +118,29 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const wrapped = wrapDelta(i - float, N);
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
-        // Flat coplanar cells, no scale shrink. Even a 1% scale drop on
-        // the side cells opens a thin dark stripe at the seam between
-        // cells; keeping scale=1 everywhere closes that completely.
-        const rot = 0;
+        // Kaide-style cinematic side panels:
+        //  - Strong rotateY tilt (up to 14°) so the side cards angle into
+        //    3D space, pivoting about their INNER edge — the edge touching
+        //    the centre cell stays planted at the seam, the outer edge
+        //    swings backward into the scene.
+        //  - Blur + brightness drop so the side cards read as out-of-focus
+        //    foreground; only the centre cell is in true focus.
+        //  - Scale stays 1.0 — any shrink would re-open a sliver at the
+        //    seam; the recede effect is sold by perspective alone.
+        const rot = Math.max(-14, Math.min(14, -dir * Math.min(dist, 1.6) * 10));
         const scale = 1;
-        // Very light atmospheric drift on side cells. Side cards should
-        // still read clearly — just slightly receded.
-        const blur = Math.min(dist * 2, 3);
+        const blur = Math.min(dist * 3, 5);
         const sat = 1 + Math.min(dist, 1) * 0.10;
-        const bright = 1 - Math.min(dist, 1.5) * 0.10;
-        const opacity = dist < 0.05 ? 1 : Math.max(0.75, 1 - dist * 0.15);
+        const bright = 1 - Math.min(dist, 1.5) * 0.18;
+        const opacity = dist < 0.05 ? 1 : Math.max(0.7, 1 - dist * 0.18);
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // Cells touch exactly edge-to-edge (factor 1.0). No gap, no
-        // overlap — adjacent video boxes share a seam at the rounded
-        // corner. Combined with rot=0 this guarantees clean tiling.
-        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
-        cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
+        // Slots pack with a 1% inward bias so the rounded corners of
+        // adjacent cells overlap and any wedge gap left by the rotateY
+        // pivot is hidden.
+        slot.style.transform = `translate3d(${wrapped * w * 0.99 - w / 2}px, -50%, 0)`;
+        cell.style.transform = `perspective(1100px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
         cell.style.opacity = String(opacity);
