@@ -27,16 +27,20 @@ function videoSrc(film: Film) {
 // slot N-1 are neighbours (the loop wraps with no seam).
 const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 2;
 
-// --- 3D ring (cylinder) geometry --------------------------------------------
-// A genuine ring of films. The viewer sits at the centre and looks out at the
-// front-facing film. Each cell is placed on the ring surface with
-// `rotateY(theta) translateZ(R)`, and the whole track is pulled back by
-// `translateZ(-R)` so the front cell lands flat and sharp on the screen plane.
-// Neighbours rotate away in 3D (perspective from .hero-zone), so they pick up a
-// real slant, perspective foreshortening (they SCALE DOWN), a progressive blur
-// and a brightness/saturation falloff as they recede around the drum.
-const ANGLE = 44; // degrees between adjacent films around the ring
-const RADIUS_FACTOR = 0.72; // ring radius as a fraction of the cell width
+// --- Barrel carousel geometry -----------------------------------------------
+// The front film is flat, sharp and large. Its neighbours are large too — they
+// sit on the drum wall beside it and TILT in 3D (rotateY) toward the viewer,
+// so you clearly see them wrapping away rather than a thin sliver at the edge.
+// They barely recede in depth (so they stay close to full size) and pick up a
+// gentle blur / dim as they roll off. perspective comes from .hero-zone.
+//
+// For a film `d` slots from centre:
+//   x   =  d · cellW · STEP            → laid out side-by-side, just touching
+//   rot = -d · ROT                     → tilts on the drum wall toward viewer
+//   z   = -(0.07·|d| + 0.05·d²)·cellW  → near films barely recede (full size);
+//                                         far films curve back into the drum
+const ROT = 34; // degrees of tilt per film across the drum wall
+const STEP = 0.84; // horizontal spacing as a fraction of cell width (staves touch)
 
 // Easing time-constant (seconds). snapFloat closes ~1-1/e of the gap to the
 // target every TAU; using 1 - exp(-dt/TAU) makes the glide frame-rate
@@ -105,14 +109,14 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => mq.removeEventListener('change', set);
   }, []);
 
-  // Centre cell ~85% of viewport at 21:9 cinemascope. Side cells curve away
-  // around the ring so the centre video fills the eye.
+  // Centre film ~62% of width on desktop so its neighbours stay big and visible
+  // tilting away on the drum wall. Mobile: near full width (no room for sides).
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.98 : 0.85;
+  const widthFraction = containerW < 700 ? 0.94 : 0.62;
   const cellW = Math.min(
     containerW * widthFraction,
-    (containerH * 0.86 * ASPECT_W) / ASPECT_H,
+    (containerH * 0.82 * ASPECT_W) / ASPECT_H,
   );
   const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;
@@ -144,13 +148,11 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     const applyTransforms = () => {
       const float = snapFloat.current;
       const w = cellWRef.current;
-      const R = w * RADIUS_FACTOR;
       const track = trackRef.current;
       const reduce = reducedMotion.current;
 
-      // Pull the whole drum back by the ring radius so the front cell lands
-      // flat on the screen plane (z = 0) at neutral size.
-      if (track) track.style.transform = reduce ? 'translateZ(0)' : `translateZ(${(-R).toFixed(1)}px)`;
+      // The track stays on the screen plane; each cell places itself.
+      if (track) track.style.transform = 'translateZ(0)';
 
       for (let i = 0; i < N; i++) {
         const slot = cellSlotsRef.current[i];
@@ -170,28 +172,30 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           continue;
         }
 
-        // Ring placement: rotateY swings the cell to its angular slot,
-        // translateZ pushes it out to the ring surface. With the track's
-        // translateZ(-R) the front film sits flat & sharp while neighbours
-        // rotate away, foreshorten (scale down) and recede.
-        const theta = wd * ANGLE;
-        slot.style.transform = `rotateY(${theta.toFixed(2)}deg) translateZ(${R.toFixed(1)}px)`;
+        // Barrel placement: equal-size staves laid side-by-side; the front
+        // film is flat while neighbours tilt on the drum wall toward the
+        // viewer and barely recede (so they stay large and clearly visible).
+        const x = wd * w * STEP;
+        const z = -(Math.abs(wd) * 0.07 + wd * wd * 0.05) * w;
+        const rot = -wd * ROT;
+        slot.style.transform =
+          `translate3d(${x.toFixed(2)}px, 0, ${z.toFixed(2)}px) rotateY(${rot.toFixed(2)}deg)`;
 
-        // Only the front film is in true focus. Neighbours defocus, dim and
-        // desaturate-shift as they wrap around the drum. Blur is the most
-        // expensive painted property, so apply it ONLY to non-centre cells and
-        // clamp it; round every written value to 2dp to avoid sub-pixel
-        // repaints on micro-moves.
+        // Only the front film is in true focus. Neighbours defocus and dim
+        // gently as they roll off — but stay clearly visible (not dark slivers).
+        // Blur is the most expensive painted property, so apply it ONLY to
+        // non-centre cells and clamp it; round every written value to 2dp to
+        // avoid sub-pixel repaints on micro-moves.
         if (dist < 0.06) {
           cell.style.filter = 'none';
           cell.style.opacity = '1';
         } else {
-          const blur = Math.min(dist * 4.5, 10);
-          const bright = 1 - Math.min(dist, 2) * 0.16;
-          const sat = 1 + Math.min(dist, 1) * 0.1;
+          const blur = Math.min(dist * 2.6, 7);
+          const bright = Math.max(0.5, 1 - dist * 0.24);
+          const sat = 1 + Math.min(dist, 1) * 0.06;
           cell.style.filter =
             `blur(${blur.toFixed(2)}px) brightness(${bright.toFixed(2)}) saturate(${sat.toFixed(2)})`;
-          cell.style.opacity = Math.max(0, 1 - Math.max(0, dist - 0.15) * 0.42).toFixed(2);
+          cell.style.opacity = Math.max(0, 1 - Math.max(0, dist - 2) * 0.7).toFixed(2);
         }
 
         if (dist < 0.5) cell.classList.add('center');
