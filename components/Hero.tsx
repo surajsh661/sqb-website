@@ -35,8 +35,16 @@ const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 
 // blur as they recede around the drum. Because we rebuild each cell's angle
 // from wrapDelta() every frame on the shortest modular path, stepping wraps
 // around the ring seamlessly with no flat seam.
-const ANGLE = 44; // degrees between adjacent films around the ring
-const RADIUS_FACTOR = 0.72; // ring radius as a fraction of the cell width
+// For adjacent cells to sit edge-to-edge on the ring (no gap, no forward
+// overlap) the chord between their centres must equal the cell width:
+//   chord = 2·R·sin(ANGLE/2) = cellW  →  R = cellW / (2·sin(ANGLE/2)).
+// At ANGLE = 70° that gives RADIUS_FACTOR ≈ 0.87; we run a hair under so the
+// front film always occludes its neighbours cleanly. A steep ANGLE turns the
+// neighbours nearly edge-on, so they read as dark blurred slivers at the
+// screen edges while the front film dominates the frame — the look from the
+// reference site.
+const ANGLE = 70; // degrees between adjacent films around the ring
+const RADIUS_FACTOR = 0.85; // ring radius as a fraction of the cell width
 
 interface Props {
   films: Film[];
@@ -71,18 +79,25 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   const playCenterRef = useRef(0);
 
   // Container size — drives cell width. Re-renders only on resize.
-  const [containerW, setContainerW] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1600,
-  );
-  const [containerH, setContainerH] = useState(
-    typeof window !== 'undefined' ? window.innerHeight : 900,
-  );
+  //
+  // We MUST seed identical values on the server and on the client's first
+  // render, otherwise React hydration leaves a stale value behind. The cell
+  // box width is written as an inline style during SSR; React does not patch
+  // inline-style mismatches on hydration, so if the server picked a different
+  // width than the client the cell box would stay frozen at the server size
+  // while the ring radius (recomputed every frame from the real width)
+  // disagrees — the cell renders far too wide and overflows. Seeding a fixed
+  // default and syncing to the real viewport in the mount effect guarantees a
+  // post-hydration state change that patches the box to match the geometry.
+  const [containerW, setContainerW] = useState(1280);
+  const [containerH, setContainerH] = useState(720);
 
   useEffect(() => {
     const onResize = () => {
       setContainerW(window.innerWidth);
       setContainerH(window.innerHeight);
     };
+    onResize(); // sync to the real viewport once mounted (fixes hydration size)
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
@@ -91,7 +106,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   // away around the ring so the centre video fills the eye.
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.98 : 0.85;
+  const widthFraction = containerW < 700 ? 0.98 : 0.9;
   const cellW = Math.min(
     containerW * widthFraction,
     (containerH * 0.86 * ASPECT_W) / ASPECT_H,
@@ -150,17 +165,20 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const theta = wd * ANGLE;
         slot.style.transform = `rotateY(${theta}deg) translateZ(${R}px)`;
 
-        // Only the front film is in true focus. Neighbours defocus, dim and
-        // fade out as they wrap around the drum.
-        const blur = Math.min(dist * 4.5, 10);
-        const bright = 1 - Math.min(dist, 2) * 0.16;
-        const sat = 1 + Math.min(dist, 1) * 0.1;
+        // Only the front film is in true focus. Neighbours defocus and dim
+        // hard so they read as dark, blurred slivers at the edges while the
+        // centre film owns the frame. The geometric foreshortening (they're
+        // turned ~70° edge-on) already makes them thin; the brightness/blur
+        // ramp pushes them into the ambient background.
+        const blur = Math.min(dist * 5.5, 13);
+        const bright = Math.max(0.32, 1 - dist * 0.5);
+        const sat = 1 + Math.min(dist, 1) * 0.08;
         cell.style.filter =
           dist < 0.06
             ? 'none'
             : `blur(${blur.toFixed(2)}px) brightness(${bright.toFixed(3)}) saturate(${sat.toFixed(3)})`;
         cell.style.opacity = (
-          dist < 0.06 ? 1 : Math.max(0, 1 - Math.max(0, dist - 0.15) * 0.42)
+          dist < 0.06 ? 1 : Math.max(0.12, 1 - Math.max(0, dist - 0.85) * 0.55)
         ).toFixed(3);
 
         if (dist < 0.5) cell.classList.add('center');

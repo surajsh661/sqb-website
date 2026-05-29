@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import './styles.css';
 import './page-styles.css';
-import SmoothScroll from '@/components/SmoothScroll';
 
 export const metadata: Metadata = {
   title: "S'QB Pictures — Tell Your Story Today",
@@ -22,7 +21,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preload" href="/logo-footer.png" as="image" />
       </head>
       <body>
-        <SmoothScroll />
         {children}
         {/* Vimeo SDK — used by the case-study player for mute control */}
         <Script src="https://player.vimeo.com/api/player.js" strategy="afterInteractive" />

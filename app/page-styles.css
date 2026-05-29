@@ -450,13 +450,25 @@
   transition: transform .25s ease, border-color .25s ease;
 }
 .ai-clip iframe { display: block; width: 100% !important; height: 100% !important; }
-/* Per-section aspect — realistic clips are vertical */
 .ai-track-section .ai-clip { aspect-ratio: 16 / 9; }
+
+/* Realistic section: three landscape reels across the top, with the one
+   VERTICAL showcase reel (REAL REEL 04) centred on its own row underneath so
+   it plays full-height 9:16 instead of being squeezed into a 16:9 box. */
 #section-real .ai-track-grid {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  max-width: 1200px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  align-items: start;
 }
-#section-real .ai-clip { aspect-ratio: 16 / 9; }
+#section-real .ai-clip { width: auto; aspect-ratio: 16 / 9; }
+#section-real .ai-clip.vertical {
+  aspect-ratio: 9 / 16;
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 270px;
+  max-width: 100%;
+}
 .ai-clip:hover { transform: translateY(-4px); border-color: var(--accent); }
 .ai-clip iframe {
   position: absolute; inset: 0;
@@ -1721,6 +1733,9 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   .ai-track-section { padding: 70px 18px; }
   .ai-track-section h2 { font-size: clamp(40px, 11vw, 64px); }
   .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  /* id beats the class rule above, so the realistic grid needs its own
+     tablet override or it would stay locked at 3 columns. */
+  #section-real .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; }
 
   /* SOCIAL */
   .social-hero { padding: 90px 18px 70px; }
@@ -1742,6 +1757,8 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   .wc-grid { grid-template-columns: 1fr; }
   .wf-grid { grid-template-columns: 1fr; }
   .ai-track-grid { grid-template-columns: 1fr; }
+  #section-real .ai-track-grid { grid-template-columns: 1fr; max-width: 380px; }
+  #section-real .ai-clip.vertical { width: 100%; max-width: 300px; }
   .ws-barrel-stage.main { height: 260px; }
   .vc-ticket { width: 78vw; }
 }
