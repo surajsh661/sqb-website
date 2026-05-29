@@ -35,16 +35,20 @@ const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 
 // blur as they recede around the drum. Because we rebuild each cell's angle
 // from wrapDelta() every frame on the shortest modular path, stepping wraps
 // around the ring seamlessly with no flat seam.
-// For adjacent cells to sit edge-to-edge on the ring (no gap, no forward
+// We are sitting INSIDE the cylinder looking out at its inner wall, watching
+// the films roll past left↔right. For that to read as a smooth curved surface
+// (not a faceted cube) we want a GENTLE angle between films — several films
+// stay visible across the front arc and curve away to the sides, so the eye
+// joins them into one continuous rolling band.
+//
+// For adjacent cells to sit edge-to-edge on the cylinder (no gap, no forward
 // overlap) the chord between their centres must equal the cell width:
 //   chord = 2·R·sin(ANGLE/2) = cellW  →  R = cellW / (2·sin(ANGLE/2)).
-// At ANGLE = 70° that gives RADIUS_FACTOR ≈ 0.87; we run a hair under so the
-// front film always occludes its neighbours cleanly. A steep ANGLE turns the
-// neighbours nearly edge-on, so they read as dark blurred slivers at the
-// screen edges while the front film dominates the frame — the look from the
-// reference site.
-const ANGLE = 70; // degrees between adjacent films around the ring
-const RADIUS_FACTOR = 0.85; // ring radius as a fraction of the cell width
+// At ANGLE = 32° that gives RADIUS_FACTOR ≈ 1.80. A small angle + large radius
+// is a wide, shallow drum: the centre film faces us, its neighbours lean away
+// gradually rather than snapping edge-on like a box face.
+const ANGLE = 32; // degrees between adjacent films around the cylinder
+const RADIUS_FACTOR = 1.8; // cylinder radius as a fraction of the cell width
 
 interface Props {
   films: Film[];
@@ -106,7 +110,10 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   // away around the ring so the centre video fills the eye.
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.98 : 0.9;
+  // Desktop: centre film is ~64% of the width so its neighbours stay visible
+  // rolling away on both sides (the cylinder surface). Mobile: nearly full
+  // width since there isn't room to show the sides on a phone.
+  const widthFraction = containerW < 700 ? 0.92 : 0.64;
   const cellW = Math.min(
     containerW * widthFraction,
     (containerH * 0.86 * ASPECT_W) / ASPECT_H,
@@ -165,20 +172,20 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const theta = wd * ANGLE;
         slot.style.transform = `rotateY(${theta}deg) translateZ(${R}px)`;
 
-        // Only the front film is in true focus. Neighbours defocus and dim
-        // hard so they read as dark, blurred slivers at the edges while the
-        // centre film owns the frame. The geometric foreshortening (they're
-        // turned ~70° edge-on) already makes them thin; the brightness/blur
-        // ramp pushes them into the ambient background.
-        const blur = Math.min(dist * 5.5, 13);
-        const bright = Math.max(0.32, 1 - dist * 0.5);
-        const sat = 1 + Math.min(dist, 1) * 0.08;
+        // The front film is sharpest; neighbours stay clearly VISIBLE as they
+        // roll away (that visible roll is what makes it read as a cylinder
+        // rather than a single flipping panel). They only defocus and dim
+        // gently with distance, fading out once they have curved well past the
+        // edges of the drum.
+        const blur = Math.min(dist * 2.3, 7);
+        const bright = Math.max(0.5, 1 - dist * 0.24);
+        const sat = 1 + Math.min(dist, 1) * 0.05;
         cell.style.filter =
           dist < 0.06
             ? 'none'
             : `blur(${blur.toFixed(2)}px) brightness(${bright.toFixed(3)}) saturate(${sat.toFixed(3)})`;
         cell.style.opacity = (
-          dist < 0.06 ? 1 : Math.max(0.12, 1 - Math.max(0, dist - 0.85) * 0.55)
+          dist < 0.06 ? 1 : Math.max(0, 1 - Math.max(0, dist - 2) * 0.7)
         ).toFixed(3);
 
         if (dist < 0.5) cell.classList.add('center');
@@ -380,6 +387,11 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           ))}
         </div>
       </div>
+
+      {/* Cylindrical "tube mouth" vignette — curved darkening top & bottom plus
+          a soft elliptical falloff. Sits above the films but below the title so
+          it reads as the inside of a drum we're looking down. */}
+      <div className="hero-vignette" aria-hidden="true" />
 
       <div className="hero-title-wrap">
         <div className="hero-cat">
