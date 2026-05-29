@@ -36,9 +36,27 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
             with a treatment or a &quot;this isn&apos;t us&quot;.
           </p>
           <div className="contact-rows">
-            <div className="contact-row"><span className="k">EMAIL</span><span className="v">HELLO@SQBPICTURES.COM</span></div>
-            <div className="contact-row"><span className="k">DELHI</span><span className="v">+91 90130 82883</span></div>
-            <div className="contact-row"><span className="k">MUMBAI</span><span className="v">+91 72178 17383</span></div>
+            <div className="contact-row">
+              <span className="k">SURAJ</span>
+              <a className="v" href="mailto:surajsharma@sqbpictures.com">SURAJSHARMA@SQBPICTURES.COM</a>
+            </div>
+            <div className="contact-row">
+              <span className="k">SHUBHAM</span>
+              <a className="v" href="mailto:shubham.shah@sqbpictures.com">SHUBHAM.SHAH@SQBPICTURES.COM</a>
+            </div>
+            <div className="contact-row">
+              <span className="k">DELHI</span>
+              <a className="v" href="https://wa.me/919013082883" target="_blank" rel="noopener noreferrer">
+                +91 90130 82883 · WHATSAPP
+              </a>
+            </div>
+            <div className="contact-row">
+              <span className="k">MUMBAI</span>
+              <a className="v" href="https://wa.me/917217817383" target="_blank" rel="noopener noreferrer">
+                +91 72178 17383 · WHATSAPP
+              </a>
+            </div>
+            <div className="contact-row"><span className="k">STUDIOS</span><span className="v">DELHI · BIHAR · MUMBAI</span></div>
             <div className="contact-row"><span className="k">FOR</span><span className="v">ADS · DVCs · MUSIC VIDEOS · AI FILMS · VERTICALS</span></div>
           </div>
         </div>
@@ -69,7 +87,7 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
           </button>
           <div className="cf-foot">
             {status === 'error'
-              ? 'Could not send right now — email hello@sqbpictures.com directly.'
+              ? 'Could not send right now — email surajsharma@sqbpictures.com directly.'
               : status === 'sent'
               ? 'Brief received. Reply within 24 hours.'
               : 'We read every brief. Replies within 24 hours.'}

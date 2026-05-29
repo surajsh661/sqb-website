@@ -59,7 +59,7 @@ export default function TicketMenu({ open, onClose }: Props) {
 
         <div className="ticket-section fold-2">
           <div className="ticket-info" style={{ marginBottom: 16 }}>
-            <div className="row"><span>EMAIL</span><strong>SURAJ@SQBPICTURES.COM</strong></div>
+            <div className="row"><span>EMAIL</span><strong>SURAJSHARMA@SQBPICTURES.COM</strong></div>
             <div className="row"><span>WHATSAPP</span><strong>+91 90130 82883</strong></div>
           </div>
           <div className="ticket-foot">

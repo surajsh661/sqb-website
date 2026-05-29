@@ -25,7 +25,7 @@ export default function Footer() {
         <div>
           <h4>STUDIO</h4>
           <p>S&apos;QB PICTURES</p>
-          <p>DELHI · MUMBAI</p>
+          <p>DELHI · BIHAR · MUMBAI</p>
         </div>
         <div>
           <h4>FOUNDERS</h4>
@@ -46,9 +46,14 @@ export default function Footer() {
         </div>
         <div>
           <h4>CONTACT</h4>
-          <a href="tel:+919013082883">+91 90130 82883</a>
-          <a href="tel:+917217817383">+91 72178 17383</a>
-          <a href="mailto:hello@sqbpictures.com">HELLO@SQBPICTURES.COM</a>
+          <a href="https://wa.me/919013082883" target="_blank" rel="noopener noreferrer">
+            +91 90130 82883 (WhatsApp)
+          </a>
+          <a href="https://wa.me/917217817383" target="_blank" rel="noopener noreferrer">
+            +91 72178 17383 (WhatsApp)
+          </a>
+          <a href="mailto:surajsharma@sqbpictures.com">SURAJSHARMA@SQBPICTURES.COM</a>
+          <a href="mailto:shubham.shah@sqbpictures.com">SHUBHAM.SHAH@SQBPICTURES.COM</a>
         </div>
         <div>
           <h4>FOLLOW</h4>
@@ -76,7 +81,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© 2026 S&apos;QB PICTURES. ALL FRAMES RESERVED.</span>
+        <span>© 2026 NIYASHI MOTION PICTURES PVT LTD · S&apos;QB PICTURES · ALL FRAMES RESERVED.</span>
         <span>S&apos;QB / V2026.05 / DESIGN REFRESH</span>
       </div>
     </footer>

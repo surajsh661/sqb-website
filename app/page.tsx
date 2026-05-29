@@ -76,7 +76,7 @@ export default function HomePage() {
         <div className="eyebrow"><span className="num">02</span> <span>WHAT WE BELIEVE</span></div>
         <ManifestoHeadline />
         <p>
-          S&apos;QB Pictures is a Delhi–Mumbai studio building India&apos;s most ambitious AI-enabled
+          S&apos;QB Pictures is a Delhi · Bihar · Mumbai studio building India&apos;s most ambitious AI-enabled
           films, ads and shows for the country&apos;s biggest brands. Story, performance and craft
           come first — generative pipelines come along to make the impossible shot possible and the
           impossible deadline real.
