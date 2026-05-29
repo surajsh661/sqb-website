@@ -67,15 +67,15 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Centre cell ~70% of viewport on desktop at 21:9 cinemascope ratio.
-  // Bigger than the prior 60% so the hero film really commands the screen,
-  // and side cells still poke in from the edges to advertise the carousel.
+  // Centre cell ~77% of viewport on desktop at 21:9 cinemascope ratio
+  // (another 10% bump on the previous 70%). Side cells now poke in just
+  // narrow slivers from the edges — preview, not parade.
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.92 : 0.70;
+  const widthFraction = containerW < 700 ? 0.96 : 0.77;
   const cellW = Math.min(
     containerW * widthFraction,
-    (containerH * 0.78 * ASPECT_W) / ASPECT_H,
+    (containerH * 0.82 * ASPECT_W) / ASPECT_H,
   );
   const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;
@@ -118,11 +118,12 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const wrapped = wrapDelta(i - float, N);
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
-        // Very gentle tilt — kept under 5° so side cells sit almost flat
-        // against the centre cell. Steeper tilts visually open a "V" that
-        // reads as a gap even when the boxes physically touch.
-        const rot = Math.max(-8, Math.min(8, -dir * Math.min(dist, 1.6) * 5));
-        const scale = 1 - Math.min(dist, 1.8) * 0.015;
+        // Flat side cells (no perspective tilt). Any rotateY creates a
+        // wedge-shaped gap between the rounded corners that reads as a
+        // dark sliver; keeping everything coplanar means cells meet at
+        // a clean vertical seam.
+        const rot = 0;
+        const scale = 1 - Math.min(dist, 1.8) * 0.01;
         // Very light atmospheric drift on side cells. Side cards should
         // still read clearly — just slightly receded.
         const blur = Math.min(dist * 2, 3);
@@ -132,10 +133,10 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // Pack slots edge-to-edge with a 1% inward bias so adjacent rounded
-        // corners overlap and any sub-pixel tilt-induced gap closes. No
-        // visible sliver between cells.
-        slot.style.transform = `translate3d(${wrapped * w * 0.99 - w / 2}px, -50%, 0)`;
+        // Cells touch exactly edge-to-edge (factor 1.0). No gap, no
+        // overlap — adjacent video boxes share a seam at the rounded
+        // corner. Combined with rot=0 this guarantees clean tiling.
+        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
@@ -272,14 +273,19 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
 
   const centerFilm = films[activeIdx];
 
-  return (
-    <section className="hero" data-screen-label="01 Hero">
-      <div className="ambient-stage" aria-hidden="true">
-        <div className="ambient-glow" key={centerFilm.id}>
-          <HeroThumb film={centerFilm} className="ambient-img" />
-        </div>
-        <div className="ambient-grain" />
-      </div>
+  // Dynamic hero-title sizing: long titles ("REVOLUTION — THE EDUCATION
+  // SCHOOL OF INDIA") were overflowing the viewport because the title
+  // is white-space: nowrap. We compute a font-size that fits the title
+  // within (containerW - 64px gutter) — picking the lesser of the CSS
+  // clamp ceiling (160px) and width-based shrink-to-fit. Anton's average
+  // glyph width at uppercase ≈ 0.50 × font-size, so:
+  //   fontSize ≈ availableWidth / (charCount × 0.50)
+  // We use 0.55 to leave a touch of margin and avoid edge-kissing.
+  const titleLen = Math.max(1, centerFilm.title.length);
+  const available = Math.max(320, containerW - 64);
+  const charSizeCap = available / (titleLen * 0.55);
+  const baseClampMax = Math.min(160, containerW * 0.10);
+  const heroTitleSize = Math.min(baseClampMax, charSizeCap);
 
       <div className="hero-glass-l" />
       <div className="hero-glass-r" />
@@ -324,7 +330,13 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         <div className="hero-cat">
           <span className="dot" /> {centerFilm.category}
         </div>
-        <h1 className="hero-title" key={centerFilm.id}>{centerFilm.title}</h1>
+        <h1
+          className="hero-title"
+          key={centerFilm.id}
+          style={{ fontSize: `${Math.round(heroTitleSize)}px` }}
+        >
+          {centerFilm.title}
+        </h1>
         <div className="hero-meta">
           <div className="left">
             <span className="rec">REC</span>
