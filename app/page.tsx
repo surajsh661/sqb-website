@@ -65,7 +65,7 @@ export default function HomePage() {
       <HeroIntro />
       <Topbar active="home" onOpenMenu={() => setMenuOpen(true)} />
 
-      <Hero films={SQB_HERO_FILMS} onPick={openCase} />
+      <Hero films={SQB_HERO_FILMS} onPick={openCase} showCursorHint />
 
       <section className="section manifesto" data-screen-label="02 Manifesto">
         <div className="eyebrow"><span className="num">02</span> <span>WHAT WE BELIEVE</span></div>

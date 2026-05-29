@@ -1,176 +1,345 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HeroThumb from './HeroThumb';
 import type { Film } from '@/lib/types';
 
-// Single-screen cinema hero. One big video plays centred on a dark stage,
-// ambient glow bleeds out from behind it; bottom-left carries the current
-// film's title + meta, bottom-right shows the next-up film with a pair of
-// up/down arrows. Click the screen to open the case study. Arrow keys
-// navigate.
-
-// Map videoId to a deterministic random-feeling start offset (5–30s) so each
-// video opens mid-clip rather than at t=0. Hash-based so the URL stays
-// stable across re-renders (otherwise the iframe would reload).
+// Map a videoId to a deterministic-but-arbitrary start offset (5–30 seconds).
+// We hash the id rather than calling Math.random() so the URL stays stable
+// across re-renders — otherwise React would tear down and reload the iframe
+// every time, which would yank the video back to t=0.
 function startOffsetSeconds(videoId: string): number {
   let h = 0;
   for (let i = 0; i < videoId.length; i++) h = (h << 5) - h + videoId.charCodeAt(i);
-  return 5 + (Math.abs(h) % 26);
+  return 5 + (Math.abs(h) % 26); // 5..30 inclusive
 }
 
 function videoSrc(film: Film) {
   const t = startOffsetSeconds(film.videoId);
   if (film.type === 'vm') {
+    // Vimeo respects #t=Ns even in background mode and seeks immediately on load.
     return `https://player.vimeo.com/video/${film.videoId}?background=1&autoplay=1&loop=1&muted=1&controls=0&dnt=1&autopause=0&playsinline=1&transparent=0#t=${t}s`;
-  }
-  if (film.type === 'gd') {
-    return `https://drive.google.com/file/d/${film.videoId}/preview`;
   }
   const origin = typeof window !== 'undefined' ? encodeURIComponent(window.location.origin) : '';
   return `https://www.youtube-nocookie.com/embed/${film.videoId}?autoplay=1&mute=1&loop=1&playlist=${film.videoId}&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1&origin=${origin}&start=${t}`;
 }
 
+const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 2;
+
 interface Props {
   films: Film[];
   onPick: (film: Film) => void;
-  showCursorHint?: boolean;
+  showCursorHint: boolean;
 }
 
-export default function Hero({ films, onPick }: Props) {
+export default function Hero({ films, onPick, showCursorHint }: Props) {
   const N = films.length;
+  const zoneRef = useRef<HTMLDivElement | null>(null);
+  const cellSlotsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const videoCellsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Animation state lives in refs — no React re-render per frame.
+  const snapFloat = useRef(0);
+  const target = useRef(0);
+  const cursorX = useRef(0.5);
+  const insideZone = useRef(false);
+  const manualTarget = useRef<number | null>(null);
+  const manualUntil = useRef(0);
+  const cellWRef = useRef(0);
+
+  // Only re-render on integer index changes (title/meta + iframe gating).
   const [activeIdx, setActiveIdx] = useState(0);
-  const paused = useRef(false);
+  const activeIdxRef = useRef(0);
 
-  const current = films[activeIdx];
-  const next = films[(activeIdx + 1) % N];
+  // Container size — drives cell width. Re-renders only on resize.
+  const [containerW, setContainerW] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1600,
+  );
+  const [containerH, setContainerH] = useState(
+    typeof window !== 'undefined' ? window.innerHeight : 900,
+  );
 
-  const advance = useCallback(() => setActiveIdx((i) => (i + 1) % N), [N]);
-  const back = useCallback(() => setActiveIdx((i) => (i - 1 + N) % N), [N]);
-
-  // Auto-advance every 8s unless the user is hovering the nav (paused).
   useEffect(() => {
-    if (N <= 1) return;
-    const id = window.setInterval(() => {
-      if (!paused.current) advance();
-    }, 8000);
-    return () => clearInterval(id);
-  }, [advance, N]);
+    const onResize = () => {
+      setContainerW(window.innerWidth);
+      setContainerH(window.innerHeight);
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
-  // Arrow keys navigate; Enter opens the case study.
+  // Centre cell ~50% of viewport on desktop — leaves room for visible side
+  // cells. Phone wants almost full width.
+  const widthFraction = containerW < 700 ? 0.86 : 0.50;
+  const cellW = Math.min(containerW * widthFraction, (containerH * 0.68 * 16) / 9);
+  const cellH = (cellW * 9) / 16;
+  cellWRef.current = cellW;
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      // Don't hijack keys while focus is inside an input/textarea.
-      const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || (t as HTMLElement).isContentEditable)) return;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        advance();
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        back();
+    document.documentElement.style.setProperty('--sqb-cellW', cellW + 'px');
+    document.documentElement.style.setProperty('--sqb-cellH', cellH + 'px');
+  }, [cellW, cellH]);
+
+  // Mouse tracking — refs only, no React state.
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const el = zoneRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const inside =
+        e.clientY >= r.top && e.clientY <= r.bottom && e.clientX >= r.left && e.clientX <= r.right;
+      insideZone.current = inside;
+      if (inside) cursorX.current = (e.clientX - r.left) / r.width;
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
+  // Main per-frame loop. All work is direct DOM mutation via refs — React is
+  // never told anything changed unless the centered film actually flips.
+  useEffect(() => {
+    let raf = 0;
+    let lastStep = 0;
+    const DEADZONE = 0.4; // outside ±40% from screen-centre triggers a single step
+
+    const applyTransforms = () => {
+      const float = snapFloat.current;
+      const w = cellWRef.current;
+      for (let i = 0; i < N; i++) {
+        const slot = cellSlotsRef.current[i];
+        const cell = videoCellsRef.current[i];
+        if (!slot || !cell) continue;
+
+        const wrapped = wrapDelta(i - float, N);
+        const dist = Math.abs(wrapped);
+        const dir = Math.sign(wrapped) || 0;
+        // Softer perspective tilt than the prototype's 32° so side cells stay
+        // wider visually.
+        const rot = Math.max(-24, Math.min(24, -dir * Math.min(dist, 1.6) * 16));
+        const scale = 1 - Math.min(dist, 1.8) * 0.03;
+        // Much lighter dimming than the prototype so the side cards read as
+        // peeking neighbours, not distant fog. Prototype values made the
+        // visual gap between centre and sides look enormous.
+        const blur = Math.min(dist * 3, 5);
+        const sat = 1 + Math.min(dist, 1) * 0.15;
+        const bright = 1 - Math.min(dist, 1.5) * 0.14;
+        const opacity = dist < 0.05 ? 1 : Math.max(0.62, 1 - dist * 0.2);
+        const isCenter = dist < 0.5;
+        const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
+
+        // Aggressive packing: 86% of cell width per step. The 14% overlap
+        // (combined with the 16° perspective tilt's foreshortening) makes
+        // the row read as a single continuous strip with no visible gaps,
+        // while side cells don't visibly cover the centre.
+        slot.style.transform = `translate3d(${wrapped * w * 0.86 - w / 2}px, -50%, 0)`;
+        cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
+        cell.style.transformOrigin = transformOrigin;
+        cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
+        cell.style.opacity = String(opacity);
+        cell.style.zIndex = String(isCenter ? 3 : dist < 1 ? 2 : 1);
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [advance, back]);
+
+    // Paced continuous-step model: while the cursor sits in a side zone, the
+    // slider auto-advances at a sane cadence (slower near the deadzone edge,
+    // faster near the screen edge). When the cursor leaves the side zone the
+    // stepping stops. Far less "infinite swipe" feel than the original 280ms,
+    // far less abrupt than the one-shot model.
+    const STEP_NEAR = 1300; // ms cadence just past the deadzone
+    const STEP_FAR  =  650; // ms cadence at the screen edge
+
+    const tick = () => {
+      const now = performance.now();
+
+      if (manualTarget.current !== null && now < manualUntil.current) {
+        target.current = manualTarget.current;
+      } else {
+        if (manualTarget.current !== null) {
+          target.current = manualTarget.current;
+          manualTarget.current = null;
+        }
+        if (insideZone.current) {
+          const offset = cursorX.current - 0.5;
+          const absOffset = Math.abs(offset);
+          if (absOffset > DEADZONE) {
+            // Wrap-aware lookahead: how far the current slide position is
+            // from the latest target on the shortest modular path. Block
+            // queuing a new step until the slide has mostly settled —
+            // otherwise targets stack up while the cursor sits at the edge
+            // and the carousel keeps gliding for ages after the cursor
+            // returns to the centre.
+            const lookahead = Math.abs(
+              ((target.current - snapFloat.current) % N + N + N / 2) % N - N / 2,
+            );
+            if (lookahead < 0.4) {
+              const tNorm = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
+              const stepInterval = STEP_NEAR - (STEP_NEAR - STEP_FAR) * tNorm;
+              if (now - lastStep > stepInterval) {
+                lastStep = now;
+                target.current = ((target.current + Math.sign(offset)) % N + N) % N;
+              }
+            }
+          }
+        }
+      }
+
+      // Lerp snapFloat toward target on the shortest modular path.
+      const raw = target.current - snapFloat.current;
+      const wrapped = wrapDelta(raw, N);
+      snapFloat.current = snapFloat.current + wrapped * 0.09;
+
+      applyTransforms();
+
+      const newActiveIdx = ((Math.round(target.current) % N) + N) % N;
+      if (newActiveIdx !== activeIdxRef.current) {
+        activeIdxRef.current = newActiveIdx;
+        setActiveIdx(newActiveIdx);
+      }
+
+      raf = requestAnimationFrame(tick);
+    };
+
+    // Lay out cells at their initial positions before paint to avoid a flash.
+    applyTransforms();
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [N]);
+
+  // Center-only playback. With 6 muted iframes mounted, browsers will quietly
+  // stop autoplaying some of them and the video-decode load makes sliding
+  // choppy. So we drive playback ourselves: command the center iframe to
+  // play, command everything else to pause. Iframes stay mounted (no reload,
+  // no jump-to-zero on next visit) but only one is actively decoding video.
+  useEffect(() => {
+    const apply = () => {
+      const slots = cellSlotsRef.current;
+      for (let i = 0; i < slots.length; i++) {
+        const slot = slots[i];
+        if (!slot) continue;
+        const iframe = slot.querySelector<HTMLIFrameElement>('iframe.frame-video');
+        if (!iframe || !iframe.contentWindow) continue;
+        const isCenter = i === activeIdxRef.current;
+        const src = iframe.src || '';
+        try {
+          if (src.includes('youtube')) {
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: isCenter ? 'playVideo' : 'pauseVideo', args: [] }),
+              '*',
+            );
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'mute', args: [] }),
+              '*',
+            );
+          } else if (src.includes('vimeo')) {
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ method: isCenter ? 'play' : 'pause' }),
+              '*',
+            );
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ method: 'setMuted', value: true }),
+              '*',
+            );
+          }
+        } catch {}
+      }
+    };
+
+    // Run on activeIdx change, on first mount, and periodically as a safety
+    // net (browsers sometimes pause iframes after long idle).
+    apply();
+    const iv = setInterval(apply, 4000);
+    const onVis = () => { if (!document.hidden) apply(); };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      clearInterval(iv);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, [activeIdx]);
+
+  const onCellClick = (i: number) => {
+    const wrapped = wrapDelta(i - snapFloat.current, N);
+    if (Math.abs(wrapped) < 0.5) {
+      onPick(films[i]);
+    } else {
+      manualTarget.current = i;
+      manualUntil.current = performance.now() + 900;
+    }
+  };
+
+  const centerFilm = films[activeIdx];
 
   return (
-    <section className="hero hx" data-screen-label="01 Hero">
-      {/* Ambient glow — blown-up & blurred frame of the centred film, painted
-          behind the screen for the "lights bleeding into the room" feel. */}
-      <div className="hx-ambient" aria-hidden="true">
-        <div className="hx-ambient-img" key={current.id}>
-          <HeroThumb film={current} className="hx-ambient-img-inner" />
+    <section className="hero" data-screen-label="01 Hero">
+      <div className="ambient-stage" aria-hidden="true">
+        <div className="ambient-glow" key={centerFilm.id}>
+          <HeroThumb film={centerFilm} className="ambient-img" />
         </div>
-        <div className="hx-ambient-grain" />
+        <div className="ambient-grain" />
       </div>
 
-      {/* The cinema screen. */}
-      <button
-        type="button"
-        className="hx-screen"
-        onClick={() => onPick(current)}
-        aria-label={`Open ${current.title}`}
-      >
-        <div className="hx-screen-inner">
+      <div className="hero-glass-l" />
+      <div className="hero-glass-r" />
+
+      <div className="hero-zone" ref={zoneRef}>
+        <div className="video-track">
           {films.map((film, i) => (
             <div
               key={film.id}
-              className={'hx-slide' + (i === activeIdx ? ' active' : '')}
-              aria-hidden={i !== activeIdx}
+              ref={(el) => { cellSlotsRef.current[i] = el; }}
+              className="cell-slot"
+              style={{ width: cellW }}
             >
-              <HeroThumb film={film} className="hx-poster" />
-              {i === activeIdx && film.type !== 'gd' && (
-                <iframe
-                  key={film.videoId}
-                  className="hx-video"
-                  src={videoSrc(film)}
-                  title={film.title}
-                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                  loading="eager"
-                  frameBorder={0}
-                />
-              )}
-              {i === activeIdx && film.type === 'gd' && (
-                // eslint-disable-next-line jsx-a11y/media-has-caption
-                <video
-                  className="hx-video"
-                  src={`https://drive.google.com/uc?export=download&id=${film.videoId}`}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                />
-              )}
-              <div className="hx-shade" />
+              <div
+                ref={(el) => { videoCellsRef.current[i] = el; }}
+                className="video-cell"
+                onClick={() => onCellClick(i)}
+              >
+                <div className="frame">
+                  <HeroThumb film={film} className="frame-poster" />
+                  {/* All hero iframes stay mounted for the lifetime of the
+                      page — unmounting/remounting on slider step would
+                      restart playback from t=0. */}
+                  <iframe
+                    key={film.videoId}
+                    className="frame-video"
+                    src={videoSrc(film)}
+                    title={film.title}
+                    allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                    loading="eager"
+                    frameBorder={0}
+                  />
+                  <div className="frame-tint" />
+                </div>
+              </div>
             </div>
           ))}
         </div>
-      </button>
+      </div>
 
-      {/* Bottom-left title block. */}
-      <div className="hx-title">
-        <div className="hx-cat">
-          <span className="dot" /> {current.category}
+      <div className="hero-title-wrap">
+        <div className="hero-cat">
+          <span className="dot" /> {centerFilm.category}
         </div>
-        <h1 className="hx-title-main" key={current.id}>
-          {current.title}
-        </h1>
-        <div className="hx-meta">
-          <span className="hx-meta-rec">REC</span>
-          <span>{current.year}</span>
-          <span>{current.runtime}</span>
-          <span className="hx-meta-num">
-            {String(activeIdx + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}
-          </span>
-          {current.client && <span>★ {current.client.toUpperCase()}</span>}
+        <h1 className="hero-title" key={centerFilm.id}>{centerFilm.title}</h1>
+        <div className="hero-meta">
+          <div className="left">
+            <span className="rec">REC</span>
+            <span>{centerFilm.year}</span>
+            <span>{centerFilm.runtime}</span>
+          </div>
+          <div className="right">
+            <span>{String(activeIdx + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}</span>
+            <span>★ {centerFilm.client?.toUpperCase()}</span>
+          </div>
         </div>
       </div>
 
-      {/* Bottom-right next-up + nav arrows. */}
-      <div
-        className="hx-next"
-        onMouseEnter={() => { paused.current = true; }}
-        onMouseLeave={() => { paused.current = false; }}
-      >
-        <div className="hx-next-info">
-          <div className="hx-next-label">NEXT</div>
-          <div className="hx-next-title" key={next.id}>{next.title}</div>
+      {showCursorHint && (
+        <div className="cursor-hint">
+          <span className="arrow flip" />
+          MOVE CURSOR · CLICK TO OPEN
+          <span className="arrow" />
         </div>
-        <div className="hx-nav">
-          <button type="button" onClick={back} aria-label="Previous film">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="18 15 12 9 6 15" />
-            </svg>
-          </button>
-          <button type="button" onClick={advance} aria-label="Next film">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-        </div>
-      </div>
+      )}
     </section>
   );
 }
