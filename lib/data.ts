@@ -428,7 +428,6 @@ export const SQB_TESTIMONIALS: Testimonial[] = [
 ];
 
 export const SQB_BTS: BTS[] = [
-  { id: 'bts1', title: 'ON SET — REEL 01', tag: 'INSTAGRAM', type: 'ig', videoId: 'DHtGIOEBM4G' },
   { id: 'bts2', title: 'ON SET — REEL 02', tag: 'INSTAGRAM', type: 'ig', videoId: 'DNfhizFBUxe' },
   { id: 'bts3', title: 'GRADE / LAB ROOM',  tag: 'POST',     type: 'gd', videoId: '1_Et2LSZGJYA_OhkNrtWZJj5dY8KMezPo' },
   { id: 'bts4', title: 'ON SET — REEL 03', tag: 'INSTAGRAM', type: 'ig', videoId: 'DNsAKNCBYqz' },
