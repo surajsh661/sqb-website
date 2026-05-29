@@ -19,8 +19,6 @@ import { SQB_FILMS, SQB_HERO_FILMS } from '@/lib/data';
 import { setupReveal } from '@/lib/video-utils';
 import type { Film } from '@/lib/types';
 
-const TAGLINE = 'TELL YOUR STORY TODAY.';
-
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFilm, setActiveFilm] = useState<Film | null>(null);
@@ -65,7 +63,7 @@ export default function HomePage() {
       <Loader />
       <Topbar active="home" onOpenMenu={() => setMenuOpen(true)} />
 
-      <Hero films={SQB_HERO_FILMS} onPick={openCase} tagline={TAGLINE} showCursorHint />
+      <Hero films={SQB_HERO_FILMS} onPick={openCase} showCursorHint />
 
       <section className="section manifesto" data-screen-label="02 Manifesto">
         <div className="eyebrow"><span className="num">02</span> <span>WHAT WE BELIEVE</span></div>

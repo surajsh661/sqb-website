@@ -28,11 +28,10 @@ const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 
 interface Props {
   films: Film[];
   onPick: (film: Film) => void;
-  tagline: string;
   showCursorHint: boolean;
 }
 
-export default function Hero({ films, onPick, tagline, showCursorHint }: Props) {
+export default function Hero({ films, onPick, showCursorHint }: Props) {
   const N = films.length;
   const zoneRef = useRef<HTMLDivElement | null>(null);
   const cellSlotsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -68,9 +67,9 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // On narrow screens (phones) we want the centered video to fill more of the
-  // viewport width; on desktop it's 60% so the side cells peek through.
-  const widthFraction = containerW < 700 ? 0.86 : 0.6;
+  // Cell sizing. Desktop wants the centred video at 54% of the viewport so
+  // there's clear room for side-cell shoulders. Phone wants almost full width.
+  const widthFraction = containerW < 700 ? 0.86 : 0.54;
   const cellW = Math.min(containerW * widthFraction, (containerH * 0.68 * 16) / 9);
   const cellH = (cellW * 9) / 16;
   cellWRef.current = cellW;
@@ -127,7 +126,11 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
+        // Pack cells at 92% of their actual width so the perspective tilt
+        // doesn't open a perceptible gap between centre and neighbours. The
+        // 8% overlap is small enough that side cells don't visibly cover the
+        // centre at the current 16° tilt.
+        slot.style.transform = `translate3d(${wrapped * w * 0.92 - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
@@ -318,8 +321,6 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
           </div>
         </div>
       </div>
-
-      <div className="hero-tagline">{tagline || 'TELL YOUR STORY TODAY.'}</div>
 
       {showCursorHint && (
         <div className="cursor-hint">

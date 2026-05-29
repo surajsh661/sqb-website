@@ -21,7 +21,11 @@ export default function SmoothScroll() {
 
     let target = window.scrollY;
     let current = window.scrollY;
-    const damping = 0.085;       // higher = snappier, lower = heavier glide
+    // Damping = % of remaining distance covered per frame.
+    //   0.10+  feels almost like native scroll (snappy, light)
+    //   0.07   noticeable glide with slight weight (the sweet spot)
+    //   0.05-  starts feeling sluggish / draggy
+    const damping = 0.07;
     const wheelGain = 1.0;
     let raf = 0;
 
