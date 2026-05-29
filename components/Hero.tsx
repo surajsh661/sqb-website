@@ -23,32 +23,35 @@ function videoSrc(film: Film) {
   return `https://www.youtube-nocookie.com/embed/${film.videoId}?autoplay=1&mute=1&loop=1&playlist=${film.videoId}&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1&origin=${origin}&start=${t}`;
 }
 
+// Shortest signed distance from `raw` to 0 on a ring of N slots (so the loop
+// wraps seamlessly — slot 0 and slot N-1 are neighbours, not opposite ends).
 const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 2;
 
-// --- 3D ring (cylinder) geometry -------------------------------------------
-// The carousel is a genuine ring of videos. The viewer sits at the centre of
-// the ring and looks out at the front-facing film. Each cell is placed on the
-// ring surface with `rotateY(theta) translateZ(R)`, and the whole track is
-// pulled back by `translateZ(-R)` so the front cell lands flat on the screen
-// plane. Neighbours curve away to the left/right — they pick up a real slant,
-// perspective foreshortening (the "lens distortion" look) and a progressive
-// blur as they recede around the drum. Because we rebuild each cell's angle
-// from wrapDelta() every frame on the shortest modular path, stepping wraps
-// around the ring seamlessly with no flat seam.
-// We are sitting INSIDE the cylinder looking out at its inner wall, watching
-// the films roll past left↔right. For that to read as a smooth curved surface
-// (not a faceted cube) we want a GENTLE angle between films — several films
-// stay visible across the front arc and curve away to the sides, so the eye
-// joins them into one continuous rolling band.
+// --- BARREL-ROLL geometry ----------------------------------------------------
+// The films are equal-size staves on a horizontal drum we are looking INTO. The
+// front film is flat and sharp; its neighbours are the SAME SIZE but tilt on the
+// drum wall (their outer edge rakes back into the tube) and only the far ones
+// recede appreciably. The key fix vs a naive 3D ring: we do NOT push the side
+// films far back in depth — perspective would then shrink them into small,
+// detached thumbnails. Instead each film keeps its full size and the curve comes
+// from rotation, so the whole thing reads as one continuous rolling barrel.
 //
-// For adjacent cells to sit edge-to-edge on the cylinder (no gap, no forward
-// overlap) the chord between their centres must equal the cell width:
-//   chord = 2·R·sin(ANGLE/2) = cellW  →  R = cellW / (2·sin(ANGLE/2)).
-// At ANGLE = 32° that gives RADIUS_FACTOR ≈ 1.80. A small angle + large radius
-// is a wide, shallow drum: the centre film faces us, its neighbours lean away
-// gradually rather than snapping edge-on like a box face.
-const ANGLE = 32; // degrees between adjacent films around the cylinder
-const RADIUS_FACTOR = 1.8; // cylinder radius as a fraction of the cell width
+// For a film `d` slots from centre:
+//   x   =  d · cellW · STEP            → laid out side-by-side, just touching
+//   rot = -d · ROT                     → tilts toward the viewer (concave wall)
+//   z   = -(0.07·|d| + 0.05·d²)·cellW  → near films barely recede (stay full
+//                                         size); far films curve back into the tube
+const ROT = 34; // degrees of tilt per film across the drum wall
+const STEP = 0.84; // horizontal spacing as a fraction of cell width (staves touch)
+
+// Easing time-constant (seconds). snapFloat closes ~63% of the gap to the
+// target every TAU; frame-rate independent via 1 - exp(-dt/TAU).
+const TAU = 0.10;
+// Continuous roll: holding the cursor to a side advances the reel at up to
+// MAX_SPEED films/second (ramped in from the centre dead-zone so it starts
+// gently). This is what makes it a smooth ROLL rather than discrete steps.
+const DEADZONE = 0.09;
+const MAX_SPEED = 3.2;
 
 interface Props {
   films: Film[];
@@ -63,36 +66,31 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   const cellSlotsRef = useRef<(HTMLDivElement | null)[]>([]);
   const videoCellsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Animation state lives in refs — no React re-render per frame.
-  const snapFloat = useRef(0);
-  const target = useRef(0);
-  const cursorX = useRef(0.5);
+  // --- Animation state lives ENTIRELY in refs. The RAF loop writes transforms
+  // straight to the DOM; React is never re-rendered on an animation frame. ---
+  const snapFloat = useRef(0); // eased fractional position actually shown
+  const target = useRef(0); // where snapFloat is gliding to (continuous)
+  const cursorX = useRef(0.5); // smoothed cursor x within the zone (0..1)
+  const cursorRaw = useRef(0.5); // raw cursor x (low-pass filtered into cursorX)
   const insideZone = useRef(false);
   const manualTarget = useRef<number | null>(null);
   const manualUntil = useRef(0);
   const cellWRef = useRef(0);
+  const lastTime = useRef(0);
+  const reducedMotion = useRef(false);
 
-  // Only re-render on integer index changes (title/meta + iframe gating).
+  // React state — set ONLY when the integer index changes, never per frame.
   const [activeIdx, setActiveIdx] = useState(0);
   const activeIdxRef = useRef(0);
 
-  // The film that is *actually settled in the centre* of the screen. This is
-  // distinct from activeIdx, which tracks the glide's destination. Playback is
-  // gated on this so the video on screen mid-glide is never the one paused.
+  // The film actually settled in the centre — playback is gated on this so the
+  // film on screen mid-glide is the one that plays.
   const [playCenter, setPlayCenter] = useState(0);
   const playCenterRef = useRef(0);
 
-  // Container size — drives cell width. Re-renders only on resize.
-  //
-  // We MUST seed identical values on the server and on the client's first
-  // render, otherwise React hydration leaves a stale value behind. The cell
-  // box width is written as an inline style during SSR; React does not patch
-  // inline-style mismatches on hydration, so if the server picked a different
-  // width than the client the cell box would stay frozen at the server size
-  // while the ring radius (recomputed every frame from the real width)
-  // disagrees — the cell renders far too wide and overflows. Seeding a fixed
-  // default and syncing to the real viewport in the mount effect guarantees a
-  // post-hydration state change that patches the box to match the geometry.
+  // Container size drives cell width. Seed identical fixed defaults on server
+  // and first client render (React does not patch inline-style mismatches on
+  // hydration), then sync to the real viewport in the mount effect.
   const [containerW, setContainerW] = useState(1280);
   const [containerH, setContainerH] = useState(720);
 
@@ -101,22 +99,29 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       setContainerW(window.innerWidth);
       setContainerH(window.innerHeight);
     };
-    onResize(); // sync to the real viewport once mounted (fixes hydration size)
+    onResize();
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Centre cell ~85% of viewport at 21:9 cinemascope ratio. Side cells curve
-  // away around the ring so the centre video fills the eye.
+  // prefers-reduced-motion: drop the 3D roll/blur and hard-cut between films.
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const set = () => { reducedMotion.current = mq.matches; };
+    set();
+    mq.addEventListener('change', set);
+    return () => mq.removeEventListener('change', set);
+  }, []);
+
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  // Desktop: centre film is ~64% of the width so its neighbours stay visible
-  // rolling away on both sides (the cylinder surface). Mobile: nearly full
-  // width since there isn't room to show the sides on a phone.
-  const widthFraction = containerW < 700 ? 0.92 : 0.64;
+  // Centre film ~62% of width on desktop so the neighbours stay visible
+  // wrapping away on the curved wall. Mobile: near full width (no room for the
+  // sides on a phone).
+  const widthFraction = containerW < 700 ? 0.94 : 0.62;
   const cellW = Math.min(
     containerW * widthFraction,
-    (containerH * 0.86 * ASPECT_W) / ASPECT_H,
+    (containerH * 0.82 * ASPECT_W) / ASPECT_H,
   );
   const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;
@@ -126,7 +131,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     document.documentElement.style.setProperty('--sqb-cellH', cellH + 'px');
   }, [cellW, cellH]);
 
-  // Mouse tracking — refs only, no React state.
+  // Mouse tracking — refs only.
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       const el = zoneRef.current;
@@ -135,27 +140,20 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       const inside =
         e.clientY >= r.top && e.clientY <= r.bottom && e.clientX >= r.left && e.clientX <= r.right;
       insideZone.current = inside;
-      if (inside) cursorX.current = (e.clientX - r.left) / r.width;
+      if (inside) cursorRaw.current = (e.clientX - r.left) / r.width;
     };
     window.addEventListener('mousemove', onMove);
     return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
-  // Main per-frame loop. All work is direct DOM mutation via refs — React is
-  // never told anything changed unless the centered film actually flips.
+  // Main per-frame loop. All work is direct DOM mutation via refs.
   useEffect(() => {
     let raf = 0;
-    let lastStep = 0;
-    const DEADZONE = 0.4; // outside ±40% from screen-centre triggers a single step
 
     const applyTransforms = () => {
       const float = snapFloat.current;
       const w = cellWRef.current;
-      const R = w * RADIUS_FACTOR;
-      const track = trackRef.current;
-      // Pull the whole drum back by the ring radius so the front cell lands
-      // flat on the screen plane (z = 0) at neutral size.
-      if (track) track.style.transform = `translateZ(${-R}px)`;
+      const reduce = reducedMotion.current;
 
       for (let i = 0; i < N; i++) {
         const slot = cellSlotsRef.current[i];
@@ -165,43 +163,53 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const wd = wrapDelta(i - float, N);
         const dist = Math.abs(wd);
 
-        // Place the cell on the ring: translateZ(R) pushes it out to the ring
-        // surface, rotateY swings it to its angular slot. Combined with the
-        // track's translateZ(-R) the front film sits flat and sharp while the
-        // neighbours curve backward — real slant + perspective distortion.
-        const theta = wd * ANGLE;
-        slot.style.transform = `rotateY(${theta}deg) translateZ(${R}px)`;
+        if (reduce) {
+          // Reduced motion: only the centre film is shown, flat; others hidden.
+          slot.style.transform = 'translate3d(0,0,0)';
+          cell.style.filter = 'none';
+          cell.style.opacity = dist < 0.5 ? '1' : '0';
+          if (dist < 0.5) cell.classList.add('center');
+          else cell.classList.remove('center');
+          continue;
+        }
 
-        // The front film is sharpest; neighbours stay clearly VISIBLE as they
-        // roll away (that visible roll is what makes it read as a cylinder
-        // rather than a single flipping panel). They only defocus and dim
-        // gently with distance, fading out once they have curved well past the
-        // edges of the drum.
-        const blur = Math.min(dist * 2.3, 7);
-        const bright = Math.max(0.5, 1 - dist * 0.24);
-        const sat = 1 + Math.min(dist, 1) * 0.05;
-        cell.style.filter =
-          dist < 0.06
-            ? 'none'
-            : `blur(${blur.toFixed(2)}px) brightness(${bright.toFixed(3)}) saturate(${sat.toFixed(3)})`;
-        cell.style.opacity = (
-          dist < 0.06 ? 1 : Math.max(0, 1 - Math.max(0, dist - 2) * 0.7)
-        ).toFixed(3);
+        // Barrel placement: equal-size staves, side films tilt (not shrink).
+        const x = wd * w * STEP;
+        const z = -(Math.abs(wd) * 0.07 + wd * wd * 0.05) * w;
+        const rot = -wd * ROT;
+        // Round to 2dp so micro-moves don't trigger sub-pixel repaints.
+        slot.style.transform =
+          `translate3d(${x.toFixed(2)}px, 0, ${z.toFixed(2)}px) rotateY(${rot.toFixed(2)}deg)`;
+
+        // Centre is sharpest. Neighbours defocus/dim gently as they roll away.
+        // Blur is the most expensive painted property — apply it ONLY to
+        // non-centre cells and clamp it hard.
+        if (dist < 0.06) {
+          cell.style.filter = 'none';
+          cell.style.opacity = '1';
+        } else {
+          const blur = Math.min(dist * 2.6, 7);
+          const bright = Math.max(0.42, 1 - dist * 0.26);
+          const sat = (1 + Math.min(dist, 1) * 0.06);
+          cell.style.filter =
+            `blur(${blur.toFixed(2)}px) brightness(${bright.toFixed(2)}) saturate(${sat.toFixed(2)})`;
+          cell.style.opacity = Math.max(0, 1 - Math.max(0, dist - 2) * 0.7).toFixed(2);
+        }
 
         if (dist < 0.5) cell.classList.add('center');
         else cell.classList.remove('center');
       }
     };
 
-    // Paced continuous-step model: while the cursor sits in a side zone, the
-    // slider auto-advances at a sane cadence (slower near the deadzone edge,
-    // faster near the screen edge). When the cursor leaves the side zone the
-    // stepping stops.
-    const STEP_NEAR = 1300; // ms cadence just past the deadzone
-    const STEP_FAR = 650; // ms cadence at the screen edge
+    const tick = (now: number) => {
+      // Frame-rate-independent dt (seconds), clamped so a tab-switch stall
+      // doesn't fling the reel.
+      const dt = lastTime.current ? Math.min((now - lastTime.current) / 1000, 0.05) : 0.016;
+      lastTime.current = now;
 
-    const tick = () => {
-      const now = performance.now();
+      // Low-pass the raw cursor so input itself is smooth (no stair-stepping).
+      const cursorK = 1 - Math.exp(-dt / 0.06);
+      cursorX.current += (cursorRaw.current - cursorX.current) * cursorK;
 
       if (manualTarget.current !== null && now < manualUntil.current) {
         target.current = manualTarget.current;
@@ -210,29 +218,23 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           target.current = manualTarget.current;
           manualTarget.current = null;
         }
-        if (insideZone.current) {
-          const offset = cursorX.current - 0.5;
-          const absOffset = Math.abs(offset);
-          if (absOffset > DEADZONE) {
-            const lookahead = Math.abs(
-              ((target.current - snapFloat.current) % N + N + N / 2) % N - N / 2,
-            );
-            if (lookahead < 0.4) {
-              const tNorm = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
-              const stepInterval = STEP_NEAR - (STEP_NEAR - STEP_FAR) * tNorm;
-              if (now - lastStep > stepInterval) {
-                lastStep = now;
-                target.current = ((target.current + Math.sign(offset)) % N + N) % N;
-              }
-            }
-          }
+        const offset = cursorX.current - 0.5;
+        const absOffset = Math.abs(offset);
+        if (insideZone.current && absOffset > DEADZONE && !reducedMotion.current) {
+          // Continuous roll: speed ramps in from the dead-zone (eased) so the
+          // reel glides rather than steps.
+          const tNorm = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
+          const speed = MAX_SPEED * tNorm * tNorm;
+          target.current += Math.sign(offset) * speed * dt;
+        } else {
+          // Settle onto the nearest film currently in view.
+          target.current = Math.round(snapFloat.current);
         }
       }
 
-      // Lerp snapFloat toward target on the shortest modular path.
-      const raw = target.current - snapFloat.current;
-      const wrapped = wrapDelta(raw, N);
-      snapFloat.current = snapFloat.current + wrapped * 0.09;
+      // Time-based exponential smoothing along the shortest modular path.
+      const k = 1 - Math.exp(-dt / TAU);
+      snapFloat.current += wrapDelta(target.current - snapFloat.current, N) * k;
 
       applyTransforms();
 
@@ -242,13 +244,10 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         setActiveIdx(newActiveIdx);
       }
 
-      // Once the slide has essentially settled on a new cell, hand playback
-      // over to it. Gating on the settled position (not the target) means the
-      // film visually centred during a long glide is the one that plays.
       const settledCenter = ((Math.round(snapFloat.current) % N) + N) % N;
       if (
         settledCenter !== playCenterRef.current &&
-        Math.abs(wrapDelta(snapFloat.current - settledCenter, N)) < 0.05
+        Math.abs(wrapDelta(snapFloat.current - settledCenter, N)) < 0.06
       ) {
         playCenterRef.current = settledCenter;
         setPlayCenter(settledCenter);
@@ -257,17 +256,15 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       raf = requestAnimationFrame(tick);
     };
 
-    // Lay out cells at their initial positions before paint to avoid a flash.
-    applyTransforms();
+    applyTransforms(); // lay out before first paint to avoid a flash
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [N]);
 
-  // Center-only playback. With many muted iframes mounted, browsers will
-  // quietly stop autoplaying some of them and the video-decode load makes
-  // sliding choppy. So we drive playback ourselves: command the center iframe
-  // to play, command everything else to pause. Iframes stay mounted (no
-  // reload, no jump-to-zero) but only one is actively decoding video.
+  // Center-only playback. Many muted iframes mounted at once make browsers
+  // throttle autoplay and the video-decode load makes sliding choppy. We drive
+  // playback ourselves: play the centre iframe, pause the rest. Iframes stay
+  // mounted (no reload, no jump-to-zero) — only one decodes at a time.
   useEffect(() => {
     const apply = () => {
       const slots = cellSlotsRef.current;
@@ -289,14 +286,8 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
               '*',
             );
           } else if (src.includes('vimeo')) {
-            iframe.contentWindow.postMessage(
-              JSON.stringify({ method: isCenter ? 'play' : 'pause' }),
-              '*',
-            );
-            iframe.contentWindow.postMessage(
-              JSON.stringify({ method: 'setMuted', value: true }),
-              '*',
-            );
+            iframe.contentWindow.postMessage(JSON.stringify({ method: isCenter ? 'play' : 'pause' }), '*');
+            iframe.contentWindow.postMessage(JSON.stringify({ method: 'setMuted', value: true }), '*');
           }
         } catch {}
       }
@@ -317,18 +308,16 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     if (Math.abs(wrapped) < 0.5) {
       onPick(films[i]);
     } else {
-      manualTarget.current = i;
+      // Navigate to the clicked side film: aim the target at the shortest path
+      // to it and hold for ~900ms so the continuous roll doesn't fight it.
+      manualTarget.current = snapFloat.current + wrapped;
       manualUntil.current = performance.now() + 900;
     }
   };
 
   const centerFilm = films[activeIdx];
 
-  // Dynamic hero-title sizing: long titles were overflowing the viewport
-  // because the title is white-space: nowrap. We compute a font-size that fits
-  // the title within (containerW - 64px gutter) — picking the lesser of the
-  // CSS clamp ceiling (160px) and a width-based shrink-to-fit. Anton's average
-  // glyph width at uppercase ≈ 0.50 × font-size; we use 0.55 to leave margin.
+  // Dynamic hero-title sizing so long titles never overflow the viewport.
   const titleLen = Math.max(1, centerFilm.title.length);
   const available = Math.max(320, containerW - 64);
   const charSizeCap = available / (titleLen * 0.55);
@@ -368,9 +357,9 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
               >
                 <div className="frame">
                   <HeroThumb film={film} className="frame-poster" />
-                  {/* All hero iframes stay mounted for the lifetime of the
-                      page — unmounting/remounting on slider step would
-                      restart playback from t=0. */}
+                  {/* Iframes stay mounted for the lifetime of the page — a
+                      stable key means position changes (pure DOM transforms)
+                      never remount or reload them. */}
                   <iframe
                     key={film.videoId}
                     className="frame-video"
@@ -388,9 +377,9 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         </div>
       </div>
 
-      {/* Cylindrical "tube mouth" vignette — curved darkening top & bottom plus
-          a soft elliptical falloff. Sits above the films but below the title so
-          it reads as the inside of a drum we're looking down. */}
+      {/* Curved "tube mouth" vignette — the signature inside-the-cylinder cue.
+          The arched top/bottom darkening + heavy corners read as looking down a
+          horizontal drum. Sits above the films, below the title. */}
       <div className="hero-vignette" aria-hidden="true" />
 
       <div className="hero-title-wrap">
