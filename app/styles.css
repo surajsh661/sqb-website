@@ -309,6 +309,46 @@ body.no-grain::before { display: none; }
 }
 .video-cell { will-change: transform, filter, opacity; }
 
+/* Cinematic gate vignette — a curved projector aperture. The radial keeps a
+   clear elliptical window over the front film and ramps HARD to black at the
+   sides and corners, so the curving neighbour films dissolve into gloom. The
+   linear band deepens the very top and bottom into the arched "tube mouth".
+   Sits above the films (z 4); the title-wrap (z 5) stays on top. */
+.hero-vignette {
+  position: absolute; inset: 0;
+  z-index: 4; pointer-events: none;
+  background:
+    radial-gradient(118% 78% at 50% 44%,
+      transparent 0%,
+      transparent 30%,
+      rgba(0,0,0,0.30) 52%,
+      rgba(0,0,0,0.72) 74%,
+      rgba(0,0,0,0.97) 92%),
+    linear-gradient(180deg,
+      rgba(0,0,0,0.85) 0%,
+      rgba(0,0,0,0.18) 12%,
+      transparent 24%,
+      transparent 76%,
+      rgba(0,0,0,0.30) 90%,
+      rgba(0,0,0,0.92) 100%);
+}
+[data-theme="light"] .hero-vignette {
+  background:
+    radial-gradient(118% 78% at 50% 44%,
+      transparent 0%,
+      transparent 32%,
+      rgba(246,241,229,0.30) 54%,
+      rgba(246,241,229,0.74) 76%,
+      rgba(246,241,229,0.97) 92%),
+    linear-gradient(180deg,
+      rgba(246,241,229,0.85) 0%,
+      rgba(246,241,229,0.2) 12%,
+      transparent 24%,
+      transparent 76%,
+      rgba(246,241,229,0.32) 90%,
+      rgba(246,241,229,0.92) 100%);
+}
+
 /* Audio mute toggle for case-study hero video */
 .case-study .bg { position: relative; }
 .case-mute {
@@ -1323,17 +1363,13 @@ body.no-grain::before { display: none; }
   position: absolute; left: 0; right: 0;
   top: 88px; bottom: 26vh;
   z-index: 4; pointer-events: none;
-  /* The strip is purely 2D — no perspective. The velocity zoom on .video-track
-     (translate3d + scale) creates the settled-vs-transit visual on its own. */
-  perspective: none;
-  overflow: hidden;
+  /* The 3D camera for the concave cylinder. A fairly deep perspective keeps the
+     side films from ballooning as they curve toward the viewer, while still
+     giving real foreshortening on the wrap. */
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
 }
-.hero-zone .video-track {
-  pointer-events: auto;
-  /* Track origin sits at the centre of .hero-zone (since cell-slots use
-     left:50% / margin offsets), so scale() zooms around the centred film. */
-  transform-origin: 50% 50%;
-}
+.hero-zone .video-track { pointer-events: auto; }
 
 .vcard { cursor: pointer; }
 .vcard .vplay {
