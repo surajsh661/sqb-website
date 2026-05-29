@@ -114,14 +114,15 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => mq.removeEventListener('change', set);
   }, []);
 
-  // Centre film ~58% of viewport width so the curved neighbours have room to
-  // wrap in from the sides toward the viewer. Mobile: near full width.
-  const ASPECT_W = 21;
+  // Centre film a touch larger now and in 16:9 (was 21:9). The curved
+  // neighbours still have room to wrap in from the sides. Mobile: near full
+  // width. The height cap keeps the taller 16:9 cell inside the hero-zone.
+  const ASPECT_W = 16;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.9 : 0.58;
+  const widthFraction = containerW < 700 ? 0.92 : 0.64;
   const cellW = Math.min(
     containerW * widthFraction,
-    (containerH * 0.8 * ASPECT_W) / ASPECT_H,
+    (containerH * 0.6 * ASPECT_W) / ASPECT_H,
   );
   const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;

@@ -41,6 +41,10 @@ export default function Engine() {
 
   return (
     <section className="engine" data-screen-label="07 The Engine">
+      {/* Faint open-hood / engine-bay backdrop sitting behind the founder
+          circles, so the two portraits read like parts of the engine. */}
+      <div className="engine-hood" aria-hidden="true" />
+
       <div className="heading">
         <div className="eyebrow" style={{ justifyContent: 'center' }}>
           <span className="num">{COPY.engine.eyebrowNumber}</span> <span>{COPY.engine.eyebrowLabel}</span>

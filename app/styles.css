@@ -587,6 +587,27 @@ body.no-grain::before { display: none; }
   border-top: 1px solid var(--rule);
   overflow: hidden;
 }
+/* Faint engine-bay blueprint behind the founder circles. The two ringed
+   cylinder-head housings in the artwork sit exactly behind the portraits so
+   the circles read as mounted engine components. Masked to an oval so it has
+   no hard edges. (Swap the url to /engine/hood.jpg for a real photo later.) */
+.engine-hood {
+  position: absolute;
+  left: 50%; top: 52%;
+  transform: translate(-50%, -50%);
+  width: min(1180px, 94vw);
+  height: 640px;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('/engine/hood.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.22;
+  -webkit-mask-image: radial-gradient(ellipse 64% 66% at 50% 50%, #000 32%, rgba(0,0,0,0.4) 64%, transparent 84%);
+  mask-image: radial-gradient(ellipse 64% 66% at 50% 50%, #000 32%, rgba(0,0,0,0.4) 64%, transparent 84%);
+}
+[data-theme="light"] .engine-hood { opacity: 0.16; }
 .engine .heading {
   text-align: center; margin-bottom: 32px;
 }
@@ -606,6 +627,7 @@ body.no-grain::before { display: none; }
    around each circle via CSS shape-outside on a phantom floated element. */
 .engine-row {
   position: relative;
+  z-index: 1; /* above the .engine-hood backdrop */
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -703,16 +725,16 @@ body.no-grain::before { display: none; }
 .founder-bio.left p::before {
   content: "";
   float: right;
-  width: 280px; height: 280px;
+  width: 300px; height: 300px;
   shape-outside: circle(50%);
-  shape-margin: 36px;
+  shape-margin: 52px;
 }
 .founder-bio.right p::before {
   content: "";
   float: left;
-  width: 280px; height: 280px;
+  width: 300px; height: 300px;
   shape-outside: circle(50%);
-  shape-margin: 36px;
+  shape-margin: 52px;
 }
 .founder-bio.right p { text-align: right; }
 
