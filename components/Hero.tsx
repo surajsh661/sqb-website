@@ -67,15 +67,15 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Centre cell ~60% of viewport on desktop, but at 21:9 cinemascope ratio
-  // instead of 16:9 — gives the row a cinema-strip feel instead of three
-  // boxy panels. Side cells naturally cover the remaining 40%.
+  // Centre cell ~70% of viewport on desktop at 21:9 cinemascope ratio.
+  // Bigger than the prior 60% so the hero film really commands the screen,
+  // and side cells still poke in from the edges to advertise the carousel.
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.86 : 0.60;
+  const widthFraction = containerW < 700 ? 0.92 : 0.70;
   const cellW = Math.min(
     containerW * widthFraction,
-    (containerH * 0.72 * ASPECT_W) / ASPECT_H,
+    (containerH * 0.78 * ASPECT_W) / ASPECT_H,
   );
   const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;
@@ -118,12 +118,11 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const wrapped = wrapDelta(i - float, N);
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
-        // Subtle perspective tilt — matches Kaide reference where side cells
-        // angle slightly toward centre but don't dramatically perspective-
-        // shrink. cos(8°) ≈ 0.99, so foreshortening is negligible and cells
-        // can pack edge-to-edge without opening a perceived gap.
-        const rot = Math.max(-12, Math.min(12, -dir * Math.min(dist, 1.6) * 8));
-        const scale = 1 - Math.min(dist, 1.8) * 0.02;
+        // Very gentle tilt — kept under 5° so side cells sit almost flat
+        // against the centre cell. Steeper tilts visually open a "V" that
+        // reads as a gap even when the boxes physically touch.
+        const rot = Math.max(-8, Math.min(8, -dir * Math.min(dist, 1.6) * 5));
+        const scale = 1 - Math.min(dist, 1.8) * 0.015;
         // Very light atmospheric drift on side cells. Side cards should
         // still read clearly — just slightly receded.
         const blur = Math.min(dist * 2, 3);
@@ -133,10 +132,10 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // Slight overlap so the rounded corners of adjacent cells visually
-        // overlap — kills the dark sliver-gap effect even when the actual
-        // cell boxes are touching in 3D.
-        slot.style.transform = `translate3d(${wrapped * w * 0.94 - w / 2}px, -50%, 0)`;
+        // Pack slots edge-to-edge with a 1% inward bias so adjacent rounded
+        // corners overlap and any sub-pixel tilt-induced gap closes. No
+        // visible sliver between cells.
+        slot.style.transform = `translate3d(${wrapped * w * 0.99 - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
