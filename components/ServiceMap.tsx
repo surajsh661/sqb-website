@@ -1,4 +1,5 @@
 'use client';
+import { WORLD_PATH } from '@/lib/world-path';
 
 // Service-area world map. Equirectangular projection (lat/lng → x/y on a
 // 1000×500 viewBox). Glowing dots mark each region we ship into; subtle
@@ -79,29 +80,17 @@ export default function ServiceMap() {
             </radialGradient>
           </defs>
 
-          {/* Stylised continent silhouettes — minimal blobs, not cartographic,
-              just enough to read as "the world". */}
-          <g className="sm-land" fill="none" stroke="var(--fg)" strokeOpacity="0.18" strokeWidth="1.2" strokeLinejoin="round">
-            {/* North America */}
-            <path d="M 130 90 Q 200 70 280 95 Q 310 130 320 170 Q 308 215 280 230 Q 250 235 235 220 Q 225 215 218 230 Q 195 235 175 215 Q 155 180 145 145 Q 138 115 130 90 Z" />
-            {/* Central + Caribbean tail */}
-            <path d="M 268 235 Q 282 250 290 260" />
-            {/* South America */}
-            <path d="M 290 260 Q 320 268 328 295 Q 338 340 322 380 Q 305 410 290 405 Q 280 380 282 350 Q 280 305 290 260 Z" />
-            {/* Europe */}
-            <path d="M 470 110 Q 510 100 545 110 Q 555 130 540 145 Q 525 158 540 170 Q 530 180 510 175 Q 488 168 478 155 Q 465 135 470 110 Z" />
-            {/* Africa */}
-            <path d="M 490 180 Q 535 175 555 195 Q 568 240 562 290 Q 548 340 525 365 Q 508 372 495 355 Q 478 320 478 280 Q 478 230 490 180 Z" />
-            {/* Middle East nub */}
-            <path d="M 555 175 Q 580 175 595 195 Q 600 215 585 225 Q 570 220 558 205 Q 552 190 555 175 Z" />
-            {/* Asia mainland */}
-            <path d="M 565 105 Q 660 90 750 105 Q 830 120 875 155 Q 880 195 855 220 Q 800 235 740 225 Q 690 220 660 235 Q 625 230 605 215 Q 585 195 575 170 Q 565 140 565 105 Z" />
-            {/* India peninsula */}
-            <path d="M 685 215 Q 700 220 700 235 Q 695 255 685 265 Q 678 255 678 240 Q 678 222 685 215 Z" />
-            {/* Southeast Asia / Indonesia */}
-            <path d="M 800 240 Q 830 255 850 265 Q 870 280 855 290 Q 820 290 795 280 Q 780 268 800 240 Z" />
-            {/* Australia */}
-            <path d="M 815 320 Q 855 312 895 325 Q 905 345 880 360 Q 845 365 820 355 Q 810 340 815 320 Z" />
+          {/* Real continent outlines from Natural Earth 110m (simplified). */}
+          <g className="sm-land">
+            <path
+              d={WORLD_PATH}
+              fillRule="evenodd"
+              fill="rgba(120, 160, 220, 0.10)"
+              stroke="rgba(120, 160, 220, 0.55)"
+              strokeWidth="0.6"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
           </g>
 
           {/* Arcs from India to every international destination */}

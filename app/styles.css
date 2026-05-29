@@ -1822,31 +1822,46 @@ video.frame-video {
 }
 
 /* ============================================================
-   SERVICE-AREA WORLD MAP
+   SERVICE-AREA WORLD MAP — midnight-blue theme
    ============================================================ */
 .service-map {
   position: relative;
   padding: 140px 32px 160px;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid rgba(120, 160, 220, 0.12);
   overflow: hidden;
+  /* Section-local midnight-blue palette. */
+  --sm-text:        #e8efff;
+  --sm-text-dim:    #8aa0c6;
+  --sm-glow:        #ffd54a;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%,   rgba(60, 110, 220, 0.18), transparent 65%),
+    radial-gradient(ellipse 80% 70% at 70% 100%, rgba(20,  60, 160, 0.30), transparent 75%),
+    linear-gradient(180deg, #060e22 0%, #0a1838 45%, #07112a 100%);
+  color: var(--sm-text);
 }
 .service-map .sm-head {
   max-width: 900px; margin: 0 auto 60px;
   text-align: center;
+  position: relative; z-index: 1;
 }
+.service-map .sm-head .eyebrow { color: var(--sm-text-dim); justify-content: center; }
+.service-map .sm-head .eyebrow .num { color: var(--sm-glow); }
 .service-map .sm-head h2 {
   font-family: 'Anton', sans-serif;
   font-size: clamp(48px, 8vw, 120px);
   line-height: 0.92; letter-spacing: -0.01em; text-transform: uppercase;
   margin-top: 22px;
+  color: var(--sm-text);
 }
 .service-map .sm-head h2 em {
-  font-style: normal; color: var(--accent);
+  font-style: normal;
+  color: var(--sm-glow);
+  text-shadow: 0 0 32px rgba(255, 213, 74, 0.45);
 }
 .service-map .sm-blurb {
   margin-top: 28px;
   font-size: 16px; line-height: 1.6;
-  color: var(--fg-dim);
+  color: var(--sm-text-dim);
 }
 .service-map .sm-canvas {
   max-width: 1200px; margin: 0 auto;
@@ -1854,12 +1869,14 @@ video.frame-video {
 }
 .service-map .sm-canvas svg { display: block; width: 100%; height: auto; }
 
-/* Land silhouettes — subtle, just enough to give "world" context. */
+/* Land silhouettes — Natural Earth 110m simplified. The fill is barely
+   visible (cool blue tint); the stroke is the real outline. */
 .sm-land path { vector-effect: non-scaling-stroke; }
 
 /* Arcs ride from India to every international destination. Stroke-dasharray
    + draw animation makes them feel like a flight path getting laid down. */
 .sm-arcs path {
+  stroke: var(--sm-glow);
   stroke-dasharray: 4 5;
   animation: smArcDraw 6s linear infinite;
 }
@@ -1883,38 +1900,44 @@ video.frame-video {
 
 /* Dot cores — small but glowy via drop-shadow filter. */
 .sm-dot circle {
-  filter: drop-shadow(0 0 6px rgba(245, 197, 24, 0.85))
-          drop-shadow(0 0 14px rgba(245, 197, 24, 0.45));
+  fill: var(--sm-glow);
+  filter: drop-shadow(0 0 6px rgba(255, 213, 74, 0.95))
+          drop-shadow(0 0 14px rgba(255, 213, 74, 0.55));
 }
 .sm-dot.hub circle {
-  filter: drop-shadow(0 0 10px rgba(245, 197, 24, 0.95))
-          drop-shadow(0 0 28px rgba(245, 197, 24, 0.55));
+  filter: drop-shadow(0 0 10px rgba(255, 213, 74, 1))
+          drop-shadow(0 0 30px rgba(255, 213, 74, 0.6));
 }
 
-/* Labels */
-.sm-labels text { text-transform: uppercase; opacity: 0.78; }
+/* Labels — soft warm white over the navy. */
+.sm-labels text {
+  text-transform: uppercase;
+  fill: var(--sm-text);
+  opacity: 0.78;
+}
 
-/* List below the map — the regions as a horizontal pill row. */
+/* List below the map — chips on the midnight background. */
 .service-map .sm-list {
   list-style: none;
   display: flex; flex-wrap: wrap; gap: 10px 14px;
   justify-content: center; align-items: center;
   max-width: 1000px; margin: 56px auto 0;
+  position: relative; z-index: 1;
 }
 .service-map .sm-list li {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--fg);
+  color: var(--sm-text);
   padding: 8px 16px;
-  border: 1px solid rgba(245, 197, 24, 0.32);
+  border: 1px solid rgba(255, 213, 74, 0.30);
   border-radius: 999px;
-  background: rgba(245, 197, 24, 0.04);
+  background: rgba(255, 213, 74, 0.04);
   transition: background .25s ease, border-color .25s ease, color .25s ease;
 }
 .service-map .sm-list li:hover {
-  background: rgba(245, 197, 24, 0.15);
-  border-color: var(--accent);
-  color: var(--accent);
+  background: rgba(255, 213, 74, 0.15);
+  border-color: var(--sm-glow);
+  color: var(--sm-glow);
 }
 
 @media (max-width: 900px) {
