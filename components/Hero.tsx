@@ -113,7 +113,10 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
         const wrapped = wrapDelta(i - float, N);
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
-        const rot = Math.max(-46, Math.min(46, -dir * Math.min(dist, 1.6) * 32));
+        // Softer perspective tilt than the prototype's 32° so side cells stay
+        // wider visually — keeps the row reading as continuous without
+        // overlapping the centre cell.
+        const rot = Math.max(-30, Math.min(30, -dir * Math.min(dist, 1.6) * 20));
         const scale = 1 - Math.min(dist, 1.8) * 0.04;
         const blur = Math.min(dist * 7, 11);
         const sat = 1 + Math.min(dist, 1) * 0.2;
@@ -122,9 +125,7 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // 0.82 packs the cells closer than their full width so perspective
-        // rotation doesn't open a visible gap between center and neighbours.
-        slot.style.transform = `translate3d(${wrapped * w * 0.82 - w / 2}px, -50%, 0)`;
+        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
