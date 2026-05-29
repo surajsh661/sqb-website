@@ -1740,6 +1740,10 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
    MANIFESTO HEADLINE — scroll-triggered reveal
    "film [camera] making" + "A [stars] I"
    ============================================================ */
+/* Keep the word + inline-block icon + word as one unbreakable unit so
+   the browser doesn't drop "making" / "I" to the next line when the
+   icon slot expands. */
+.mh .mh-nowrap { white-space: nowrap; }
 .mh .cam-slot,
 .mh .star-slot {
   display: inline-block;

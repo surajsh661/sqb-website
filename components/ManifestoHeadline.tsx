@@ -89,8 +89,16 @@ export default function ManifestoHeadline() {
 
   return (
     <h2 className="mh" ref={ref}>
-      We love <em>film</em>{camera}<em>making</em> first <br />
-      and <span className="ai">A</span>{stars}<span className="ai">I</span> second. <br />
+      We love{' '}
+      <span className="mh-nowrap">
+        <em>film</em>{camera}<em>making</em>
+      </span>{' '}
+      first <br />
+      and{' '}
+      <span className="mh-nowrap">
+        <span className="ai">A</span>{stars}<span className="ai">I</span>
+      </span>{' '}
+      second. <br />
       And we&apos;re at the <em>cutting edge</em> of both.
     </h2>
   );
