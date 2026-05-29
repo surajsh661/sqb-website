@@ -114,14 +114,16 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
         // Softer perspective tilt than the prototype's 32° so side cells stay
-        // wider visually — keeps the row reading as continuous without
-        // overlapping the centre cell.
-        const rot = Math.max(-30, Math.min(30, -dir * Math.min(dist, 1.6) * 20));
-        const scale = 1 - Math.min(dist, 1.8) * 0.04;
-        const blur = Math.min(dist * 7, 11);
-        const sat = 1 + Math.min(dist, 1) * 0.2;
-        const bright = 1 - Math.min(dist, 1.5) * 0.28;
-        const opacity = dist < 0.05 ? 1 : Math.max(0.42, 1 - dist * 0.3);
+        // wider visually.
+        const rot = Math.max(-24, Math.min(24, -dir * Math.min(dist, 1.6) * 16));
+        const scale = 1 - Math.min(dist, 1.8) * 0.03;
+        // Much lighter dimming than the prototype so the side cards read as
+        // peeking neighbours, not distant fog. Prototype values made the
+        // visual gap between centre and sides look enormous.
+        const blur = Math.min(dist * 3, 5);
+        const sat = 1 + Math.min(dist, 1) * 0.15;
+        const bright = 1 - Math.min(dist, 1.5) * 0.14;
+        const opacity = dist < 0.05 ? 1 : Math.max(0.62, 1 - dist * 0.2);
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
