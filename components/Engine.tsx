@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { SQB_TEAM } from '@/lib/data';
 
 // Bios — easy to edit. Energetic / young / bold. Replace any time via
@@ -9,6 +10,40 @@ const BIOS: Record<string, string> = {
   f2:
     "Founder & Producer of S’QB Pictures, and the operator who turns every brief into a delivered film. Shubham runs production end-to-end — preproduction at 6am to render queues at midnight — and has shipped national TVCs, IPL broadcasts, AI cinema, vertical drama and long-form documentary on impossible timelines for the country’s biggest brands. His unit crewed the 9-month Sunheri Soch sprint with RedFM, the Sunstone × Lucknow Super Giants IPL campaign, and the docu-drama Revolution. The studio ships because Shubham makes sure nothing falls. Loves a tight crew over a big one, a brief with stakes over a brief without.",
 };
+
+// Filename slugs the component will try in /public/founders/ for each
+// founder (in order: jpg → png → webp). First one that loads wins; if
+// all three are missing the circle falls back to text only.
+const PHOTO_SLUGS: Record<string, string> = {
+  f1: 'suraj',
+  f2: 'shubham',
+};
+
+function FounderPortrait({
+  slug, role, name,
+}: { slug: string; role: string; name: string }) {
+  const candidates = [`/founders/${slug}.jpg`, `/founders/${slug}.png`, `/founders/${slug}.webp`];
+  const [idx, setIdx] = useState(0);
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="founder-portrait">
+      {!failed && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className="fp-photo"
+          src={candidates[idx]}
+          alt={name}
+          onError={() => {
+            if (idx < candidates.length - 1) setIdx((i) => i + 1);
+            else setFailed(true);
+          }}
+        />
+      )}
+      <span className="fp-role">{role}</span>
+      <span className="fp-name">{name}</span>
+    </div>
+  );
+}
 
 export default function Engine() {
   const [suraj, shubham] = SQB_TEAM.founders;
@@ -31,14 +66,8 @@ export default function Engine() {
         {/* The two portraits live in a single absolutely-positioned pair so the
             bios on either side can fill the full outer half of the row. */}
         <div className="founder-pair">
-          <div className="founder-portrait">
-            <span className="fp-role">{suraj.role}</span>
-            <span className="fp-name">{suraj.name}</span>
-          </div>
-          <div className="founder-portrait">
-            <span className="fp-role">{shubham.role}</span>
-            <span className="fp-name">{shubham.name}</span>
-          </div>
+          <FounderPortrait slug={PHOTO_SLUGS[suraj.id]} role={suraj.role} name={suraj.name} />
+          <FounderPortrait slug={PHOTO_SLUGS[shubham.id]} role={shubham.role} name={shubham.name} />
         </div>
 
         <div className="founder-bio right">

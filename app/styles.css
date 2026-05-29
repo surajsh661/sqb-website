@@ -513,16 +513,48 @@ body.no-grain::before { display: none; }
 }
 .founder-portrait {
   pointer-events: auto;
+  position: relative;
+  overflow: hidden;
   width: 320px; height: 320px;
   border: 2px solid var(--accent);
   border-radius: 50%;
   background: var(--ink-2);
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  align-items: center; justify-content: flex-end;
   text-align: center;
-  padding: 0 24px;
+  padding: 0 24px 36px;
   box-shadow: 0 0 0 1px var(--bg) inset, 0 30px 80px rgba(0,0,0,0.4);
   transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s;
+}
+.founder-portrait .fp-photo {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  z-index: 0;
+}
+.founder-portrait .fp-role,
+.founder-portrait .fp-name {
+  position: relative;
+  z-index: 2;
+}
+/* Darken the bottom third of the portrait so the role + name overlay stays
+   readable on top of whatever the photo looks like. Only renders when a
+   photo is actually loaded (i.e. when .fp-photo is in the DOM). */
+.founder-portrait:has(.fp-photo)::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 55%;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.85) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.founder-portrait:has(.fp-photo) .fp-name { color: #fff; }
+.founder-portrait:has(.fp-photo) .fp-role { color: var(--accent); }
+/* Without a photo: keep the original centred layout. */
+.founder-portrait:not(:has(.fp-photo)) {
+  justify-content: center;
+  padding: 0 24px;
 }
 .founder-portrait:hover {
   transform: translateY(-6px);
