@@ -204,6 +204,11 @@ body.no-grain::before { display: none; }
   width: 0; height: 0;
   z-index: 2;
   will-change: transform;
+  /* preserve-3d lets the per-cell translateZ actually sort in true
+     depth space — side cells sit behind the centre, the centre wins
+     any rotation-induced overlap at the seam. */
+  transform-style: preserve-3d;
+  perspective: 1200px;
 }
 .cell-slot {
   position: absolute;
@@ -213,6 +218,7 @@ body.no-grain::before { display: none; }
      requestAnimationFrame. A transition here would queue a 180ms animation
      for every frame's update and stutter horribly. */
   will-change: transform;
+  transform-style: preserve-3d;
 }
 .video-cell {
   position: relative;

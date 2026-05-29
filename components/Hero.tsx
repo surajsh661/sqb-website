@@ -119,28 +119,32 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
         // Kaide-style cinematic side panels:
-        //  - Strong rotateY tilt (up to 14°) so the side cards angle into
-        //    3D space, pivoting about their INNER edge — the edge touching
-        //    the centre cell stays planted at the seam, the outer edge
-        //    swings backward into the scene.
-        //  - Blur + brightness drop so the side cards read as out-of-focus
-        //    foreground; only the centre cell is in true focus.
-        //  - Scale stays 1.0 — any shrink would re-open a sliver at the
-        //    seam; the recede effect is sold by perspective alone.
-        const rot = Math.max(-14, Math.min(14, -dir * Math.min(dist, 1.6) * 10));
+        //  - Strong rotateY tilt (up to 18°) pivoting on the INNER edge,
+        //    so each side panel's outer half swings backward into 3D
+        //    space — gives the curved-IMAX-screen look.
+        //  - Depth offset: side cells translate -120px on Z. They sit
+        //    behind the centre in true 3D, so when their rotated surface
+        //    extends past the seam plane it is *occluded* by the centre
+        //    cell, not overlapped on top of it.
+        //  - Blur + brightness so they read as defocused foreground;
+        //    only the centre cell is in true focus.
+        //  - Scale stays 1.0 — recede is sold by perspective + Z offset.
+        const rot = Math.max(-18, Math.min(18, -dir * Math.min(dist, 1.6) * 14));
         const scale = 1;
-        const blur = Math.min(dist * 3, 5);
+        const tz = -Math.min(dist, 1.5) * 120; // depth recede for side cells
+        const blur = Math.min(dist * 3.5, 6);
         const sat = 1 + Math.min(dist, 1) * 0.10;
-        const bright = 1 - Math.min(dist, 1.5) * 0.18;
-        const opacity = dist < 0.05 ? 1 : Math.max(0.7, 1 - dist * 0.18);
+        const bright = 1 - Math.min(dist, 1.5) * 0.22;
+        const opacity = dist < 0.05 ? 1 : Math.max(0.65, 1 - dist * 0.2);
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // Slots pack with a 1% inward bias so the rounded corners of
-        // adjacent cells overlap and any wedge gap left by the rotateY
-        // pivot is hidden.
-        slot.style.transform = `translate3d(${wrapped * w * 0.99 - w / 2}px, -50%, 0)`;
-        cell.style.transform = `perspective(1100px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
+        // Slots pack edge-to-edge with NO overlap (factor 1.0). Side
+        // cells don't bleed into the centre cell's footprint — and the
+        // -120px Z translation ensures any rotation-induced surface
+        // extension is depth-sorted behind the centre cell.
+        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
+        cell.style.transform = `perspective(1200px) rotateY(${rot}deg) translateZ(${tz}px) scale(${scale})`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
         cell.style.opacity = String(opacity);
