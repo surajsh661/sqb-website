@@ -67,12 +67,17 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Centre cell ~60% of viewport on desktop — same proportions as the
-  // Kaide reference, so the side cells occupy roughly the remaining 20%
-  // each, edge-to-edge with the centre.
+  // Centre cell ~60% of viewport on desktop, but at 21:9 cinemascope ratio
+  // instead of 16:9 — gives the row a cinema-strip feel instead of three
+  // boxy panels. Side cells naturally cover the remaining 40%.
+  const ASPECT_W = 21;
+  const ASPECT_H = 9;
   const widthFraction = containerW < 700 ? 0.86 : 0.60;
-  const cellW = Math.min(containerW * widthFraction, (containerH * 0.68 * 16) / 9);
-  const cellH = (cellW * 9) / 16;
+  const cellW = Math.min(
+    containerW * widthFraction,
+    (containerH * 0.72 * ASPECT_W) / ASPECT_H,
+  );
+  const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;
 
   useEffect(() => {
@@ -128,11 +133,10 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // Edge-to-edge packing (1.0). With the gentle 8° tilt above, the
-        // foreshortening is too small to open a visible gap, so cells can
-        // touch without the artificial overlap that would make side cells
-        // visibly cover the centre.
-        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
+        // Slight overlap so the rounded corners of adjacent cells visually
+        // overlap — kills the dark sliver-gap effect even when the actual
+        // cell boxes are touching in 3D.
+        slot.style.transform = `translate3d(${wrapped * w * 0.94 - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
