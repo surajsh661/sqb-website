@@ -101,7 +101,7 @@ export default function HomePage() {
                 <div className="label">CLIENTS &nbsp;//&nbsp; INDIAN + GLOBAL</div>
               </div>
               <div className="stat">
-                <div className="num"><CountUp end={1000} suffix="+" /></div>
+                <div className="num"><CountUp end={10000} suffix="+" /></div>
                 <div className="label">FILMS DELIVERED</div>
               </div>
               <div className="stat">
