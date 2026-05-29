@@ -1,5 +1,7 @@
 'use client';
 import { SQB_BTS } from '@/lib/data';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 import type { BTS } from '@/lib/types';
 
 const srcFor = (b: BTS) =>
@@ -47,9 +49,9 @@ export default function BTSPreview() {
   return (
     <section className="bts" data-screen-label="09 BTS">
       <div className="bts-head">
-        <div className="eyebrow"><span className="num">09</span> <span>BEHIND THE SCENES</span></div>
-        <h2>FROM THE <em>FLOOR</em>.</h2>
-        <p className="bts-blurb">Rigs, blocks, grade rooms, AI lab nights. The work behind the work.</p>
+        <div className="eyebrow"><span className="num">{COPY.bts.eyebrowNumber}</span> <span>{COPY.bts.eyebrowLabel}</span></div>
+        <h2>{rich(COPY.bts.heading)}</h2>
+        <p className="bts-blurb">{COPY.bts.blurb}</p>
       </div>
       <div className="bts-marquee">
         <div className="bts-marquee-track">

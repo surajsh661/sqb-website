@@ -1,16 +1,17 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { COPY } from '@/lib/copy';
 
 interface Props { open: boolean; onClose: () => void }
 
 const ITEMS: [string, string, string][] = [
-  ['VIDEO',         'all',      '01'],
-  ['ADS / TVC',     'ad',       '02'],
-  ['FILMS & SHOWS', 'film',     '03'],
-  ['AI FILMS',      'ai',       '04'],
-  ['MUSIC VIDEOS',  'music',    '05'],
-  ['VERTICAL',      'vertical', '06'],
-  ['CONTACT',       'contact',  '07'],
+  [COPY.menu.itemAll,      'all',      '01'],
+  [COPY.menu.itemAd,       'ad',       '02'],
+  [COPY.menu.itemFilm,     'film',     '03'],
+  [COPY.menu.itemAi,       'ai',       '04'],
+  [COPY.menu.itemMusic,    'music',    '05'],
+  [COPY.menu.itemVertical, 'vertical', '06'],
+  [COPY.menu.itemContact,  'contact',  '07'],
 ];
 
 export default function TicketMenu({ open, onClose }: Props) {
@@ -30,15 +31,15 @@ export default function TicketMenu({ open, onClose }: Props) {
         <div className="ticket-section">
           <div className="ticket-header">
             <div className="stub">
-              <div>S'QB · ADMIT ONE</div>
-              <div className="big">REEL ROOM</div>
+              <div>{COPY.menu.stubLine}</div>
+              <div className="big">{COPY.menu.stubBig}</div>
             </div>
-            <button className="ticket-close" onClick={onClose}>✕</button>
+            <button className="ticket-close" onClick={onClose} aria-label="Close menu">✕</button>
           </div>
           <div className="ticket-info" style={{ marginTop: 8 }}>
-            <div className="row"><span>SCREEN</span><strong>STUDIO 01</strong></div>
-            <div className="row"><span>SHOW</span><strong>2026 / DAILY</strong></div>
-            <div className="row"><span>SEAT</span><strong>YOU + IDEA</strong></div>
+            <div className="row"><span>{COPY.menu.screenLabel}</span><strong>{COPY.menu.screenValue}</strong></div>
+            <div className="row"><span>{COPY.menu.showLabel}</span><strong>{COPY.menu.showValue}</strong></div>
+            <div className="row"><span>{COPY.menu.seatLabel}</span><strong>{COPY.menu.seatValue}</strong></div>
           </div>
         </div>
 
@@ -59,8 +60,8 @@ export default function TicketMenu({ open, onClose }: Props) {
 
         <div className="ticket-section fold-2">
           <div className="ticket-info" style={{ marginBottom: 16 }}>
-            <div className="row"><span>EMAIL</span><strong>SURAJSHARMA@SQBPICTURES.COM</strong></div>
-            <div className="row"><span>WHATSAPP</span><strong>+91 90130 82883</strong></div>
+            <div className="row"><span>{COPY.menu.emailLabel}</span><strong>SURAJSHARMA@SQBPICTURES.COM</strong></div>
+            <div className="row"><span>{COPY.menu.whatsappLabel}</span><strong>+91 90130 82883</strong></div>
           </div>
           <div className="ticket-foot">
             <div className="socials">
@@ -79,7 +80,7 @@ export default function TicketMenu({ open, onClose }: Props) {
         <div className="perf" />
 
         <div className="ticket-section fold-3" style={{ padding: '14px 30px', textAlign: 'center' }}>
-          <div className="ticket-info">© NIYASHI MOTION PICTURES · ★★★★★</div>
+          <div className="ticket-info">{COPY.menu.copyright}</div>
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { SQB_CREATORS } from '@/lib/data';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 import { setupReveal } from '@/lib/video-utils';
 import type { Creator } from '@/lib/types';
 
@@ -16,12 +18,12 @@ function CreatorBlock({ c }: { c: Creator }) {
       <div className="creator-head">
         <div>
           <div className="creator-eyebrow">
-            {c.flagship ? 'IP WE BUILT FROM SCRATCH' : 'CHANNEL PARTNER'}
+            {c.flagship ? COPY.social.creatorFlagshipEyebrow : COPY.social.creatorPartnerEyebrow}
           </div>
           <h2 className="creator-name">{c.name}</h2>
           <div className="creator-subs">
             <span className="cs-count">{c.subs}</span>
-            <span className="cs-label">SUBSCRIBERS · YOUTUBE</span>
+            <span className="cs-label">{COPY.social.subsLabel}</span>
           </div>
           <p className="creator-blurb">{c.blurb}</p>
         </div>
@@ -42,7 +44,7 @@ function CreatorBlock({ c }: { c: Creator }) {
               <img src={`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`} alt="" referrerPolicy="no-referrer" />
               <div className="ct-play">▶</div>
               <div className="ct-num">{String((i % c.videos.length) + 1).padStart(2, '0')}</div>
-              <div className="ct-ext">WATCH ON YT ↗</div>
+              <div className="ct-ext">{COPY.social.watchYt}</div>
             </a>
           ))}
         </div>
@@ -63,16 +65,13 @@ export default function SocialPage() {
       <section className="social-hero clean">
         <div className="sh-inner">
           <div className="sh-left">
-            <div className="sh-eyebrow">FROM IDEAS TO VIRALITY</div>
-            <h1 className="sh-title">CAAS · CONTENT AS A <em>SERVICE</em></h1>
-            <p className="sh-blurb">
-              Original IPs and creator engines we built from scratch — the channels, formats and films
-              behind some of India&apos;s biggest YouTube creators.
-            </p>
+            <div className="sh-eyebrow">{COPY.social.heroEyebrow}</div>
+            <h1 className="sh-title">{rich(COPY.social.heroTitle)}</h1>
+            <p className="sh-blurb">{COPY.social.heroBlurb}</p>
             <div className="sh-stats">
-              <div><span className="n">10M+</span><span className="l">Subscribers Reached</span></div>
-              <div><span className="n">2M+</span><span className="l">Monthly Views</span></div>
-              <div><span className="n">4+</span><span className="l">Original IPs Built</span></div>
+              {COPY.social.stats.map((s, i) => (
+                <div key={i}><span className="n">{s.value}</span><span className="l">{s.label}</span></div>
+              ))}
             </div>
           </div>
           <div className="sh-stream" aria-hidden="true">

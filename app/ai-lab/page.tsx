@@ -9,6 +9,8 @@ import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { SQB_AI_LAB, SQB_FILMS } from '@/lib/data';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 import { videoSrc, thumbSources, setupReveal } from '@/lib/video-utils';
 import type { AILabItem, Film } from '@/lib/types';
 
@@ -16,13 +18,13 @@ const LAB = SQB_AI_LAB;
 
 const PANES = [
   { key: 'anim' as const, cls: 'anim', num: '01', name: 'ANIMATED',
-    desc: 'Stylised AI animation built like illustration in motion — character, frame and pacing carry the story.',
+    desc: COPY.aiLab.paneAnim,
     bg: LAB.animated[0], anchor: 'section-anim' },
   { key: 'real' as const, cls: 'real', num: '02', name: 'REALISTIC',
-    desc: 'Generative cinema indistinguishable from a shot film — real-reference performances, art-directed worlds.',
+    desc: COPY.aiLab.paneReal,
     bg: LAB.realistic[0], anchor: 'section-real' },
   { key: 'vfx' as const, cls: 'vfx', num: '03', name: 'VFX',
-    desc: 'Action, scale shots, effects. The impossible day on set turned into the inevitable shot in the cut.',
+    desc: COPY.aiLab.paneVfx,
     bg: LAB.vfx[0], anchor: 'section-vfx' },
 ];
 
@@ -132,9 +134,9 @@ export default function AILabPage() {
       <Topbar active="ai-lab" variant="nav" onOpenMenu={() => setMenuOpen(true)} />
 
       <section className="ailab-hero">
-        <div className="ai-eyebrow">{LAB.headline.eyebrow}</div>
-        <h1 className="ai-headline-title">AI CINEMA · BUILT TO RUN ON <em>BIG SCREENS</em></h1>
-        <p className="ai-headline-blurb">{LAB.headline.blurb}</p>
+        <div className="ai-eyebrow">{COPY.aiLab.heroEyebrow}</div>
+        <h1 className="ai-headline-title">{rich(COPY.aiLab.heroTitle)}</h1>
+        <p className="ai-headline-blurb">{COPY.aiLab.heroBlurb}</p>
 
         <div className="ai-picker">
           {PANES.map((p, i) => {
@@ -172,23 +174,23 @@ export default function AILabPage() {
 
       <AISection
         id="section-anim"
-        title="Animated AI"
+        title={COPY.aiLab.animTitle}
         items={LAB.animated}
-        blurb="Stylised AI animation — illustration in motion. Character, frame, and pacing carry the story."
+        blurb={COPY.aiLab.animBlurb}
         onOpen={onOpen}
       />
       <AISection
         id="section-real"
-        title="Realistic AI"
+        title={COPY.aiLab.realTitle}
         items={LAB.realistic}
-        blurb="Generative cinema indistinguishable from a shot film. Real-reference performances staged inside art-directed worlds — including OTT-grade docu-films like Sunheri Soch S4."
+        blurb={COPY.aiLab.realBlurb}
         onOpen={onOpen}
       />
       <AISection
         id="section-vfx"
-        title="VFX & Action"
+        title={COPY.aiLab.vfxTitle}
         items={LAB.vfx}
-        blurb="Action and scale shots, effects, set extensions. The impossible day on set turned into the inevitable shot in the cut."
+        blurb={COPY.aiLab.vfxBlurb}
         onOpen={onOpen}
       />
 

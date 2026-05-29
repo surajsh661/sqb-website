@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { COPY } from '@/lib/copy';
 
 interface Props {
   active?: 'home' | 'work' | 'ai-lab' | 'social';
@@ -41,14 +42,14 @@ export default function Topbar({
           <img src={logoSrc} alt="S'QB" onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')} />
         </Link>
         <div className="nav">
-          <Link href="/" className={active === 'home' ? 'active' : ''}>HOME</Link>
-          <Link href="/work" className={active === 'work' ? 'active' : ''}>VIDEO</Link>
-          <Link href="/ai-lab" className={active === 'ai-lab' ? 'active' : ''}>AI LAB</Link>
-          <Link href="/social" className={active === 'social' ? 'active' : ''}>SOCIAL</Link>
+          <Link href="/" className={active === 'home' ? 'active' : ''}>{COPY.nav.home}</Link>
+          <Link href="/work" className={active === 'work' ? 'active' : ''}>{COPY.nav.video}</Link>
+          <Link href="/ai-lab" className={active === 'ai-lab' ? 'active' : ''}>{COPY.nav.aiLab}</Link>
+          <Link href="/social" className={active === 'social' ? 'active' : ''}>{COPY.nav.social}</Link>
         </div>
         <div className="right">
           <a className="reach-out-btn" href="#contact" onClick={scrollToContact}>
-            REACH OUT <span className="ro-arrow">→</span>
+            {COPY.nav.reachOut} <span className="ro-arrow">→</span>
           </a>
           <button className="tt" onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}>
             {theme === 'dark' ? '☾' : '☀'}
@@ -74,14 +75,14 @@ export default function Topbar({
         <img src={logoSrc} alt="S'QB Pictures" onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')} />
       </Link>
       <nav className="nav-center">
-        <Link href="/" className={active === 'home' ? 'active' : ''}>HOME</Link>
-        <Link href="/work" className={active === 'work' ? 'active' : ''}>VIDEO</Link>
-        <Link href="/ai-lab" className={active === 'ai-lab' ? 'active' : ''}>AI LAB</Link>
-        <Link href="/social" className={active === 'social' ? 'active' : ''}>SOCIAL</Link>
+        <Link href="/" className={active === 'home' ? 'active' : ''}>{COPY.nav.home}</Link>
+        <Link href="/work" className={active === 'work' ? 'active' : ''}>{COPY.nav.video}</Link>
+        <Link href="/ai-lab" className={active === 'ai-lab' ? 'active' : ''}>{COPY.nav.aiLab}</Link>
+        <Link href="/social" className={active === 'social' ? 'active' : ''}>{COPY.nav.social}</Link>
       </nav>
       <div className="top-right">
         <a className="reach-out-btn" href="#contact" onClick={scrollToContact}>
-          REACH OUT <span className="ro-arrow">→</span>
+          {COPY.nav.reachOut} <span className="ro-arrow">→</span>
         </a>
         <button
           className="theme-toggle"

@@ -15,8 +15,21 @@ import CountUp from '@/components/CountUp';
 import {
   SQB_FILMS, SQB_GENRES, SQB_FEATURED_DEFAULT, SQB_COCOON,
 } from '@/lib/data';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 import { setupReveal, videoSrc } from '@/lib/video-utils';
 import type { Film, Genre } from '@/lib/types';
+
+// Capability-card icons live in code (one per card, in the same order as
+// COPY.work.capabilities). Edit the words in lib/copy.ts.
+const CAP_ICONS: React.ReactNode[] = [
+  <svg key="a" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="18" height="14" rx="1.5" /><path d="M3 10h18" /><path d="M7 6l-2-3" /><path d="M11 6l-2-3" /><path d="M15 6l-2-3" /><path d="M19 6l-2-3" /></svg>,
+  <svg key="b" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" /><path d="M4 7.5L12 12l8-4.5" /><path d="M12 12v9" /></svg>,
+  <svg key="c" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2z" /><path d="M19 17l.7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7L19 17z" /></svg>,
+  <svg key="d" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5" /><path d="M11 18h2" /><path d="M10 6h4" /></svg>,
+  <svg key="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H5s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v4s3.03-.55 4-2c1.08-1.62 0-5 0-5" /></svg>,
+  <svg key="f" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="11" r="6" /><circle cx="9" cy="11" r="2" /><rect x="14.5" y="8" width="6.5" height="6" rx="1" /></svg>,
+];
 
 function WorkInner() {
   const router = useRouter();
@@ -102,14 +115,9 @@ function WorkInner() {
 
       <section className="work-vision">
         <div className="wv-inner">
-          <div className="wv-eyebrow">THE CONTENT STUDIO</div>
-          <h1 className="wv-title">BUILT FOR <em>THE FUTURE</em></h1>
-          <p className="wv-blurb">
-            Whether you&apos;re starting with a vague idea or a fully fleshed-out concept, S&apos;QB
-            can bring your vision to life. We deliver high-fidelity, high-volume video content
-            across every format imaginable — from cinematic AI films to camera-shot TVCs, vertical
-            micro-dramas to long-form documentary.
-          </p>
+          <div className="wv-eyebrow">{COPY.work.visionEyebrow}</div>
+          <h1 className="wv-title">{rich(COPY.work.visionTitle)}</h1>
+          <p className="wv-blurb">{COPY.work.visionBlurb}</p>
           <a
             className="wv-cta"
             href="#contact"
@@ -118,32 +126,19 @@ function WorkInner() {
               document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            START PROJECT <span>→</span>
+            {COPY.work.visionCta} <span>→</span>
           </a>
         </div>
       </section>
 
       <section className="work-cap">
-        <h2 className="wc-title">OUR <em>PRODUCTION</em> CAPABILITIES</h2>
+        <h2 className="wc-title">{rich(COPY.work.capTitle)}</h2>
         <div className="wc-grid">
-          {[
-            ['Ad Films & TVCs', 'Full cinematic script-to-screen production.',
-              <svg key="a" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="18" height="14" rx="1.5" /><path d="M3 10h18" /><path d="M7 6l-2-3" /><path d="M11 6l-2-3" /><path d="M15 6l-2-3" /><path d="M19 6l-2-3" /></svg>],
-            ['CGI / VFX & 3D', 'Complex visual effects and motion graphics.',
-              <svg key="b" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" /><path d="M4 7.5L12 12l8-4.5" /><path d="M12 12v9" /></svg>],
-            ['AI Film Production', 'Rapid content generation and versioning.',
-              <svg key="c" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2z" /><path d="M19 17l.7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7L19 17z" /></svg>],
-            ['Short-Form Digital', 'Platform-native content for viral reach.',
-              <svg key="d" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5" /><path d="M11 18h2" /><path d="M10 6h4" /></svg>],
-            ['Launch & Explainers', 'Clear, engaging product value demonstration.',
-              <svg key="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H5s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v4s3.03-.55 4-2c1.08-1.62 0-5 0-5" /></svg>],
-            ['Documentary & Long-Form', 'Building brand affinity through narrative.',
-              <svg key="f" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="11" r="6" /><circle cx="9" cy="11" r="2" /><rect x="14.5" y="8" width="6.5" height="6" rx="1" /></svg>],
-          ].map(([t, d, icon], i) => (
+          {COPY.work.capabilities.map((cap, i) => (
             <div className="wc-cell" key={i}>
-              <div className="wc-icon">{icon as React.ReactNode}</div>
-              <div className="wc-name">{t as string}</div>
-              <div className="wc-desc">{d as string}</div>
+              <div className="wc-icon">{CAP_ICONS[i]}</div>
+              <div className="wc-name">{cap.name}</div>
+              <div className="wc-desc">{cap.desc}</div>
             </div>
           ))}
         </div>
@@ -152,12 +147,9 @@ function WorkInner() {
       <section className="work-scale">
         <div className="ws-left">
           <div className="ws-num"><CountUp from={150} to={500} suffix="+" /></div>
-          <h2 className="ws-title">MINUTES / <em>MONTH</em></h2>
-          <p className="ws-sub">The scale and speed required to win the attention economy.</p>
-          <p className="ws-fine">
-            Short-form digital, animated explainers, launch videos, high-fidelity commercial spots —
-            delivered every month for India&apos;s biggest brands.
-          </p>
+          <h2 className="ws-title">{rich(COPY.work.scaleTitle)}</h2>
+          <p className="ws-sub">{COPY.work.scaleSub}</p>
+          <p className="ws-fine">{COPY.work.scaleFine}</p>
         </div>
         <WorkBarrels films={SQB_FILMS} />
       </section>
@@ -165,9 +157,9 @@ function WorkInner() {
       <section className="work-films">
         <div className="wf-head">
           <div>
-            <h2 className="wf-title">OUR <em>FILMS</em></h2>
-            <div className="wf-sub">A LIBRARY OF 1000+ PROJECTS</div>
-            <p className="wf-blurb">A sample of our best work across advertising, AI, music videos, vertical, and digital shorts.</p>
+            <h2 className="wf-title">{rich(COPY.work.filmsTitle)}</h2>
+            <div className="wf-sub">{COPY.work.filmsSub}</div>
+            <p className="wf-blurb">{COPY.work.filmsBlurb}</p>
           </div>
           <div className="wf-filters">
             {SQB_GENRES.map((g) => (
@@ -191,7 +183,7 @@ function WorkInner() {
         {filter === 'all' && !showAll && filtered.length > 6 && (
           <div className={'wf-more' + (showAll ? ' gone' : '')}>
             <button className="wf-more-btn" onClick={() => setShowAll(true)}>
-              VIEW MORE <span>→</span>
+              {COPY.work.viewMore} <span>→</span>
             </button>
           </div>
         )}
@@ -199,7 +191,7 @@ function WorkInner() {
 
       {SQB_COCOON && (
         <section className="cocoon" data-screen-label="Cocoon">
-          <div className="cocoon-eyebrow">FLAGSHIP IP · WEB SERIES</div>
+          <div className="cocoon-eyebrow">{COPY.work.cocoonEyebrow}</div>
           <div className="cocoon-head">
             <div>
               <h2 className="cocoon-title">COCOON</h2>
@@ -207,21 +199,21 @@ function WorkInner() {
               <p className="cocoon-blurb">{SQB_COCOON.blurb}</p>
               <div className="cocoon-actions">
                 <a className="cocoon-btn primary" href={SQB_COCOON.watch} target="_blank" rel="noopener">
-                  WATCH ON {SQB_COCOON.platform} ↗
+                  {COPY.work.cocoonWatchPrefix} {SQB_COCOON.platform} ↗
                 </a>
                 <a className="cocoon-btn" href={SQB_COCOON.imdb} target="_blank" rel="noopener">
-                  IMDb PAGE ↗
+                  {COPY.work.cocoonImdb}
                 </a>
               </div>
             </div>
             <div className="cocoon-rating">
               <div className="cr-star">★</div>
               <div className="cr-num">{SQB_COCOON.rating}</div>
-              <div className="cr-source">{SQB_COCOON.ratingSource} RATING</div>
+              <div className="cr-source">{SQB_COCOON.ratingSource} {COPY.work.cocoonRatingSuffix}</div>
             </div>
           </div>
           <div className="cocoon-music">
-            <div className="cm-label">MUSIC FROM THE SHOW</div>
+            <div className="cm-label">{COPY.work.cocoonMusicLabel}</div>
             <div className="cm-grid">
               {SQB_COCOON.music.map((m) => (
                 <div className="cm-card" key={m.id}>
@@ -246,16 +238,13 @@ function WorkInner() {
         <div className="vc-inner">
           <div className="vc-head-row">
             <div>
-              <div className="vc-eyebrow">9:16 · BUILT FOR PHONES</div>
-              <h2 className="vc-title">VERTICAL <em>CINEMA</em></h2>
-              <p className="vc-blurb">
-                Phone-shaped storytelling that respects the medium. Serialized hooks, action that
-                lands in three seconds, drama framed for the thumb.
-              </p>
+              <div className="vc-eyebrow">{COPY.work.vcEyebrow}</div>
+              <h2 className="vc-title">{rich(COPY.work.vcTitle)}</h2>
+              <p className="vc-blurb">{COPY.work.vcBlurb}</p>
             </div>
             <div className="vc-tally">
               <span className="vc-tally-num">{String(verticals.length).padStart(2, '0')}</span>
-              <span className="vc-tally-label">VERTICAL FILMS</span>
+              <span className="vc-tally-label">{COPY.work.vcTallyLabel}</span>
             </div>
           </div>
         </div>
@@ -329,7 +318,7 @@ function WorkInner() {
             </div>
             <button className="vmodal-close" aria-label="Close" onClick={() => setVertPick(null)}>×</button>
           </div>
-          <div className="vmodal-hint">CLICK OUTSIDE OR ESC TO CLOSE</div>
+          <div className="vmodal-hint">{COPY.common.vmodalHint}</div>
         </div>
       )}
     </div>

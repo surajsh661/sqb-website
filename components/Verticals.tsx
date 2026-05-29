@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { SQB_VERTICALS } from '@/lib/data';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 import { videoSrc } from '@/lib/video-utils';
 import type { Vertical } from '@/lib/types';
 
@@ -63,8 +65,8 @@ export default function Verticals() {
   return (
     <section className="verticals" data-screen-label="04 Verticals">
       <div className="head">
-        <h2>VERTICAL <em style={{ margin: '0px' }}>WORKS</em></h2>
-        <div className="blurb">9:16 stories built for the medium they live in.</div>
+        <h2>{rich(COPY.verticalsHome.heading)}</h2>
+        <div className="blurb">{COPY.verticalsHome.blurb}</div>
       </div>
       <div className="vrow">
         {/* Cards are rendered twice — desktop just shows the first 5 in the
@@ -120,7 +122,7 @@ export default function Verticals() {
             </div>
             <button className="vmodal-close" aria-label="Close" onClick={() => setActive(null)}>×</button>
           </div>
-          <div className="vmodal-hint">CLICK OUTSIDE OR ESC TO CLOSE</div>
+          <div className="vmodal-hint">{COPY.common.vmodalHint}</div>
         </div>
       )}
     </section>

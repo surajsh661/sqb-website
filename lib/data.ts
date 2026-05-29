@@ -260,18 +260,6 @@ export const SQB_FILMS: Film[] = [
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'CLIENT', name: 'AIRONET HOLIDAYS' }],
   },
   {
-    id: 'cocoon-webseries',
-    title: 'COCOON — WEB SERIES',
-    category: 'WEB SERIES / SHOW', year: '2022', runtime: '10 EPS',
-    genres: ['show', 'film'],
-    type: 'vm', videoId: '735189733',
-    client: 'Hungama', talent: 'Ensemble Cast',
-    lede: 'Our long-form drama show on Hungama — 8.3 IMDb.',
-    body: 'Cocoon is a ten-episode coming-of-age drama we wrote, directed, shot, and graded end-to-end. It became one of our defining IPs.',
-    timeline: '12 months', release: 'Hungama — 2022', impact: '8.3 IMDb · Long-form IP',
-    credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'SHOWRUNNER', name: "S'QB" }, { role: 'CLIENT', name: 'HUNGAMA' }],
-  },
-  {
     id: 'revolution-edu-scam',
     title: 'REVOLUTION — THE EDUCATION SCAM',
     category: 'DOCU-SERIES / IN MAKING', year: '2026', runtime: 'Season 1',
@@ -384,12 +372,7 @@ export const SQB_VERTICALS: Vertical[] = SQB_FILMS
   }));
 
 export const SQB_AI_LAB: AILabData = {
-  headline: {
-    eyebrow: "S'QB AI LABS",
-    title: 'AI CINEMA · BUILT TO RUN ON BIG SCREENS',
-    blurb:
-      'We build AI shows, films, and animation series for OTT platforms, theatrical, and broadcast — alongside original YouTube IPs like Sunheri Soch S4: docu-films directed and generated entirely with our AI pipeline. Story first. Generative second. Always cinema-grade.',
-  },
+  // Headline copy (eyebrow / title / blurb) now lives in lib/copy.ts → COPY.aiLab
   animated: [
     { id: 'a1', title: 'ANIM REEL 01', type: 'gd', videoId: '1vgRjfCsBqKjL65-AS1QRR0PPlPxarXR_' },
     { id: 'a2', title: 'ANIM REEL 02', type: 'gd', videoId: '14G6XsrS2aj9nQrugnFb593xMwdWmCh_F' },

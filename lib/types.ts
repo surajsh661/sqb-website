@@ -41,7 +41,6 @@ export interface Film {
 
 export interface AILabItem { id: string; title: string; type: VideoType; videoId: string }
 export interface AILabData {
-  headline: { eyebrow: string; title: string; blurb: string };
   animated: AILabItem[];
   realistic: AILabItem[];
   vfx: AILabItem[];
