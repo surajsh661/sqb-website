@@ -134,10 +134,13 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
       }
     };
 
-    // Arm/disarm model: each entry into the side zone fires exactly one step,
-    // then disarms until the cursor returns to the centre deadzone. Eliminates
-    // the "hold cursor at the edge → infinite swipe" feel.
-    let stepArmed = true;
+    // Paced continuous-step model: while the cursor sits in a side zone, the
+    // slider auto-advances at a sane cadence (slower near the deadzone edge,
+    // faster near the screen edge). When the cursor leaves the side zone the
+    // stepping stops. Far less "infinite swipe" feel than the original 280ms,
+    // far less abrupt than the one-shot model.
+    const STEP_NEAR = 1300; // ms cadence just past the deadzone
+    const STEP_FAR  =  650; // ms cadence at the screen edge
 
     const tick = () => {
       const now = performance.now();
@@ -152,19 +155,14 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
         if (insideZone.current) {
           const offset = cursorX.current - 0.5;
           const absOffset = Math.abs(offset);
-          if (absOffset <= DEADZONE) {
-            // Cursor came back to the centre — re-arm the next step.
-            stepArmed = true;
-          } else if (stepArmed && now - lastStep > 220) {
-            // Cursor crossed into a side zone for the first time since the
-            // last reset — fire one step, then disarm.
-            lastStep = now;
-            target.current = ((target.current + Math.sign(offset)) % N + N) % N;
-            stepArmed = false;
+          if (absOffset > DEADZONE) {
+            const tNorm = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
+            const stepInterval = STEP_NEAR - (STEP_NEAR - STEP_FAR) * tNorm;
+            if (now - lastStep > stepInterval) {
+              lastStep = now;
+              target.current = ((target.current + Math.sign(offset)) % N + N) % N;
+            }
           }
-        } else {
-          // Cursor left the hero entirely — re-arm.
-          stepArmed = true;
         }
       }
 

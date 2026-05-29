@@ -87,9 +87,23 @@ body.no-grain::before { display: none; }
 .topbar {
   position: fixed; top: 0; left: 0; right: 0;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 32px; z-index: 90; pointer-events: none;
+  padding: 14px 32px; z-index: 90;
+  /* Glass treatment: translucent ink background + backdrop-blur so content
+     scrolled beneath the navbar blurs cleanly instead of butting into the
+     logo / nav labels. Falls back to a darker solid bar on browsers that
+     don't support backdrop-filter (rare in 2026). */
+  background: rgba(14, 14, 14, 0.55);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+          backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.topbar > * { pointer-events: auto; }
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .topbar { background: rgba(14, 14, 14, 0.88); }
+}
+[data-theme="light"] .topbar {
+  background: rgba(246, 241, 229, 0.6);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
 
 .logo-mark {
   display: flex; align-items: center; gap: 10px;

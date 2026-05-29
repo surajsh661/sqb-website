@@ -17,13 +17,11 @@ import ManifestoHeadline from '@/components/ManifestoHeadline';
 import ServiceMap from '@/components/ServiceMap';
 import { SQB_FILMS, SQB_HERO_FILMS } from '@/lib/data';
 import { setupReveal } from '@/lib/video-utils';
-import type { Film, Genre } from '@/lib/types';
-import { useRouter } from 'next/navigation';
+import type { Film } from '@/lib/types';
 
 const TAGLINE = 'TELL YOUR STORY TODAY.';
 
 export default function HomePage() {
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFilm, setActiveFilm] = useState<Film | null>(null);
   const [caseOpen, setCaseOpen] = useState(false);
@@ -62,14 +60,10 @@ export default function HomePage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [menuOpen, caseOpen]);
 
-  const go = (genreKey: Genre | 'all') => {
-    router.push(`/work?filter=${encodeURIComponent(genreKey)}`);
-  };
-
   return (
     <>
       <Loader />
-      <Topbar active="home" onOpenMenu={() => setMenuOpen(true)} tagline={TAGLINE} />
+      <Topbar active="home" onOpenMenu={() => setMenuOpen(true)} />
 
       <Hero films={SQB_HERO_FILMS} onPick={openCase} tagline={TAGLINE} showCursorHint />
 
@@ -120,28 +114,6 @@ export default function HomePage() {
       </section>
 
       <Verticals />
-
-      <section className="section" data-screen-label="06 Categories">
-        <div className="eyebrow"><span className="num">06</span> <span>WHAT WE MAKE — END-TO-END</span></div>
-        <div className="categories">
-          {([
-            ['ADS / TVC', 'ad', '01'],
-            ['FILMS', 'film', '02'],
-            ['SHOWS', 'show', '03'],
-            ['VIDEO PRODUCTION', 'all', '04'],
-            ['AI FILMS', 'ai', '05'],
-            ['MUSIC VIDEOS', 'music', '06'],
-            ['VERTICAL / MICRO', 'vertical', '07'],
-            ['VFX / 3D', 'vfx', '08'],
-          ] as [string, Genre, string][]).map(([name, key, num]) => (
-            <div className="cat" key={num} onClick={() => go(key)} role="button" tabIndex={0}>
-              <span className="num">{num}</span>
-              <span className="name">{name}</span>
-              <span className="arrow">VIEW REEL ↗</span>
-            </div>
-          ))}
-        </div>
-      </section>
 
       <Engine />
       <Testimonials />

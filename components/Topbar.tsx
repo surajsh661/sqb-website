@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 interface Props {
   active?: 'home' | 'work' | 'ai-lab' | 'social';
   onOpenMenu: () => void;
-  tagline?: string;
   /** Use sub-page nav (sqb-nav) styling instead of topbar */
   variant?: 'topbar' | 'nav';
 }
@@ -13,7 +12,6 @@ interface Props {
 export default function Topbar({
   active = 'home',
   onOpenMenu,
-  tagline = 'TELL YOUR STORY TODAY.',
   variant = 'topbar',
 }: Props) {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -41,10 +39,6 @@ export default function Topbar({
         <Link className="lm" href="/">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={logoSrc} alt="S'QB" onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')} />
-          <div className="stack">
-            <div className="tg">TELL YOUR STORY <b>TODAY.</b></div>
-            <div className="tg" style={{ opacity: 0.6 }}>FILMMAKING · AI · END-TO-END</div>
-          </div>
         </Link>
         <div className="nav">
           <Link href="/" className={active === 'home' ? 'active' : ''}>HOME</Link>
@@ -69,7 +63,6 @@ export default function Topbar({
   }
 
   // Home-page topbar variant
-  const t1 = tagline.split('TODAY')[0] || 'TELL YOUR STORY ';
   return (
     <div className="topbar">
       <Link
@@ -79,12 +72,6 @@ export default function Topbar({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={logoSrc} alt="S'QB Pictures" onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')} />
-        <div className="stack">
-          <div className="tagline">
-            {t1}<span className="tag2">TODAY.</span>
-          </div>
-          <div className="tagline" style={{ opacity: 0.6 }}>FILMMAKING · AI · END-TO-END</div>
-        </div>
       </Link>
       <nav className="nav-center">
         <Link href="/" className={active === 'home' ? 'active' : ''}>HOME</Link>
