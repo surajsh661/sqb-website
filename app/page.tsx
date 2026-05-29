@@ -15,6 +15,7 @@ import ClientLogos from '@/components/ClientLogos';
 import CountUp from '@/components/CountUp';
 import ManifestoHeadline from '@/components/ManifestoHeadline';
 import ServiceMap from '@/components/ServiceMap';
+import HeroIntro from '@/components/HeroIntro';
 import { SQB_FILMS, SQB_HERO_FILMS } from '@/lib/data';
 import { setupReveal } from '@/lib/video-utils';
 import type { Film } from '@/lib/types';
@@ -61,6 +62,7 @@ export default function HomePage() {
   return (
     <>
       <Loader />
+      <HeroIntro />
       <Topbar active="home" onOpenMenu={() => setMenuOpen(true)} />
 
       <Hero films={SQB_HERO_FILMS} onPick={openCase} showCursorHint />

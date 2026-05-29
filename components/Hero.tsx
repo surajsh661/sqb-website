@@ -67,9 +67,9 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Cell sizing. Desktop wants the centred video at 54% of the viewport so
-  // there's clear room for side-cell shoulders. Phone wants almost full width.
-  const widthFraction = containerW < 700 ? 0.86 : 0.54;
+  // Centre cell ~50% of viewport on desktop — leaves room for visible side
+  // cells. Phone wants almost full width.
+  const widthFraction = containerW < 700 ? 0.86 : 0.50;
   const cellW = Math.min(containerW * widthFraction, (containerH * 0.68 * 16) / 9);
   const cellH = (cellW * 9) / 16;
   cellWRef.current = cellW;
@@ -126,11 +126,11 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // Pack cells at 92% of their actual width so the perspective tilt
-        // doesn't open a perceptible gap between centre and neighbours. The
-        // 8% overlap is small enough that side cells don't visibly cover the
-        // centre at the current 16° tilt.
-        slot.style.transform = `translate3d(${wrapped * w * 0.92 - w / 2}px, -50%, 0)`;
+        // Aggressive packing: 86% of cell width per step. The 14% overlap
+        // (combined with the 16° perspective tilt's foreshortening) makes
+        // the row read as a single continuous strip with no visible gaps,
+        // while side cells don't visibly cover the centre.
+        slot.style.transform = `translate3d(${wrapped * w * 0.86 - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
@@ -161,11 +161,22 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           const offset = cursorX.current - 0.5;
           const absOffset = Math.abs(offset);
           if (absOffset > DEADZONE) {
-            const tNorm = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
-            const stepInterval = STEP_NEAR - (STEP_NEAR - STEP_FAR) * tNorm;
-            if (now - lastStep > stepInterval) {
-              lastStep = now;
-              target.current = ((target.current + Math.sign(offset)) % N + N) % N;
+            // Wrap-aware lookahead: how far the current slide position is
+            // from the latest target on the shortest modular path. Block
+            // queuing a new step until the slide has mostly settled —
+            // otherwise targets stack up while the cursor sits at the edge
+            // and the carousel keeps gliding for ages after the cursor
+            // returns to the centre.
+            const lookahead = Math.abs(
+              ((target.current - snapFloat.current) % N + N + N / 2) % N - N / 2,
+            );
+            if (lookahead < 0.4) {
+              const tNorm = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
+              const stepInterval = STEP_NEAR - (STEP_NEAR - STEP_FAR) * tNorm;
+              if (now - lastStep > stepInterval) {
+                lastStep = now;
+                target.current = ((target.current + Math.sign(offset)) % N + N) % N;
+              }
             }
           }
         }
