@@ -11,19 +11,18 @@ const BIOS: Record<string, string> = {
     "Founder & Producer at S’QB Pictures. Screenwriter, copywriter, and the operator who turns scripts into shoots into final cuts. Shubham’s writing has powered TVCs for Bumrah × Naturaltein and Aparshakti × GeeksforGeeks; his unit crewed the 9-month Sunheri Soch sprint with RedFM and the Sunstone × Lucknow Super Giants IPL campaign. Before S’QB he ran content at ScoresNow, wrote for Envi Production for four years, and consulted for Schbang on the Reliance Jio IPL 2025 brand integration. Co-wrote Revolution — Padhai ki Ladai with Suraj. The studio ships because Shubham makes sure nothing falls. Loves a tight crew over a big one, a brief with stakes over a brief without.",
 };
 
-// Filename slugs the component will try in /public/founders/ for each
-// founder (in order: jpg → png → webp). First one that loads wins; if
-// all three are missing the circle falls back to text only.
-const PHOTO_SLUGS: Record<string, string> = {
-  f1: 'suraj',
-  f2: 'shubham',
+// Exact photo paths per founder. Previously the component tried .jpg → .png
+// → .webp via onError chaining, but the race-condition between the 404 and
+// the React re-render caused Shubham's PNG to sometimes never load. Direct
+// paths kill the race.
+const PHOTOS: Record<string, string> = {
+  f1: '/founders/suraj.jpg',
+  f2: '/founders/shubham.png',
 };
 
 function FounderPortrait({
-  slug, role, name,
-}: { slug: string; role: string; name: string }) {
-  const candidates = [`/founders/${slug}.jpg`, `/founders/${slug}.png`, `/founders/${slug}.webp`];
-  const [idx, setIdx] = useState(0);
+  src, role, name,
+}: { src: string; role: string; name: string }) {
   const [failed, setFailed] = useState(false);
   return (
     <div className="founder-portrait">
@@ -31,12 +30,9 @@ function FounderPortrait({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           className="fp-photo"
-          src={candidates[idx]}
+          src={src}
           alt={name}
-          onError={() => {
-            if (idx < candidates.length - 1) setIdx((i) => i + 1);
-            else setFailed(true);
-          }}
+          onError={() => setFailed(true)}
         />
       )}
       <span className="fp-role">{role}</span>
@@ -66,8 +62,8 @@ export default function Engine() {
         {/* The two portraits live in a single absolutely-positioned pair so the
             bios on either side can fill the full outer half of the row. */}
         <div className="founder-pair">
-          <FounderPortrait slug={PHOTO_SLUGS[suraj.id]} role={suraj.role} name={suraj.name} />
-          <FounderPortrait slug={PHOTO_SLUGS[shubham.id]} role={shubham.role} name={shubham.name} />
+          <FounderPortrait src={PHOTOS[suraj.id]} role={suraj.role} name={suraj.name} />
+          <FounderPortrait src={PHOTOS[shubham.id]} role={shubham.role} name={shubham.name} />
         </div>
 
         <div className="founder-bio right">

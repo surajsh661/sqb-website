@@ -17,7 +17,6 @@ interface Location {
 
 const LOCATIONS: Location[] = [
   { name: 'India',     lat: 22.0,  lng:  79.0,  hub: true },
-  { name: 'Nepal',     lat: 28.4,  lng:  84.1 },
   { name: 'Sri Lanka', lat:  6.9,  lng:  79.9 },
   { name: 'UAE',       lat: 24.4,  lng:  54.4 },
   { name: 'Dubai',     lat: 25.2,  lng:  55.3 },
@@ -56,17 +55,17 @@ export default function ServiceMap() {
             </radialGradient>
           </defs>
 
-          {/* Poster background plate — slightly lighter than the page so the
-              map feels lifted off it. */}
-          <rect x={0} y={0} width={W} height={H} fill="#161310" />
+          {/* Poster background plate — slightly lifted off the page, neutral
+              grey tone so the site's yellow accent pops without competing
+              with any warm brown. */}
+          <rect x={0} y={0} width={W} height={H} fill="#141414" />
 
-          {/* Continents — solid silhouettes in a warm dark tone, no outline.
-              The site's yellow then pops against this dark fill. */}
+          {/* Continents — solid grey silhouettes, no outline. */}
           <g className="sp-land">
             <path
               d={WORLD_PATH}
               fillRule="evenodd"
-              fill="#2a2018"
+              fill="#2c2c2c"
               stroke="none"
             />
           </g>
@@ -128,7 +127,7 @@ export default function ServiceMap() {
         <div className="sp-title">
           <div className="sp-title-main">S &nbsp; Q &nbsp; B &nbsp; · &nbsp; W O R L D W I D E</div>
           <div className="sp-rule" />
-          <div className="sp-title-sub">PAN-INDIA · UAE · SAUDI · DUBAI · SINGAPORE · NEPAL · SRI LANKA · LONDON · CANADA · USA</div>
+          <div className="sp-title-sub">PAN-INDIA · UAE · SAUDI · DUBAI · SINGAPORE · SRI LANKA · LONDON · CANADA · USA</div>
         </div>
       </div>
     </div>

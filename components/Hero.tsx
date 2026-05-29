@@ -100,9 +100,7 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
   useEffect(() => {
     let raf = 0;
     let lastStep = 0;
-    const DEADZONE = 0.4;
-    const STEP_SLOW = 900;
-    const STEP_FAST = 280;
+    const DEADZONE = 0.4; // outside ±40% from screen-centre triggers a single step
 
     const applyTransforms = () => {
       const float = snapFloat.current;
@@ -124,7 +122,9 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
+        // 0.82 packs the cells closer than their full width so perspective
+        // rotation doesn't open a visible gap between center and neighbours.
+        slot.style.transform = `translate3d(${wrapped * w * 0.82 - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
@@ -133,10 +133,14 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
       }
     };
 
+    // Arm/disarm model: each entry into the side zone fires exactly one step,
+    // then disarms until the cursor returns to the centre deadzone. Eliminates
+    // the "hold cursor at the edge → infinite swipe" feel.
+    let stepArmed = true;
+
     const tick = () => {
       const now = performance.now();
 
-      // Stepping policy.
       if (manualTarget.current !== null && now < manualUntil.current) {
         target.current = manualTarget.current;
       } else {
@@ -147,14 +151,19 @@ export default function Hero({ films, onPick, tagline, showCursorHint }: Props) 
         if (insideZone.current) {
           const offset = cursorX.current - 0.5;
           const absOffset = Math.abs(offset);
-          if (absOffset > DEADZONE) {
-            const tNorm = Math.min(1, (absOffset - DEADZONE) / (0.5 - DEADZONE));
-            const stepInterval = STEP_SLOW - (STEP_SLOW - STEP_FAST) * tNorm;
-            if (now - lastStep > stepInterval) {
-              lastStep = now;
-              target.current = ((target.current + Math.sign(offset)) % N + N) % N;
-            }
+          if (absOffset <= DEADZONE) {
+            // Cursor came back to the centre — re-arm the next step.
+            stepArmed = true;
+          } else if (stepArmed && now - lastStep > 220) {
+            // Cursor crossed into a side zone for the first time since the
+            // last reset — fire one step, then disarm.
+            lastStep = now;
+            target.current = ((target.current + Math.sign(offset)) % N + N) % N;
+            stepArmed = false;
           }
+        } else {
+          // Cursor left the hero entirely — re-arm.
+          stepArmed = true;
         }
       }
 
