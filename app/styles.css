@@ -309,48 +309,6 @@ body.no-grain::before { display: none; }
 }
 .video-cell { will-change: transform, filter, opacity; }
 
-/* Curved "tube mouth" vignette — the signature inside-the-cylinder cue. The
-   radial has a SHORT vertical radius and a WIDE horizontal one, so it reaches
-   black sooner top/bottom than at the sides: the opening arches (taller in the
-   centre, pinched at the corners) like looking down a horizontal drum. The
-   linear band lays a heavy black lip along the very top and bottom edges. It
-   intentionally laps over the top/bottom of the centre film, exactly as the
-   reference does. Sits above the films (z 4); the title-wrap (z 5) stays on top. */
-.hero-vignette {
-  position: absolute; inset: 0;
-  z-index: 4; pointer-events: none;
-  background:
-    radial-gradient(122% 40% at 50% 42%,
-      transparent 0%,
-      transparent 47%,
-      rgba(0,0,0,0.40) 72%,
-      rgba(0,0,0,0.82) 90%,
-      rgba(0,0,0,0.97) 100%),
-    linear-gradient(180deg,
-      rgba(0,0,0,0.92) 0%,
-      rgba(0,0,0,0.32) 7%,
-      transparent 16%,
-      transparent 80%,
-      rgba(0,0,0,0.48) 93%,
-      rgba(0,0,0,0.96) 100%);
-}
-[data-theme="light"] .hero-vignette {
-  background:
-    radial-gradient(122% 40% at 50% 42%,
-      transparent 0%,
-      transparent 49%,
-      rgba(246,241,229,0.40) 74%,
-      rgba(246,241,229,0.84) 92%,
-      rgba(246,241,229,0.97) 100%),
-    linear-gradient(180deg,
-      rgba(246,241,229,0.93) 0%,
-      rgba(246,241,229,0.34) 7%,
-      transparent 16%,
-      transparent 80%,
-      rgba(246,241,229,0.48) 93%,
-      rgba(246,241,229,0.96) 100%);
-}
-
 /* Audio mute toggle for case-study hero video */
 .case-study .bg { position: relative; }
 .case-mute {
@@ -1362,11 +1320,10 @@ body.no-grain::before { display: none; }
   position: absolute; left: 0; right: 0;
   top: 88px; bottom: 26vh;
   z-index: 4; pointer-events: none;
-  /* The camera looking INTO the drum. The vanishing point sits dead centre,
-     where the front film lands, so the receding neighbours wrap away
-     symmetrically. A tighter perspective deepens the curve so the side films
-     rake back into the tube hard. */
-  perspective: 880px;
+  /* The camera for the 3D ring. The vanishing point sits at the centre of the
+     zone, where the front film lands, so the neighbours fan out symmetrically
+     and pick up real perspective foreshortening as they rotate away. */
+  perspective: 900px;
   perspective-origin: 50% 50%;
 }
 .hero-zone .video-track { pointer-events: auto; }
