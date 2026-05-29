@@ -27,20 +27,19 @@ function videoSrc(film: Film) {
 // slot N-1 are neighbours (the loop wraps with no seam).
 const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 2;
 
-// --- Barrel carousel geometry -----------------------------------------------
-// The front film is flat, sharp and large. Its neighbours are large too — they
-// sit on the drum wall beside it and TILT in 3D (rotateY) toward the viewer,
-// so you clearly see them wrapping away rather than a thin sliver at the edge.
-// They barely recede in depth (so they stay close to full size) and pick up a
-// gentle blur / dim as they roll off. perspective comes from .hero-zone.
+// --- Hinged-drum carousel geometry ------------------------------------------
+// The films are the faces of a regular polygon drum. Because every face is the
+// same width and the drum radius is the polygon's apothem, ADJACENT FILMS SHARE
+// AN EDGE — each side film meets the centre film edge-to-edge, with no gap — and
+// the whole drum turns as one rigid unit (the faces rotate in unison). The front
+// face sits flat and sharp on the screen plane; its neighbours fold back around
+// the shared edges, so they read as a continuous wall wrapping away.
 //
-// For a film `d` slots from centre:
-//   x   =  d · cellW · STEP            → laid out side-by-side, just touching
-//   rot = -d · ROT                     → tilts on the drum wall toward viewer
-//   z   = -(0.07·|d| + 0.05·d²)·cellW  → near films barely recede (full size);
-//                                         far films curve back into the drum
-const ROT = 34; // degrees of tilt per film across the drum wall
-const STEP = 0.84; // horizontal spacing as a fraction of cell width (staves touch)
+// Each face: `rotateY(d·ANGLE) translateZ(R)`, with the track pulled back by
+// `translateZ(-R)` so the front face lands at z = 0. For faces to meet edge-to-
+// edge the radius is the apothem: R = (cellW/2) / tan(ANGLE/2).
+const ANGLE = 36; // degrees between adjacent films around the drum
+const RADIUS_FACTOR = 0.5 / Math.tan((ANGLE / 2) * Math.PI / 180); // apothem → faces touch
 
 // Easing time-constant (seconds). snapFloat closes ~1-1/e of the gap to the
 // target every TAU; using 1 - exp(-dt/TAU) makes the glide frame-rate
@@ -148,11 +147,13 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     const applyTransforms = () => {
       const float = snapFloat.current;
       const w = cellWRef.current;
+      const R = w * RADIUS_FACTOR;
       const track = trackRef.current;
       const reduce = reducedMotion.current;
 
-      // The track stays on the screen plane; each cell places itself.
-      if (track) track.style.transform = 'translateZ(0)';
+      // Pull the drum back by its radius so the front face lands flat on the
+      // screen plane; neighbours hinge back from there, edge-to-edge.
+      if (track) track.style.transform = reduce ? 'translateZ(0)' : `translateZ(${(-R).toFixed(1)}px)`;
 
       for (let i = 0; i < N; i++) {
         const slot = cellSlotsRef.current[i];
@@ -172,14 +173,13 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           continue;
         }
 
-        // Barrel placement: equal-size staves laid side-by-side; the front
-        // film is flat while neighbours tilt on the drum wall toward the
-        // viewer and barely recede (so they stay large and clearly visible).
-        const x = wd * w * STEP;
-        const z = -(Math.abs(wd) * 0.07 + wd * wd * 0.05) * w;
-        const rot = -wd * ROT;
-        slot.style.transform =
-          `translate3d(${x.toFixed(2)}px, 0, ${z.toFixed(2)}px) rotateY(${rot.toFixed(2)}deg)`;
+        // Hinged drum: place the face on the polygon. rotateY swings it to its
+        // angular slot, translateZ(R) pushes it out to the face; with the
+        // track's translateZ(-R) the front face is flat at z=0 and neighbours
+        // fold back around the shared edges — meeting the centre edge-to-edge
+        // and turning in unison as the drum rotates.
+        const theta = wd * ANGLE;
+        slot.style.transform = `rotateY(${theta.toFixed(2)}deg) translateZ(${R.toFixed(1)}px)`;
 
         // Only the front film is in true focus. Neighbours defocus and dim
         // gently as they roll off — but stay clearly visible (not dark slivers).

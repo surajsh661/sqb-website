@@ -467,7 +467,10 @@ body.no-grain::before { display: none; }
 }
 .manifesto h2 em {
   font-style: normal;
-  -webkit-text-stroke: 1.5px var(--fg); color: transparent;
+  /* Stroke scales with font-size (em, not a fixed px) so narrow glyphs like
+     "I" keep a clean hollow at every size instead of the fixed 1.5px filling
+     them into a solid bar at the smaller heading sizes. */
+  -webkit-text-stroke: 0.012em var(--fg); color: transparent;
 }
 .manifesto h2 .ai { color: var(--accent); font-style: italic; }
 /* Manifesto body copy — centred and spread wide under the giant
@@ -816,7 +819,7 @@ body.no-grain::before { display: none; }
   font-size: clamp(48px, 9vw, 160px);
   line-height: 0.9; text-transform: uppercase; letter-spacing: -0.01em;
 }
-.footer-cta em { font-style: normal; -webkit-text-stroke: 1.5px var(--fg); color: transparent; }
+.footer-cta em { font-style: normal; -webkit-text-stroke: 0.012em var(--fg); color: transparent; }
 .footer-grid {
   display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 40px; margin-top: 80px; padding-top: 40px;
@@ -1112,7 +1115,7 @@ body.no-grain::before { display: none; }
   line-height: 0.9; letter-spacing: -0.01em; text-transform: uppercase;
   margin: 30px 0 70px;
 }
-.testimonials .testi-head em { font-style: normal; -webkit-text-stroke: 1.5px var(--fg); color: transparent; }
+.testimonials .testi-head em { font-style: normal; -webkit-text-stroke: 0.012em var(--fg); color: transparent; }
 .testi-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 0; border-top: 1px solid var(--rule);

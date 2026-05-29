@@ -19,7 +19,6 @@ const LOCATIONS: Location[] = [
   { name: 'India',     lat: 22.0,  lng:  79.0,  hub: true },
   { name: 'Sri Lanka', lat:  6.9,  lng:  79.9 },
   { name: 'UAE',       lat: 24.4,  lng:  54.4 },
-  { name: 'Dubai',     lat: 25.2,  lng:  55.3 },
   { name: 'Saudi',     lat: 24.7,  lng:  46.7 },
   { name: 'Singapore', lat:  1.4,  lng: 103.8 },
   { name: 'London',    lat: 51.5,  lng:  -0.1 },
@@ -127,7 +126,7 @@ export default function ServiceMap() {
         <div className="sp-title">
           <div className="sp-title-main">S &nbsp; Q &nbsp; B &nbsp; · &nbsp; W O R L D W I D E</div>
           <div className="sp-rule" />
-          <div className="sp-title-sub">PAN-INDIA · UAE · SAUDI · DUBAI · SINGAPORE · SRI LANKA · LONDON · CANADA · USA</div>
+          <div className="sp-title-sub">PAN-INDIA · UAE · SAUDI · SINGAPORE · SRI LANKA · LONDON · CANADA · USA</div>
         </div>
       </div>
     </div>
