@@ -574,29 +574,33 @@ body.no-grain::before { display: none; }
 
 .founder-bio {
   font-family: 'Inter', sans-serif;
-  font-size: 14.5px; line-height: 1.7;
-  color: var(--fg-dim);
+  font-size: 15px;
+  line-height: 1.62;
+  letter-spacing: 0.005em;
+  color: var(--fg);
+  font-weight: 400;
+  font-feature-settings: 'ss01' on, 'cv11' on; /* nicer Inter forms */
 }
-.founder-bio.left { grid-column: 1; padding-left: 8px; padding-right: 0; }
-.founder-bio.right { grid-column: 2; padding-left: 0; padding-right: 8px; }
-.founder-bio p { margin: 0; }
-/* The float doesn't render anything — it's a phantom shape sized like the
-   founder portrait that pushes the bio text to wrap around its left/right
-   curve. Floated to the right (or left, on the mirrored side) so the
-   resulting curve in the text physically aligns with the founder circle. */
+.founder-bio.left { grid-column: 1; padding-left: 24px; padding-right: 0; }
+.founder-bio.right { grid-column: 2; padding-left: 0; padding-right: 24px; }
+.founder-bio p { margin: 0; text-wrap: pretty; }
+/* The float doesn't render anything — it's a phantom shape sized to match
+   the founder portrait (with a generous shape-margin) so the bio text
+   wraps around the founder circle's curve without ever touching or
+   overlapping the visible portrait. */
 .founder-bio.left p::before {
   content: "";
   float: right;
   width: 320px; height: 320px;
   shape-outside: circle(50%);
-  shape-margin: 26px;
+  shape-margin: 44px;
 }
 .founder-bio.right p::before {
   content: "";
   float: left;
   width: 320px; height: 320px;
   shape-outside: circle(50%);
-  shape-margin: 26px;
+  shape-margin: 44px;
 }
 .founder-bio.right p { text-align: right; }
 
