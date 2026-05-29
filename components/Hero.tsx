@@ -67,9 +67,10 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Centre cell ~50% of viewport on desktop — leaves room for visible side
-  // cells. Phone wants almost full width.
-  const widthFraction = containerW < 700 ? 0.86 : 0.50;
+  // Centre cell ~60% of viewport on desktop — same proportions as the
+  // Kaide reference, so the side cells occupy roughly the remaining 20%
+  // each, edge-to-edge with the centre.
+  const widthFraction = containerW < 700 ? 0.86 : 0.60;
   const cellW = Math.min(containerW * widthFraction, (containerH * 0.68 * 16) / 9);
   const cellH = (cellW * 9) / 16;
   cellWRef.current = cellW;
@@ -112,25 +113,26 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const wrapped = wrapDelta(i - float, N);
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
-        // Softer perspective tilt than the prototype's 32° so side cells stay
-        // wider visually.
-        const rot = Math.max(-24, Math.min(24, -dir * Math.min(dist, 1.6) * 16));
-        const scale = 1 - Math.min(dist, 1.8) * 0.03;
-        // Much lighter dimming than the prototype so the side cards read as
-        // peeking neighbours, not distant fog. Prototype values made the
-        // visual gap between centre and sides look enormous.
-        const blur = Math.min(dist * 3, 5);
-        const sat = 1 + Math.min(dist, 1) * 0.15;
-        const bright = 1 - Math.min(dist, 1.5) * 0.14;
-        const opacity = dist < 0.05 ? 1 : Math.max(0.62, 1 - dist * 0.2);
+        // Subtle perspective tilt — matches Kaide reference where side cells
+        // angle slightly toward centre but don't dramatically perspective-
+        // shrink. cos(8°) ≈ 0.99, so foreshortening is negligible and cells
+        // can pack edge-to-edge without opening a perceived gap.
+        const rot = Math.max(-12, Math.min(12, -dir * Math.min(dist, 1.6) * 8));
+        const scale = 1 - Math.min(dist, 1.8) * 0.02;
+        // Very light atmospheric drift on side cells. Side cards should
+        // still read clearly — just slightly receded.
+        const blur = Math.min(dist * 2, 3);
+        const sat = 1 + Math.min(dist, 1) * 0.10;
+        const bright = 1 - Math.min(dist, 1.5) * 0.10;
+        const opacity = dist < 0.05 ? 1 : Math.max(0.75, 1 - dist * 0.15);
         const isCenter = dist < 0.5;
         const transformOrigin = dir < 0 ? 'right center' : dir > 0 ? 'left center' : 'center';
 
-        // Aggressive packing: 86% of cell width per step. The 14% overlap
-        // (combined with the 16° perspective tilt's foreshortening) makes
-        // the row read as a single continuous strip with no visible gaps,
-        // while side cells don't visibly cover the centre.
-        slot.style.transform = `translate3d(${wrapped * w * 0.86 - w / 2}px, -50%, 0)`;
+        // Edge-to-edge packing (1.0). With the gentle 8° tilt above, the
+        // foreshortening is too small to open a visible gap, so cells can
+        // touch without the artificial overlap that would make side cells
+        // visibly cover the centre.
+        slot.style.transform = `translate3d(${wrapped * w - w / 2}px, -50%, 0)`;
         cell.style.transform = `perspective(900px) rotateY(${rot}deg) scale(${scale}) translateZ(0)`;
         cell.style.transformOrigin = transformOrigin;
         cell.style.filter = dist < 0.12 ? 'none' : `blur(${blur}px) saturate(${sat}) brightness(${bright})`;
