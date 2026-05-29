@@ -1,9 +1,10 @@
 'use client';
 import { WORLD_PATH } from '@/lib/world-path';
 
-// Service-area world map. Equirectangular projection (lat/lng → x/y on a
-// 1000×500 viewBox). Glowing dots mark each region we ship into; subtle
-// arcs sweep from India out to every international market.
+// Poster-style service-area map. Inspired by Terraink/MapToPoster: deep navy
+// canvas, thin amber outlines, title block at the bottom. Service regions
+// are marked by small pulsing dots with dashed great-circle arcs sweeping
+// from India out to every international destination.
 
 interface Location {
   name: string;
@@ -35,8 +36,6 @@ function project(lat: number, lng: number) {
   };
 }
 
-// Quadratic-bezier arc from A to B with control point lifted halfway and pulled
-// up by ~25% of the chord length — gives the great-circle "globe" feel.
 function arcPath(a: { x: number; y: number }, b: { x: number; y: number }) {
   const mx = (a.x + b.x) / 2;
   const my = (a.y + b.y) / 2;
@@ -54,58 +53,52 @@ export default function ServiceMap() {
   const hubPt = project(hub.lat, hub.lng);
 
   return (
-    <section className="service-map" data-screen-label="05 Reach">
-      <div className="sm-head">
-        <div className="eyebrow"><span className="num">05</span> <span>WHERE WE SHIP</span></div>
-        <h2>PAN-INDIA. <em>WORLD-WIDE.</em></h2>
-        <p className="sm-blurb">
-          We deliver for brands and creators across India and into the UAE, Saudi, Dubai,
-          Singapore, Nepal, Sri Lanka, London, Canada and the USA. Wherever the brief lands,
-          we&apos;ve probably already shot in that timezone.
-        </p>
-      </div>
-
-      <div className="sm-canvas">
+    <div className="service-poster">
+      <div className="sp-frame">
         <svg viewBox={`0 0 ${W} ${H}`} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <radialGradient id="smHubGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.95" />
-              <stop offset="55%" stopColor="var(--accent)" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+              <stop offset="0%"   stopColor="#ffd54a" stopOpacity="0.95" />
+              <stop offset="55%"  stopColor="#ffd54a" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#ffd54a" stopOpacity="0" />
             </radialGradient>
             <radialGradient id="smDotGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.85" />
-              <stop offset="60%" stopColor="var(--accent)" stopOpacity="0.10" />
-              <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+              <stop offset="0%"   stopColor="#ffd54a" stopOpacity="0.85" />
+              <stop offset="60%"  stopColor="#ffd54a" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#ffd54a" stopOpacity="0" />
             </radialGradient>
           </defs>
 
-          {/* Real continent outlines from Natural Earth 110m (simplified). */}
-          <g className="sm-land">
+          {/* Poster background — deeper navy than the section gradient so
+              the frame reads as a separate canvas. */}
+          <rect x={0} y={0} width={W} height={H} fill="#08132c" />
+
+          {/* Continents — thin amber outlines only, no fill. Pure poster style. */}
+          <g className="sp-land">
             <path
               d={WORLD_PATH}
               fillRule="evenodd"
-              fill="rgba(120, 160, 220, 0.10)"
-              stroke="rgba(120, 160, 220, 0.55)"
-              strokeWidth="0.6"
+              fill="none"
+              stroke="rgba(255, 213, 74, 0.75)"
+              strokeWidth="0.5"
               strokeLinejoin="round"
               vectorEffect="non-scaling-stroke"
             />
           </g>
 
-          {/* Arcs from India to every international destination */}
-          <g className="sm-arcs" fill="none" stroke="var(--accent)" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.6">
+          {/* Great-circle arcs from India out to every international destination. */}
+          <g className="sp-arcs" fill="none" stroke="#ffd54a" strokeWidth="0.8" strokeLinecap="round" strokeOpacity="0.55">
             {LOCATIONS.filter((l) => !l.hub).map((l) => {
               const p = project(l.lat, l.lng);
               return <path key={l.name} d={arcPath(hubPt, p)} />;
             })}
           </g>
 
-          {/* Glow halos behind each dot */}
-          <g className="sm-halos">
+          {/* Glow halos behind each dot. */}
+          <g className="sp-halos">
             {LOCATIONS.map((l) => {
               const p = project(l.lat, l.lng);
-              const r = l.hub ? 38 : 22;
+              const r = l.hub ? 32 : 18;
               return (
                 <circle
                   key={'h' + l.name}
@@ -113,61 +106,40 @@ export default function ServiceMap() {
                   cy={p.y}
                   r={r}
                   fill={l.hub ? 'url(#smHubGlow)' : 'url(#smDotGlow)'}
-                  className={l.hub ? 'sm-halo hub' : 'sm-halo'}
+                  className={l.hub ? 'sp-halo hub' : 'sp-halo'}
                 />
               );
             })}
           </g>
 
-          {/* The dots themselves */}
-          <g className="sm-dots">
+          {/* The dots themselves. */}
+          <g className="sp-dots">
             {LOCATIONS.map((l) => {
               const p = project(l.lat, l.lng);
-              const r = l.hub ? 5.5 : 3.5;
+              const r = l.hub ? 4.5 : 2.8;
               return (
-                <g key={'d' + l.name} className={l.hub ? 'sm-dot hub' : 'sm-dot'}>
-                  <circle cx={p.x} cy={p.y} r={r} fill="var(--accent)" />
-                </g>
-              );
-            })}
-          </g>
-
-          {/* Labels */}
-          <g className="sm-labels" fill="var(--fg)" fontFamily="'JetBrains Mono', monospace" fontSize="11" letterSpacing="0.18em">
-            {LOCATIONS.map((l) => {
-              const p = project(l.lat, l.lng);
-              // Push labels above the dot, with a small horizontal lift if it'd
-              // overlap a neighbour (UAE / Dubai / Saudi cluster + India / Nepal).
-              const dyMap: Record<string, number> = {
-                Nepal: -14, India: 22, Dubai: -14, UAE: 8, Saudi: -14,
-              };
-              return (
-                <text
-                  key={'l' + l.name}
-                  x={p.x}
-                  y={p.y + (dyMap[l.name] ?? -12)}
-                  textAnchor="middle"
-                >
-                  {l.name.toUpperCase()}
-                </text>
+                <circle
+                  key={'d' + l.name}
+                  cx={p.x}
+                  cy={p.y}
+                  r={r}
+                  fill="#ffd54a"
+                  className={l.hub ? 'sp-dot hub' : 'sp-dot'}
+                />
               );
             })}
           </g>
         </svg>
-      </div>
 
-      <ul className="sm-list" aria-label="Service regions">
-        <li>PAN-INDIA</li>
-        <li>UAE</li>
-        <li>DUBAI</li>
-        <li>SAUDI</li>
-        <li>SINGAPORE</li>
-        <li>NEPAL</li>
-        <li>SRI LANKA</li>
-        <li>LONDON</li>
-        <li>CANADA</li>
-        <li>USA</li>
-      </ul>
-    </section>
+        {/* Poster title block at the bottom — the visual hook from MapToPoster /
+            Terraink: spaced caps + accent rule + coordinate fact. */}
+        <div className="sp-title">
+          <div className="sp-title-main">S &nbsp; Q &nbsp; B &nbsp; · &nbsp; W O R L D W I D E</div>
+          <div className="sp-rule" />
+          <div className="sp-title-sub">PAN-INDIA · UAE · SAUDI · DUBAI · SINGAPORE · NEPAL · SRI LANKA · LONDON · CANADA · USA</div>
+          <div className="sp-title-coord">22.3511° N / 78.6677° E &nbsp; — HUB STUDIOS · DELHI &amp; MUMBAI</div>
+        </div>
+      </div>
+    </div>
   );
 }

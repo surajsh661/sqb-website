@@ -91,25 +91,30 @@ export default function HomePage() {
       </section>
       <ClientLogos />
 
-      <ServiceMap />
-
-      <section className="section stats-section" data-screen-label="04 Stats">
-        <div className="eyebrow"><span className="num">04</span> <span>BY THE NUMBERS</span></div>
-        <div className="stats">
-          <div className="stat">
-            <div className="num"><CountUp end={100} suffix="+" /></div>
-            <div className="label">CLIENTS &nbsp;//&nbsp; INDIAN + GLOBAL</div>
-          </div>
-          <div className="stat">
-            <div className="num"><CountUp end={1000} suffix="+" /></div>
-            <div className="label">FILMS DELIVERED</div>
-          </div>
-          <div className="stat">
-            <div className="num">
-              2<span style={{ color: 'var(--fg-dim)' }}>–</span>
-              <CountUp end={10} suffix="×" />
+      <section className="section stats-map-section" data-screen-label="04 Numbers + Reach">
+        <div className="sm-grid">
+          <div className="sm-grid-stats">
+            <div className="eyebrow"><span className="num">04</span> <span>BY THE NUMBERS · GLOBAL REACH</span></div>
+            <div className="stats stacked">
+              <div className="stat">
+                <div className="num"><CountUp end={100} suffix="+" /></div>
+                <div className="label">CLIENTS &nbsp;//&nbsp; INDIAN + GLOBAL</div>
+              </div>
+              <div className="stat">
+                <div className="num"><CountUp end={1000} suffix="+" /></div>
+                <div className="label">FILMS DELIVERED</div>
+              </div>
+              <div className="stat">
+                <div className="num">
+                  2<span style={{ color: 'var(--fg-dim)' }}>–</span>
+                  <CountUp end={10} suffix="×" />
+                </div>
+                <div className="label">RETURN ON AD SPEND</div>
+              </div>
             </div>
-            <div className="label">RETURN ON AD SPEND</div>
+          </div>
+          <div className="sm-grid-map">
+            <ServiceMap />
           </div>
         </div>
       </section>
