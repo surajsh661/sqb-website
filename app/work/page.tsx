@@ -327,7 +327,7 @@ function WorkInner() {
               <span className="tag">{vertPick.category}</span>
               <span className="ttl">{vertPick.title}</span>
             </div>
-            <button className="vmodal-close" onClick={() => setVertPick(null)}>×</button>
+            <button className="vmodal-close" aria-label="Close" onClick={() => setVertPick(null)}>×</button>
           </div>
           <div className="vmodal-hint">CLICK OUTSIDE OR ESC TO CLOSE</div>
         </div>

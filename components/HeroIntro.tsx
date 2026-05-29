@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 
 /**
  * One-shot intro overlay shown on every page load: a giant Anton "TELL YOUR
@@ -32,11 +34,10 @@ export default function HeroIntro() {
   return (
     <div className={'hero-intro hero-intro-' + phase} aria-hidden="true">
       <div className="hi-stack">
-        <span className="hi-eyebrow">S&apos;QB PICTURES</span>
+        <span className="hi-eyebrow">{COPY.intro.eyebrow}</span>
         <h2 className="hi-text">
-          TELL YOUR <em>STORY</em>
-          <br />
-          TODAY<span className="hi-dot">.</span>
+          {rich(COPY.intro.headline)}
+          <span className="hi-dot">.</span>
         </h2>
       </div>
     </div>

@@ -1,5 +1,7 @@
 'use client';
 import { useState } from 'react';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -29,15 +31,10 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
     <section className="contact" id="contact" data-screen-label="11 Contact">
       <div className="contact-inner">
         <div className="contact-left">
-          <div className="eyebrow"><span className="num">{eyebrowNum}</span> <span>REACH OUT</span></div>
-          <h2 className="contact-h">LET&apos;S MAKE <em>SOMETHING</em>.</h2>
-          <p className="contact-blurb">
-            Pitch us a brief, a brand, a budget — or just a feeling. We&apos;ll come back in 24 hours
-            with a treatment or a &quot;this isn&apos;t us&quot;.
-          </p>
-          <p className="contact-pull">
-            We only work with people who are <em>as hyped as we are</em>.
-          </p>
+          <div className="eyebrow"><span className="num">{eyebrowNum}</span> <span>{COPY.contact.eyebrowLabel}</span></div>
+          <h2 className="contact-h">{rich(COPY.contact.heading)}</h2>
+          <p className="contact-blurb">{rich(COPY.contact.blurb)}</p>
+          <p className="contact-pull">{rich(COPY.contact.pullQuote)}</p>
           <div className="contact-rows">
             <div className="contact-row">
               <span className="k">SURAJ</span>
@@ -59,41 +56,41 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
                 +91 72178 17383 · WHATSAPP
               </a>
             </div>
-            <div className="contact-row"><span className="k">STUDIOS</span><span className="v">DELHI · MUMBAI</span></div>
-            <div className="contact-row"><span className="k">FOR</span><span className="v">ADS · DVCs · MUSIC VIDEOS · AI FILMS · VERTICALS</span></div>
+            <div className="contact-row"><span className="k">STUDIOS</span><span className="v">{COPY.contact.studiosValue}</span></div>
+            <div className="contact-row"><span className="k">FOR</span><span className="v">{COPY.contact.forValue}</span></div>
           </div>
         </div>
         <form className="contact-form" onSubmit={onSubmit}>
           <div className="cf-row">
             <label>
-              <span>NAME</span>
-              <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" />
+              <span>{COPY.contact.form.nameLabel}</span>
+              <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={COPY.contact.form.namePlaceholder} />
             </label>
             <label>
-              <span>EMAIL</span>
-              <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@brand.com" />
+              <span>{COPY.contact.form.emailLabel}</span>
+              <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={COPY.contact.form.emailPlaceholder} />
             </label>
           </div>
           <label>
-            <span>BRAND / ORG</span>
-            <input value={form.org} onChange={(e) => setForm({ ...form, org: e.target.value })} placeholder="Brand or organization" />
+            <span>{COPY.contact.form.orgLabel}</span>
+            <input value={form.org} onChange={(e) => setForm({ ...form, org: e.target.value })} placeholder={COPY.contact.form.orgPlaceholder} />
           </label>
           <label>
-            <span>BRIEF</span>
-            <textarea required rows={4} value={form.brief} onChange={(e) => setForm({ ...form, brief: e.target.value })} placeholder="Tell us about the film, the moment, the deadline." />
+            <span>{COPY.contact.form.briefLabel}</span>
+            <textarea required rows={4} value={form.brief} onChange={(e) => setForm({ ...form, brief: e.target.value })} placeholder={COPY.contact.form.briefPlaceholder} />
           </label>
           <button type="submit" className="cf-submit" disabled={status === 'sending' || status === 'sent'}>
-            {status === 'sending' ? 'SENDING…'
-              : status === 'sent' ? 'SENT — WE’LL BE IN TOUCH ↗'
-              : status === 'error' ? 'TRY AGAIN'
-              : 'SEND BRIEF →'}
+            {status === 'sending' ? COPY.contact.form.sending
+              : status === 'sent' ? COPY.contact.form.sent
+              : status === 'error' ? COPY.contact.form.tryAgain
+              : COPY.contact.form.submit}
           </button>
           <div className="cf-foot">
             {status === 'error'
-              ? 'Could not send right now — email surajsharma@sqbpictures.com directly.'
+              ? COPY.contact.form.footError
               : status === 'sent'
-              ? 'Brief received. Reply within 24 hours.'
-              : 'We read every brief. Replies within 24 hours.'}
+              ? COPY.contact.form.footSent
+              : COPY.contact.form.footIdle}
           </div>
         </form>
       </div>

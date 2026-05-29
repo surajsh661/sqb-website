@@ -64,6 +64,12 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   const [activeIdx, setActiveIdx] = useState(0);
   const activeIdxRef = useRef(0);
 
+  // The film that is *actually settled in the centre* of the screen. This is
+  // distinct from activeIdx, which tracks the glide's destination. Playback is
+  // gated on this so the video on screen mid-glide is never the one paused.
+  const [playCenter, setPlayCenter] = useState(0);
+  const playCenterRef = useRef(0);
+
   // Container size — drives cell width. Re-renders only on resize.
   const [containerW, setContainerW] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1600,
@@ -211,6 +217,18 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         setActiveIdx(newActiveIdx);
       }
 
+      // Once the slide has essentially settled on a new cell, hand playback
+      // over to it. Gating on the settled position (not the target) means the
+      // film visually centred during a long glide is the one that plays.
+      const settledCenter = ((Math.round(snapFloat.current) % N) + N) % N;
+      if (
+        settledCenter !== playCenterRef.current &&
+        Math.abs(wrapDelta(snapFloat.current - settledCenter, N)) < 0.05
+      ) {
+        playCenterRef.current = settledCenter;
+        setPlayCenter(settledCenter);
+      }
+
       raf = requestAnimationFrame(tick);
     };
 
@@ -233,7 +251,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         if (!slot) continue;
         const iframe = slot.querySelector<HTMLIFrameElement>('iframe.frame-video');
         if (!iframe || !iframe.contentWindow) continue;
-        const isCenter = i === activeIdxRef.current;
+        const isCenter = i === playCenterRef.current;
         const src = iframe.src || '';
         try {
           if (src.includes('youtube')) {
@@ -267,7 +285,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       clearInterval(iv);
       document.removeEventListener('visibilitychange', onVis);
     };
-  }, [activeIdx]);
+  }, [playCenter]);
 
   const onCellClick = (i: number) => {
     const wrapped = wrapDelta(i - snapFloat.current, N);

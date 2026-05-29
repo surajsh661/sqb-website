@@ -118,7 +118,7 @@ export default function Verticals() {
               <span className="tag">{active.tag}</span>
               <span className="ttl">{active.title}</span>
             </div>
-            <button className="vmodal-close" onClick={() => setActive(null)}>×</button>
+            <button className="vmodal-close" aria-label="Close" onClick={() => setActive(null)}>×</button>
           </div>
           <div className="vmodal-hint">CLICK OUTSIDE OR ESC TO CLOSE</div>
         </div>

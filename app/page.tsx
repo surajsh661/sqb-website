@@ -17,6 +17,8 @@ import ManifestoHeadline from '@/components/ManifestoHeadline';
 import ServiceMap from '@/components/ServiceMap';
 import HeroIntro from '@/components/HeroIntro';
 import { SQB_FILMS, SQB_HERO_FILMS } from '@/lib/data';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 import { setupReveal } from '@/lib/video-utils';
 import type { Film } from '@/lib/types';
 
@@ -68,19 +70,14 @@ export default function HomePage() {
       <Hero films={SQB_HERO_FILMS} onPick={openCase} showCursorHint />
 
       <section className="section manifesto" data-screen-label="02 Manifesto">
-        <div className="eyebrow"><span className="num">02</span> <span>WHAT WE BELIEVE</span></div>
+        <div className="eyebrow"><span className="num">{COPY.manifesto.eyebrowNumber}</span> <span>{COPY.manifesto.eyebrowLabel}</span></div>
         <ManifestoHeadline />
-        <p>
-          S&apos;QB Pictures is a Delhi · Mumbai studio building India&apos;s most ambitious AI-enabled
-          films, ads and shows for the country&apos;s biggest brands. Story, performance and craft
-          come first — generative pipelines come along to make the impossible shot possible and the
-          impossible deadline real.
-        </p>
+        <p>{COPY.manifesto.paragraph}</p>
       </section>
 
       <section className="section" data-screen-label="03 Clients" style={{ paddingTop: 100, paddingBottom: 0 }}>
         <div className="trusted-head">
-          <h2>TRUSTED BY <em>GLOBAL BRANDS</em></h2>
+          <h2>{rich(COPY.clients.heading)}</h2>
         </div>
       </section>
       <ClientLogos />
@@ -88,22 +85,22 @@ export default function HomePage() {
       <section className="section stats-map-section" data-screen-label="04 Numbers + Reach">
         <div className="sm-grid">
           <div className="sm-grid-stats">
-            <div className="eyebrow"><span className="num">04</span> <span>BY THE NUMBERS · GLOBAL REACH</span></div>
+            <div className="eyebrow"><span className="num">{COPY.stats.eyebrowNumber}</span> <span>{COPY.stats.eyebrowLabel}</span></div>
             <div className="stats stacked">
               <div className="stat">
                 <div className="num"><CountUp end={100} suffix="+" /></div>
-                <div className="label">CLIENTS &nbsp;//&nbsp; INDIAN + GLOBAL</div>
+                <div className="label">{COPY.stats.clientsLabel}</div>
               </div>
               <div className="stat">
                 <div className="num"><CountUp end={10000} suffix="+" /></div>
-                <div className="label">FILMS DELIVERED</div>
+                <div className="label">{COPY.stats.filmsLabel}</div>
               </div>
               <div className="stat">
                 <div className="num">
                   2<span style={{ color: 'var(--fg-dim)' }}>–</span>
                   <CountUp end={10} suffix="×" />
                 </div>
-                <div className="label">RETURN ON AD SPEND</div>
+                <div className="label">{COPY.stats.roasLabel}</div>
               </div>
             </div>
           </div>

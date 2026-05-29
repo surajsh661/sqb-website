@@ -1,4 +1,6 @@
 'use client';
+import { COPY } from '@/lib/copy';
+import { rich } from '@/lib/rich';
 
 export default function Footer() {
   return (
@@ -6,8 +8,7 @@ export default function Footer() {
       <div className="footer-cta">
         <div className="footer-cta-row">
           <div>
-            TELL YOUR <em>STORY</em> <br />
-            TODAY <span style={{ color: 'var(--accent)' }}>—</span>
+            {rich(COPY.footer.cta)} <span style={{ color: 'var(--accent)' }}>—</span>
           </div>
           <div className="footer-cta-logo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -23,12 +24,13 @@ export default function Footer() {
       </div>
       <div className="footer-grid">
         <div>
-          <h4>STUDIO</h4>
-          <p>S&apos;QB PICTURES</p>
-          <p>DELHI · MUMBAI</p>
+          <h4>{COPY.footer.studioHeading}</h4>
+          {COPY.footer.studioLines.split('\n').map((line, i) => (
+            <p key={i}>{line}</p>
+          ))}
         </div>
         <div>
-          <h4>FOUNDERS</h4>
+          <h4>{COPY.footer.foundersHeading}</h4>
           <a
             href="https://www.linkedin.com/in/suraj-sharma-91b004195/"
             target="_blank"
@@ -45,7 +47,7 @@ export default function Footer() {
           </a>
         </div>
         <div>
-          <h4>CONTACT</h4>
+          <h4>{COPY.footer.contactHeading}</h4>
           <a href="https://wa.me/919013082883" target="_blank" rel="noopener noreferrer">
             +91 90130 82883 (WhatsApp)
           </a>
@@ -56,7 +58,7 @@ export default function Footer() {
           <a href="mailto:shubham.shah@sqbpictures.com">SHUBHAM.SHAH@SQBPICTURES.COM</a>
         </div>
         <div>
-          <h4>FOLLOW</h4>
+          <h4>{COPY.footer.followHeading}</h4>
           <a
             href="https://www.instagram.com/sqbpictures/"
             target="_blank"
@@ -81,9 +83,9 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© 2026 NIYASHI MOTION PICTURES PVT LTD · S&apos;QB PICTURES · ALL FRAMES RESERVED.</span>
+        <span>{COPY.footer.copyright}</span>
         <span className="footer-cube" title="S'cube — made with the 4 S's of our founders, Suraj Sharma + Shubham Shah">
-          S&apos;CUBE · 4·S OF SURAJ SHARMA + SHUBHAM SHAH
+          {COPY.footer.cube}
         </span>
       </div>
     </footer>
