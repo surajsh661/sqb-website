@@ -25,7 +25,7 @@ export default function Footer() {
         <div>
           <h4>STUDIO</h4>
           <p>S&apos;QB PICTURES</p>
-          <p>DELHI · BIHAR · MUMBAI</p>
+          <p>DELHI · MUMBAI</p>
         </div>
         <div>
           <h4>FOUNDERS</h4>
@@ -82,7 +82,9 @@ export default function Footer() {
       </div>
       <div className="footer-bottom">
         <span>© 2026 NIYASHI MOTION PICTURES PVT LTD · S&apos;QB PICTURES · ALL FRAMES RESERVED.</span>
-        <span>S&apos;QB / V2026.05 / DESIGN REFRESH</span>
+        <span className="footer-cube" title="S'cube — made with the 4 S's of our founders, Suraj Sharma + Shubham Shah">
+          S&apos;CUBE · 4·S OF SURAJ SHARMA + SHUBHAM SHAH
+        </span>
       </div>
     </footer>
   );

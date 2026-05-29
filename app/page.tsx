@@ -14,6 +14,7 @@ import CaseStudy from '@/components/CaseStudy';
 import ClientLogos from '@/components/ClientLogos';
 import CountUp from '@/components/CountUp';
 import ManifestoHeadline from '@/components/ManifestoHeadline';
+import ServiceMap from '@/components/ServiceMap';
 import { SQB_FILMS, SQB_HERO_FILMS } from '@/lib/data';
 import { setupReveal } from '@/lib/video-utils';
 import type { Film, Genre } from '@/lib/types';
@@ -76,7 +77,7 @@ export default function HomePage() {
         <div className="eyebrow"><span className="num">02</span> <span>WHAT WE BELIEVE</span></div>
         <ManifestoHeadline />
         <p>
-          S&apos;QB Pictures is a Delhi · Bihar · Mumbai studio building India&apos;s most ambitious AI-enabled
+          S&apos;QB Pictures is a Delhi · Mumbai studio building India&apos;s most ambitious AI-enabled
           films, ads and shows for the country&apos;s biggest brands. Story, performance and craft
           come first — generative pipelines come along to make the impossible shot possible and the
           impossible deadline real.
@@ -89,6 +90,8 @@ export default function HomePage() {
         </div>
       </section>
       <ClientLogos />
+
+      <ServiceMap />
 
       <section className="section stats-section" data-screen-label="04 Stats">
         <div className="eyebrow"><span className="num">04</span> <span>BY THE NUMBERS</span></div>

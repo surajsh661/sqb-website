@@ -32,7 +32,11 @@ export async function POST(req: Request) {
   if (!apiKey) {
     return NextResponse.json({ error: 'server not configured' }, { status: 500 });
   }
-  const to = process.env.CONTACT_TO || 'hello@sqbpictures.com';
+  // Recipients — comma-separated CONTACT_TO env var, defaulting to both founders.
+  // Resend accepts an array of addresses in the `to` field.
+  const toRaw = process.env.CONTACT_TO
+    || 'surajsharma@sqbpictures.com,shubham.shah@sqbpictures.com';
+  const to = toRaw.split(',').map((s) => s.trim()).filter(Boolean);
   const from = process.env.CONTACT_FROM || "S'QB Site <onboarding@resend.dev>";
 
   const html = `
@@ -48,7 +52,7 @@ export async function POST(req: Request) {
     const resend = new Resend(apiKey);
     const result = await resend.emails.send({
       from,
-      to: [to],
+      to,
       replyTo: email,
       subject: `New brief — ${name}${org ? ' (' + org + ')' : ''}`,
       html,

@@ -1820,3 +1820,126 @@ video.frame-video {
     padding-top: 70px; padding-bottom: 50px;
   }
 }
+
+/* ============================================================
+   SERVICE-AREA WORLD MAP
+   ============================================================ */
+.service-map {
+  position: relative;
+  padding: 140px 32px 160px;
+  border-top: 1px solid var(--rule);
+  overflow: hidden;
+}
+.service-map .sm-head {
+  max-width: 900px; margin: 0 auto 60px;
+  text-align: center;
+}
+.service-map .sm-head h2 {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(48px, 8vw, 120px);
+  line-height: 0.92; letter-spacing: -0.01em; text-transform: uppercase;
+  margin-top: 22px;
+}
+.service-map .sm-head h2 em {
+  font-style: normal; color: var(--accent);
+}
+.service-map .sm-blurb {
+  margin-top: 28px;
+  font-size: 16px; line-height: 1.6;
+  color: var(--fg-dim);
+}
+.service-map .sm-canvas {
+  max-width: 1200px; margin: 0 auto;
+  position: relative;
+}
+.service-map .sm-canvas svg { display: block; width: 100%; height: auto; }
+
+/* Land silhouettes — subtle, just enough to give "world" context. */
+.sm-land path { vector-effect: non-scaling-stroke; }
+
+/* Arcs ride from India to every international destination. Stroke-dasharray
+   + draw animation makes them feel like a flight path getting laid down. */
+.sm-arcs path {
+  stroke-dasharray: 4 5;
+  animation: smArcDraw 6s linear infinite;
+}
+@keyframes smArcDraw {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -36; }
+}
+
+/* Halos — pulsing breath around each dot. The hub (India) breathes slower
+   and bigger; the rest breathe in a faster rhythm. */
+.sm-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: smHaloPulse 3.4s ease-in-out infinite;
+}
+.sm-halo.hub { animation-duration: 4.6s; }
+@keyframes smHaloPulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.55; }
+  50%      { transform: scale(1.25); opacity: 1; }
+}
+
+/* Dot cores — small but glowy via drop-shadow filter. */
+.sm-dot circle {
+  filter: drop-shadow(0 0 6px rgba(245, 197, 24, 0.85))
+          drop-shadow(0 0 14px rgba(245, 197, 24, 0.45));
+}
+.sm-dot.hub circle {
+  filter: drop-shadow(0 0 10px rgba(245, 197, 24, 0.95))
+          drop-shadow(0 0 28px rgba(245, 197, 24, 0.55));
+}
+
+/* Labels */
+.sm-labels text { text-transform: uppercase; opacity: 0.78; }
+
+/* List below the map — the regions as a horizontal pill row. */
+.service-map .sm-list {
+  list-style: none;
+  display: flex; flex-wrap: wrap; gap: 10px 14px;
+  justify-content: center; align-items: center;
+  max-width: 1000px; margin: 56px auto 0;
+}
+.service-map .sm-list li {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--fg);
+  padding: 8px 16px;
+  border: 1px solid rgba(245, 197, 24, 0.32);
+  border-radius: 999px;
+  background: rgba(245, 197, 24, 0.04);
+  transition: background .25s ease, border-color .25s ease, color .25s ease;
+}
+.service-map .sm-list li:hover {
+  background: rgba(245, 197, 24, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .service-map { padding: 90px 20px 100px; }
+  .service-map .sm-head h2 { font-size: clamp(38px, 11vw, 72px); }
+  .service-map .sm-blurb { font-size: 14px; }
+  /* Labels get unreadably small on phones; hide them in favour of the chip list. */
+  .sm-labels { display: none; }
+  .service-map .sm-list { gap: 8px 10px; margin-top: 36px; }
+  .service-map .sm-list li { padding: 6px 12px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sm-arcs path { animation: none; stroke-dasharray: 0; }
+  .sm-halo { animation: none; }
+}
+
+/* Contact section pull-quote — "We only work with people who are as hyped as we are" */
+.contact-pull {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.18; letter-spacing: -0.005em; text-transform: uppercase;
+  color: var(--fg);
+  margin: 28px 0 0;
+  max-width: 520px;
+}
+.contact-pull em {
+  font-style: normal; color: var(--accent);
+}

@@ -35,6 +35,9 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
             Pitch us a brief, a brand, a budget — or just a feeling. We&apos;ll come back in 24 hours
             with a treatment or a &quot;this isn&apos;t us&quot;.
           </p>
+          <p className="contact-pull">
+            We only work with people who are <em>as hyped as we are</em>.
+          </p>
           <div className="contact-rows">
             <div className="contact-row">
               <span className="k">SURAJ</span>
@@ -56,7 +59,7 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
                 +91 72178 17383 · WHATSAPP
               </a>
             </div>
-            <div className="contact-row"><span className="k">STUDIOS</span><span className="v">DELHI · BIHAR · MUMBAI</span></div>
+            <div className="contact-row"><span className="k">STUDIOS</span><span className="v">DELHI · MUMBAI</span></div>
             <div className="contact-row"><span className="k">FOR</span><span className="v">ADS · DVCs · MUSIC VIDEOS · AI FILMS · VERTICALS</span></div>
           </div>
         </div>
