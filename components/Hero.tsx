@@ -27,19 +27,23 @@ function videoSrc(film: Film) {
 // slot N-1 are neighbours (the loop wraps with no seam).
 const wrapDelta = (raw: number, N: number) => ((raw % N) + N + N / 2) % N - N / 2;
 
-// --- Hinged-drum carousel geometry ------------------------------------------
-// The films are the faces of a regular polygon drum. Because every face is the
-// same width and the drum radius is the polygon's apothem, ADJACENT FILMS SHARE
-// AN EDGE — each side film meets the centre film edge-to-edge, with no gap — and
-// the whole drum turns as one rigid unit (the faces rotate in unison). The front
-// face sits flat and sharp on the screen plane; its neighbours fold back around
-// the shared edges, so they read as a continuous wall wrapping away.
+// --- Velocity-zoom horizontal strip -----------------------------------------
+// The films are laid out as a flat horizontal strip — every film at translateX
+// of its index, edge-to-edge with its neighbours, no 3D rotation, no overlap.
+// What animates is the TRACK itself: it both translates (to bring the target
+// film under the viewport centre) AND scales based on velocity. When the strip
+// is settled, the track is zoomed IN — one film fills most of the viewport,
+// with a thin sliver of the next/prev visible at the edges. When the cursor
+// drags the carousel, the track zooms OUT — multiple smaller films become
+// visible sliding past, all moving in unison as one rigid strip.
 //
-// Each face: `rotateY(d·ANGLE) translateZ(R)`, with the track pulled back by
-// `translateZ(-R)` so the front face lands at z = 0. For faces to meet edge-to-
-// edge the radius is the apothem: R = (cellW/2) / tan(ANGLE/2).
-const ANGLE = 36; // degrees between adjacent films around the drum
-const RADIUS_FACTOR = 0.5 / Math.tan((ANGLE / 2) * Math.PI / 180); // apothem → faces touch
+// SETTLED_ZOOM is the scale at rest (1.00 = one film fills the centre).
+// TRANSIT_ZOOM is the scale during motion (0.55 ≈ ~3 films visible at once).
+const SETTLED_ZOOM = 1.0;
+const TRANSIT_ZOOM = 0.55;
+// How fast (in films/sec of carousel-position velocity) the track has zoomed
+// fully to TRANSIT_ZOOM. Below this, the zoom interpolates smoothly.
+const ZOOM_VELOCITY = 1.8;
 
 // Easing time-constant (seconds). snapFloat closes ~1-1/e of the gap to the
 // target every TAU; using 1 - exp(-dt/TAU) makes the glide frame-rate
@@ -108,14 +112,16 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => mq.removeEventListener('change', set);
   }, []);
 
-  // Centre film ~62% of width on desktop so its neighbours stay big and visible
-  // tilting away on the drum wall. Mobile: near full width (no room for sides).
+  // The strip is sized large — when settled the SETTLED_ZOOM (1.0) makes one
+  // film fill most of the viewport with a sliver of the next visible at the
+  // edge; when the carousel moves the TRANSIT_ZOOM pulls back and ~3 of these
+  // big films become visible at once. Aspect 21:9 cinemascope.
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.94 : 0.62;
+  const widthFraction = containerW < 700 ? 0.94 : 0.82;
   const cellW = Math.min(
     containerW * widthFraction,
-    (containerH * 0.82 * ASPECT_W) / ASPECT_H,
+    (containerH * 0.84 * ASPECT_W) / ASPECT_H,
   );
   const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;
@@ -144,17 +150,46 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   useEffect(() => {
     let raf = 0;
 
-    const applyTransforms = () => {
+    let prevFloat = 0;
+    let smoothedVel = 0;
+
+    const applyTransforms = (dt: number) => {
       const float = snapFloat.current;
       const w = cellWRef.current;
-      const R = w * RADIUS_FACTOR;
       const track = trackRef.current;
       const reduce = reducedMotion.current;
 
-      // Pull the drum back by its radius so the front face lands flat on the
-      // screen plane; neighbours hinge back from there, edge-to-edge.
-      if (track) track.style.transform = reduce ? 'translateZ(0)' : `translateZ(${(-R).toFixed(1)}px)`;
+      // Instantaneous velocity in films-per-second; low-pass to a stable value
+      // so brief jitters don't make the zoom flicker.
+      const inst = dt > 0 ? Math.abs(wrapDelta(float - prevFloat, N)) / dt : 0;
+      prevFloat = float;
+      smoothedVel += (inst - smoothedVel) * (1 - Math.exp(-dt / 0.12));
 
+      // Map velocity → zoom. Settled → 1.0, in transit → ~0.55 (multiple films
+      // visible). The track scales around its centre (transform-origin in CSS).
+      const vNorm = Math.min(1, smoothedVel / ZOOM_VELOCITY);
+      const zoom = reduce
+        ? 1
+        : SETTLED_ZOOM + (TRANSIT_ZOOM - SETTLED_ZOOM) * (vNorm * vNorm * (3 - 2 * vNorm));
+
+      // The track slides horizontally so the film at `float` lands at the
+      // viewport centre, and scales by `zoom` around its centre (transform-
+      // origin 50% 50%). Order matters here: in CSS, `translate() scale()`
+      // applies the scale to the element's local axes first, then translates
+      // in SCREEN units — so the shift must itself be multiplied by `zoom`
+      // for the centred film to actually land on centre at every zoom level.
+      const shiftX = -float * w * (reduce ? 1 : zoom);
+      if (track) {
+        track.style.transform = reduce
+          ? `translate3d(${shiftX.toFixed(1)}px, 0, 0)`
+          : `translate3d(${shiftX.toFixed(1)}px, 0, 0) scale(${zoom.toFixed(3)})`;
+      }
+
+      // Per-cell work: no 3D rotation, no per-cell scaling — every cell is a
+      // flat rectangle sitting in its strip slot at translateX(i·cellW). We
+      // only need to toggle the .center class (for the title/playback gating)
+      // and dim non-centre cells lightly so the focused film pops. Blur is
+      // skipped here — the velocity zoom already gives the motion read.
       for (let i = 0; i < N; i++) {
         const slot = cellSlotsRef.current[i];
         const cell = videoCellsRef.current[i];
@@ -163,9 +198,12 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const wd = wrapDelta(i - float, N);
         const dist = Math.abs(wd);
 
+        // Strip placement: cells touch edge-to-edge at translateX(i·cellW).
+        // The slot already has left:50% / margin-left:-cellW/2 (centring the
+        // slot at i=0 on the track origin), so we just add the index offset.
+        slot.style.transform = `translate3d(${(i * w).toFixed(1)}px, 0, 0)`;
+
         if (reduce) {
-          // Reduced motion: only the centre film, flat; others hidden. Hard cut.
-          slot.style.transform = 'translateZ(0)';
           cell.style.filter = 'none';
           cell.style.opacity = dist < 0.5 ? '1' : '0';
           if (dist < 0.5) cell.classList.add('center');
@@ -173,28 +211,14 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           continue;
         }
 
-        // Hinged drum: place the face on the polygon. rotateY swings it to its
-        // angular slot, translateZ(R) pushes it out to the face; with the
-        // track's translateZ(-R) the front face is flat at z=0 and neighbours
-        // fold back around the shared edges — meeting the centre edge-to-edge
-        // and turning in unison as the drum rotates.
-        const theta = wd * ANGLE;
-        slot.style.transform = `rotateY(${theta.toFixed(2)}deg) translateZ(${R.toFixed(1)}px)`;
-
-        // Only the front film is in true focus. Neighbours defocus and dim
-        // gently as they roll off — but stay clearly visible (not dark slivers).
-        // Blur is the most expensive painted property, so apply it ONLY to
-        // non-centre cells and clamp it; round every written value to 2dp to
-        // avoid sub-pixel repaints on micro-moves.
         if (dist < 0.06) {
           cell.style.filter = 'none';
           cell.style.opacity = '1';
         } else {
-          const blur = Math.min(dist * 2.6, 7);
-          const bright = Math.max(0.5, 1 - dist * 0.24);
-          const sat = 1 + Math.min(dist, 1) * 0.06;
-          cell.style.filter =
-            `blur(${blur.toFixed(2)}px) brightness(${bright.toFixed(2)}) saturate(${sat.toFixed(2)})`;
+          // Light dim only — no blur (the zoom carries the motion read and
+          // blurring iframes every frame is the most expensive paint we can do).
+          const bright = Math.max(0.55, 1 - Math.min(dist, 2) * 0.18);
+          cell.style.filter = `brightness(${bright.toFixed(2)})`;
           cell.style.opacity = Math.max(0, 1 - Math.max(0, dist - 2) * 0.7).toFixed(2);
         }
 
@@ -235,7 +259,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       const k = 1 - Math.exp(-dt / TAU);
       snapFloat.current += wrapDelta(target.current - snapFloat.current, N) * k;
 
-      applyTransforms();
+      applyTransforms(dt);
 
       const newActiveIdx = ((Math.round(target.current) % N) + N) % N;
       if (newActiveIdx !== activeIdxRef.current) {
@@ -256,7 +280,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       raf = requestAnimationFrame(tick);
     };
 
-    applyTransforms(); // lay out before first paint to avoid a flash
+    applyTransforms(0.016); // lay out before first paint to avoid a flash
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [N]);

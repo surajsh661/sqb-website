@@ -1323,13 +1323,17 @@ body.no-grain::before { display: none; }
   position: absolute; left: 0; right: 0;
   top: 88px; bottom: 26vh;
   z-index: 4; pointer-events: none;
-  /* The camera for the 3D ring. The vanishing point sits at the centre of the
-     zone, where the front film lands, so the neighbours fan out symmetrically
-     and pick up real perspective foreshortening as they rotate away. */
-  perspective: 900px;
-  perspective-origin: 50% 50%;
+  /* The strip is purely 2D — no perspective. The velocity zoom on .video-track
+     (translate3d + scale) creates the settled-vs-transit visual on its own. */
+  perspective: none;
+  overflow: hidden;
 }
-.hero-zone .video-track { pointer-events: auto; }
+.hero-zone .video-track {
+  pointer-events: auto;
+  /* Track origin sits at the centre of .hero-zone (since cell-slots use
+     left:50% / margin offsets), so scale() zooms around the centred film. */
+  transform-origin: 50% 50%;
+}
 
 .vcard { cursor: pointer; }
 .vcard .vplay {
