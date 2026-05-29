@@ -19,6 +19,7 @@ export function videoSrc(film: VideoLike, opts: { bg?: boolean } = {}): string {
 export function thumbSources(film: VideoLike): string[] {
   if (film.type === 'yt') {
     return [
+      `https://i.ytimg.com/vi/${film.videoId}/maxresdefault.jpg`,
       `https://i.ytimg.com/vi/${film.videoId}/hqdefault.jpg`,
       `https://i.ytimg.com/vi/${film.videoId}/mqdefault.jpg`,
     ];

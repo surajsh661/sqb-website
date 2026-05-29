@@ -1162,22 +1162,27 @@
   background: #F2EBDD;
   color: #1a1410;
 }
+/* Poster area in each vertical ticket. Aspect 9:16 so it matches the
+   actual vertical-video source — and object-fit: contain so the whole
+   poster sits inside without weird mid-frame crops. Background colour
+   matches the card so any letterboxing blends in cleanly. */
 .vt-art {
   position: relative;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 9 / 16;
   border-radius: 8px; overflow: hidden;
-  background: linear-gradient(135deg, #1a1410, #2a1f15);
+  background: #1a1410;
   margin-bottom: 14px;
 }
+.vc-ticket.cream .vt-art { background: #1a1410; }
 .vt-art::before {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.45) 100%);
+  background: linear-gradient(180deg, transparent 70%, rgba(0,0,0,0.35) 100%);
   z-index: 1; pointer-events: none;
 }
 .vt-art img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center 18%;
+  object-fit: cover; object-position: center center;
   display: block;
   background: #0a0807;
 }

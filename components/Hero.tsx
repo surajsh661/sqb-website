@@ -67,15 +67,15 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Centre cell ~77% of viewport on desktop at 21:9 cinemascope ratio
-  // (another 10% bump on the previous 70%). Side cells now poke in just
-  // narrow slivers from the edges — preview, not parade.
+  // Centre cell ~85% of viewport at 21:9 cinemascope ratio. Side cells
+  // now sit as thin slivers just past the screen edges so the centre
+  // video really fills the eye.
   const ASPECT_W = 21;
   const ASPECT_H = 9;
-  const widthFraction = containerW < 700 ? 0.96 : 0.77;
+  const widthFraction = containerW < 700 ? 0.98 : 0.85;
   const cellW = Math.min(
     containerW * widthFraction,
-    (containerH * 0.82 * ASPECT_W) / ASPECT_H,
+    (containerH * 0.86 * ASPECT_W) / ASPECT_H,
   );
   const cellH = (cellW * ASPECT_H) / ASPECT_W;
   cellWRef.current = cellW;
@@ -118,12 +118,11 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         const wrapped = wrapDelta(i - float, N);
         const dist = Math.abs(wrapped);
         const dir = Math.sign(wrapped) || 0;
-        // Flat side cells (no perspective tilt). Any rotateY creates a
-        // wedge-shaped gap between the rounded corners that reads as a
-        // dark sliver; keeping everything coplanar means cells meet at
-        // a clean vertical seam.
+        // Flat coplanar cells, no scale shrink. Even a 1% scale drop on
+        // the side cells opens a thin dark stripe at the seam between
+        // cells; keeping scale=1 everywhere closes that completely.
         const rot = 0;
-        const scale = 1 - Math.min(dist, 1.8) * 0.01;
+        const scale = 1;
         // Very light atmospheric drift on side cells. Side cards should
         // still read clearly — just slightly receded.
         const blur = Math.min(dist * 2, 3);
