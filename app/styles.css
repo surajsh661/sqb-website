@@ -200,35 +200,36 @@ body.no-grain::before { display: none; }
   z-index: 2;
 }
 .video-track {
-  position: absolute; top: 50%; left: 50%;
-  width: 0; height: 0;
+  position: absolute; inset: 0;
   z-index: 2;
   will-change: transform;
-  /* preserve-3d lets the per-cell translateZ actually sort in true
-     depth space — side cells sit behind the centre, the centre wins
-     any rotation-induced overlap at the seam. */
+  /* The track is the rotating drum. preserve-3d lets every cell's
+     rotateY()/translateZ() sit in true depth space, so the front film
+     occludes the neighbours that curve away behind it. The track's own
+     translateZ(-R) (set per-frame by JS) pulls the drum back so the front
+     film lands flat on the screen plane. The vanishing point / perspective
+     comes from .hero-zone. */
   transform-style: preserve-3d;
-  perspective: 1200px;
 }
 .cell-slot {
   position: absolute;
-  left: 0; top: 0;
-  height: var(--sqb-cellH, 31.5vw);
-  /* No CSS transition on transform — JS drives this every frame via
-     requestAnimationFrame. A transition here would queue a 180ms animation
-     for every frame's update and stutter horribly. */
-  will-change: transform;
-  transform-style: preserve-3d;
+  left: 50%; top: 50%;
+  /* width / height / negative margins are set inline to the JS-computed cell
+     size, so the box is centred on the ring's axis and transform-origin
+     (centre) is the pivot for the rotateY that swings it around the drum.
+     No CSS transition — JS drives transform/opacity every frame. */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 .video-cell {
   position: relative;
   width: 100%;
   height: 100%;
   cursor: pointer;
-  /* Same reason as .cell-slot — transform/filter/opacity are updated per
-     frame by JS, so we let those mutations land instantly and rely on the
-     lerp for smoothing. */
-  transform-style: preserve-3d;
+  /* A flat billboard painted on the slot's rotated plane. transform/filter/
+     opacity are updated per frame by JS; we let those mutations land
+     instantly and rely on the lerp for smoothing. */
 }
 .video-cell .frame {
   position: absolute; inset: 0; overflow: hidden;
@@ -1275,6 +1276,11 @@ body.no-grain::before { display: none; }
   position: absolute; left: 0; right: 0;
   top: 88px; bottom: 26vh;
   z-index: 4; pointer-events: none;
+  /* The camera for the 3D ring. The vanishing point sits at the centre of the
+     zone, exactly where the front film lands — so neighbours fan out
+     symmetrically and get real perspective foreshortening. */
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
 }
 .hero-zone .video-track { pointer-events: auto; }
 
