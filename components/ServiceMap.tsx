@@ -124,7 +124,7 @@ export default function ServiceMap() {
 
         {/* Poster title block — kept clean. No coordinates. */}
         <div className="sp-title">
-          <div className="sp-title-main">S &nbsp; Q &nbsp; B &nbsp; · &nbsp; W O R L D W I D E</div>
+          <div className="sp-title-main">S&apos;QB &nbsp;·&nbsp; WORLDWIDE</div>
           <div className="sp-rule" />
           <div className="sp-title-sub">PAN-INDIA · UAE · SAUDI · SINGAPORE · SRI LANKA · LONDON · CANADA · USA</div>
         </div>

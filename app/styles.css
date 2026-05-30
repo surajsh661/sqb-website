@@ -146,7 +146,7 @@ body.no-grain::before { display: none; }
   cursor: pointer; user-select: none;
 }
 .logo-mark img {
-  width: 56px; height: 56px; display: block;
+  width: 60px; height: 60px; display: block;
   object-fit: contain;
 }
 .logo-mark .stack {
@@ -472,6 +472,13 @@ body.no-grain::before { display: none; }
   color: var(--accent); text-transform: uppercase;
   z-index: 6; display: flex; align-items: center; gap: 12px;
   pointer-events: none;
+  /* Slowly blink (~7s, ~4 cycles) when it first appears to signal that the
+     hero slider reacts to cursor movement, then settle to steady. */
+  animation: cursorHintBlink 1.7s ease-in-out 4 both;
+}
+@keyframes cursorHintBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.16; }
 }
 .cursor-hint .arrow {
   width: 36px; height: 1px; background: currentColor; position: relative;
@@ -802,7 +809,7 @@ body.no-grain::before { display: none; }
     align-self: center;
   }
   .verticals .head h2 {
-    font-size: clamp(52px, 6.2vw, 116px);   /* smaller "VERTICAL STORIES" */
+    font-size: clamp(60px, 7.1vw, 133px);   /* "VERTICAL STORIES" (+15%) */
     margin-bottom: 22px;
   }
   .verticals .head .blurb { max-width: 300px; }
@@ -1250,7 +1257,7 @@ body.no-grain::before { display: none; }
   font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
 }
 .testi figcaption .who { color: var(--fg); }
-.testi figcaption .org { color: var(--accent); margin-top: 4px; }
+.testi figcaption .org { color: var(--accent); margin-top: 4px; font-family: 'Inter', sans-serif; font-style: italic; font-weight: 700; }
 @media (max-width: 900px) {
   .testi-grid { grid-template-columns: 1fr; }
   .testi { border-right: 0; }
@@ -1640,10 +1647,10 @@ video.frame-video {
 /* Reach Out button (top nav) */
 .reach-out-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  height: 36px; padding: 0 16px; border-radius: 999px;
+  height: 36px; padding: 0 18px; border-radius: 999px;
   background: var(--accent); color: #1a1410;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+  font-family: 'Inter', sans-serif; font-style: italic;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
   text-transform: uppercase; text-decoration: none;
   border: 1px solid var(--accent);
   transition: transform .15s ease, background .15s ease, color .15s ease;
@@ -2158,11 +2165,11 @@ video.frame-video {
   border-top: 1px solid rgba(245, 197, 24, 0.20);
 }
 .sp-title-main {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  letter-spacing: 0.18em;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.3em;
   color: var(--accent);
-  font-weight: 500;
+  font-weight: 600;
 }
 .sp-rule {
   width: 56px; height: 1px;
@@ -2230,55 +2237,26 @@ video.frame-video {
   position: fixed; inset: 0;
   z-index: 250;                    /* above topbar (90) and case studies */
   display: flex; align-items: center; justify-content: center;
-  background: transparent;
+  /* Always dark, independent of theme — the cream title must read in both. */
+  background: #0b0908;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.9s cubic-bezier(.22,1,.36,1);
-  overflow: hidden;                /* the title flies past the edges */
-  /* Real depth: the title travels toward the camera in Z and passes the
-     screen, rather than just scaling up flat. */
-  perspective: 1200px;
-  perspective-origin: 50% 50%;
+  transition: opacity 0.85s ease;
 }
-/* The dark cover is a separate layer so it can clear (revealing the hero) WHILE
-   the title is still flying past in the foreground. Always dark, independent of
-   theme — the cream-on-dark title must read in both light and dark mode. */
-.hero-intro::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: #0b0908;
-  transition: opacity 1s ease 0.45s;   /* clears a beat into the fly-through */
-}
-.hero-intro-out::before { opacity: 0; }
+/* Simple fade: in → hold → out. No zoom. */
 .hero-intro-in   { opacity: 0; }
 .hero-intro-hold { opacity: 1; }
-.hero-intro-out  { opacity: 1; }       /* stays up; bg + title animate, not this */
+.hero-intro-out  { opacity: 0; }
 .hi-stack {
   text-align: center;
   padding: 0 24px;
-  position: relative;
-  transform-style: preserve-3d;        /* let children live in the 3D space */
 }
-/* The TITLE flies straight at the camera (translateZ) and PASSES the screen,
-   then the dark cover behind it has already cleared — so the hero is revealed
-   *through* the pass. Long ease-OUT so the motion is smooth, not abrupt. */
-.hero-intro-in   .hi-text { transform: translateZ(-120px); }
-.hero-intro-hold .hi-text { transform: translateZ(0); }
-.hero-intro-out  .hi-text {
-  transform: translateZ(1130px);       /* with perspective 1200 → flies past */
-  opacity: 0;
-  transition: transform 1.8s cubic-bezier(0.22, 1, 0.32, 1),
-              opacity 0.5s ease 1.35s; /* hold opaque, fade only as it exits */
-}
-/* Logo recedes into the distance as the title rushes forward. */
-.hero-intro-out .hi-logo { transform: translateZ(-320px); opacity: 0; }
 .hi-logo {
   display: block;
   height: clamp(76px, 11vw, 132px);
   width: auto;
   object-fit: contain;
   margin: 0 auto 30px;
-  transition: transform 1s cubic-bezier(.22,1,.36,1), opacity 0.6s ease;
 }
 .hi-text {
   font-family: 'Anton', sans-serif;
@@ -2289,9 +2267,6 @@ video.frame-video {
   /* Fixed cream (not var(--fg)) — the overlay is always dark in both themes. */
   color: #f4efe3;
   margin: 0;
-  transform: translateZ(-120px);
-  transition: transform 1.2s cubic-bezier(.22,1,.36,1);
-  will-change: transform, opacity;
 }
 .hi-text em {
   font-style: normal;

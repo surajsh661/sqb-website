@@ -372,7 +372,7 @@ export const SQB_VERTICALS: Vertical[] = [
       type: f.type, videoId: f.videoId, genres: f.genres,
     })),
   // Additional AI-show verticals hosted on Google Drive.
-  { id: 'hit-the-jackpot', title: 'HIT THE JACKPOT', tag: 'AI SHOW', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', genres: ['vertical'] },
+  { id: 'hit-the-jackpot', title: 'WIN THE LOTTERY', tag: 'AI SHOW', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', genres: ['vertical'] },
   { id: 'unexpected-pregnancy', title: 'UNEXPECTED PREGNANCY', tag: 'AI SHOW', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS', genres: ['vertical'] },
 ];
 
@@ -387,7 +387,7 @@ export const SQB_AI_LAB: AILabData = {
     { id: 'r2', title: 'REAL REEL 02', type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J' },
     { id: 'r3', title: 'REAL REEL 03', type: 'gd', videoId: '1N_Ia4SnPfNbhOd4n1RAvhJeW8fXXaN-a' },
     { id: 'r4', title: 'UNEXPECTED PREGNANCY', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS', vertical: true },
-    { id: 'r5', title: 'HIT THE JACKPOT', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', vertical: true },
+    { id: 'r5', title: 'WIN THE LOTTERY', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', vertical: true },
   ],
   vfx: [
     { id: 'x1', title: 'VFX REEL 01', type: 'gd', videoId: '1y-faRtLuVRYEuE0OjZWLLZgb3I4prLMf' },

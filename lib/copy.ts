@@ -46,7 +46,7 @@ export const COPY = {
     // NOTE: the big animated headline ("We love filmmaking first and AI
     // second…") has moving icons baked in, so it lives in
     // components/ManifestoHeadline.tsx — ask the developer to change that line.
-    paragraph: `S'QB Pictures is a Delhi · Mumbai studio building India's most ambitious AI-enabled films, ads and shows for the country's biggest brands. Story, performance and craft come first — generative pipelines come along to make the impossible shot possible and the impossible deadline real.`,
+    paragraph: `S'QB Pictures is a Delhi · Mumbai studio building some of the most ambitious AI-enabled films, ads and shows for the world's biggest brands — with the crew, kit and reach to shoot on location anywhere, from a Mumbai set to a shoot across the globe. Story, performance and craft come first; generative pipelines come along to make the impossible shot possible and the impossible deadline real.`,
   },
 
   // ── Section 03 · Clients ──────────────────────────────────────────────────

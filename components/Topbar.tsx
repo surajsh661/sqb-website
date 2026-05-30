@@ -5,14 +5,14 @@ import { COPY } from '@/lib/copy';
 
 interface Props {
   active?: 'home' | 'work' | 'ai-lab' | 'social';
-  onOpenMenu: () => void;
+  /** Retained for API compatibility; the hamburger menu has been removed. */
+  onOpenMenu?: () => void;
   /** Use sub-page nav (sqb-nav) styling instead of topbar */
   variant?: 'topbar' | 'nav';
 }
 
 export default function Topbar({
   active = 'home',
-  onOpenMenu,
   variant = 'topbar',
 }: Props) {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -54,10 +54,6 @@ export default function Topbar({
           <button className="tt" onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}>
             {theme === 'dark' ? '☾' : '☀'}
           </button>
-          <button className="menu-trigger" onClick={onOpenMenu} aria-label="Open menu">
-            <span>MENU</span>
-            <span className="lines"><span /><span /></span>
-          </button>
         </div>
       </nav>
     );
@@ -91,10 +87,6 @@ export default function Topbar({
           title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
         >
           <span className="knob">{theme === 'dark' ? '☾' : '☀'}</span>
-        </button>
-        <button className="menu-trigger" onClick={onOpenMenu}>
-          <span>MENU</span>
-          <span className="lines"><span /><span /></span>
         </button>
       </div>
     </div>
