@@ -28,8 +28,11 @@
 }
 .sqb-nav .lm .tg b { color: var(--accent); font-weight: 500; }
 .sqb-nav .nav {
-  display: flex; gap: 28px;
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  display: flex; gap: 30px;
+  /* Truly centred on the bar (independent of the logo/right widths), and
+     ~15% larger than before (11px → 12.65px). */
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: 'JetBrains Mono', monospace; font-size: 12.65px;
   letter-spacing: 0.25em; text-transform: uppercase;
 }
 .sqb-nav .nav a {
