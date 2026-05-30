@@ -52,6 +52,18 @@ const RADIUS_FACTOR = 0.5 / Math.tan((ANGLE / 2) * DEG); // apothem → films to
 // independent (same feel on 60Hz and 120Hz).
 const TAU = 0.09;
 
+// How many films around the centre actually play vs. just exist.
+//   PLAY_DIST  — play the centre + its two immediate neighbours (the cluster
+//                you can actually see curving in). Capping live decode at ~3
+//                videos keeps the slide smooth; playing all N at once is what
+//                made it choppy and slow to load.
+//   MOUNT_DIST — mount (network-load) iframes a touch beyond the play window so
+//                a neighbour is buffered just before it needs to play. Cells
+//                further out show only their poster until they approach, so the
+//                first paint loads ~3 iframes instead of all N.
+const PLAY_DIST = 1.05;
+const MOUNT_DIST = 1.5;
+
 interface Props {
   films: Film[];
   onPick: (film: Film) => void;
@@ -86,6 +98,21 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   // film on screen mid-glide is the one that plays.
   const [playCenter, setPlayCenter] = useState(0);
   const playCenterRef = useRef(0);
+
+  // Which iframe indices have been network-mounted. Grows monotonically (a cell,
+  // once mounted, is never torn down — so a video never reloads or jumps to t=0)
+  // starting from the initial visible cluster around centre (index 0). Computed
+  // purely from N + the constant start position, so it is identical on the
+  // server and the client's first render (no hydration mismatch).
+  const initialMounted = () => {
+    const s = new Set<number>();
+    for (let i = 0; i < films.length; i++) {
+      if (Math.abs(wrapDelta(i - 0, films.length)) <= MOUNT_DIST) s.add(i);
+    }
+    return s;
+  };
+  const [mounted, setMounted] = useState<Set<number>>(initialMounted);
+  const mountedRef = useRef<Set<number>>(mounted);
 
   // Container size drives cell width. Seed identical fixed defaults on the
   // server and the client's first render (React does not patch inline-style
@@ -260,6 +287,21 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         setPlayCenter(settledCenter);
       }
 
+      // Mount any cell that has come within MOUNT_DIST of centre. The set only
+      // grows, so this fires at most N times over the page's life — never per
+      // frame once everything has been seen.
+      let mountedNew = false;
+      for (let i = 0; i < N; i++) {
+        if (
+          !mountedRef.current.has(i) &&
+          Math.abs(wrapDelta(i - snapFloat.current, N)) <= MOUNT_DIST
+        ) {
+          mountedRef.current.add(i);
+          mountedNew = true;
+        }
+      }
+      if (mountedNew) setMounted(new Set(mountedRef.current));
+
       raf = requestAnimationFrame(tick);
     };
 
@@ -268,10 +310,12 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => cancelAnimationFrame(raf);
   }, [N]);
 
-  // Center-only playback. With many muted iframes mounted, browsers throttle
-  // autoplay and the video-decode load makes sliding choppy. We drive playback
-  // ourselves: play the centre iframe, pause the rest. Iframes stay mounted (no
-  // reload, no jump-to-zero) — only one decodes at a time.
+  // Visible-cluster playback. Every muted iframe in the URL autoplays itself on
+  // load, so our job is to PAUSE the ones you can't really see. We play the
+  // centre film plus its two immediate neighbours (the cluster curving in at the
+  // sides) and pause everything further round the cylinder — keeping live decode
+  // at ~3 videos so the slide stays smooth, while every preview on screen moves.
+  // Iframes stay mounted (no reload, no jump-to-zero) regardless of play state.
   useEffect(() => {
     const apply = () => {
       const slots = cellSlotsRef.current;
@@ -280,12 +324,12 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
         if (!slot) continue;
         const iframe = slot.querySelector<HTMLIFrameElement>('iframe.frame-video');
         if (!iframe || !iframe.contentWindow) continue;
-        const isCenter = i === playCenterRef.current;
+        const play = Math.abs(wrapDelta(i - playCenterRef.current, N)) <= PLAY_DIST;
         const src = iframe.src || '';
         try {
           if (src.includes('youtube')) {
             iframe.contentWindow.postMessage(
-              JSON.stringify({ event: 'command', func: isCenter ? 'playVideo' : 'pauseVideo', args: [] }),
+              JSON.stringify({ event: 'command', func: play ? 'playVideo' : 'pauseVideo', args: [] }),
               '*',
             );
             iframe.contentWindow.postMessage(
@@ -293,7 +337,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
               '*',
             );
           } else if (src.includes('vimeo')) {
-            iframe.contentWindow.postMessage(JSON.stringify({ method: isCenter ? 'play' : 'pause' }), '*');
+            iframe.contentWindow.postMessage(JSON.stringify({ method: play ? 'play' : 'pause' }), '*');
             iframe.contentWindow.postMessage(JSON.stringify({ method: 'setMuted', value: true }), '*');
           }
         } catch {}
@@ -308,7 +352,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       clearInterval(iv);
       document.removeEventListener('visibilitychange', onVis);
     };
-  }, [playCenter]);
+  }, [playCenter, mounted, N]);
 
   const onCellClick = (i: number) => {
     const wrapped = wrapDelta(i - snapFloat.current, N);
@@ -364,18 +408,22 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
               >
                 <div className="frame">
                   <HeroThumb film={film} className="frame-poster" />
-                  {/* Iframes stay mounted for the lifetime of the page — a
-                      stable key means position changes (pure DOM transforms)
-                      never remount or reload them while sliding. */}
-                  <iframe
-                    key={film.videoId}
-                    className="frame-video"
-                    src={videoSrc(film)}
-                    title={film.title}
-                    allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                    loading="eager"
-                    frameBorder={0}
-                  />
+                  {/* The poster always renders; the iframe is mounted lazily
+                      once the cell nears centre (so first paint loads only the
+                      visible cluster, not all N). Once mounted it stays mounted
+                      for the page's life — a stable key means position changes
+                      (pure DOM transforms) never remount or reload it. */}
+                  {mounted.has(i) && (
+                    <iframe
+                      key={film.videoId}
+                      className="frame-video"
+                      src={videoSrc(film)}
+                      title={film.title}
+                      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                      loading="eager"
+                      frameBorder={0}
+                    />
+                  )}
                   <div className="frame-tint" />
                 </div>
               </div>
