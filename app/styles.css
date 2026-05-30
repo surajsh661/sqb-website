@@ -1449,6 +1449,33 @@ body.no-grain::before { display: none; }
   width: 100%; height: 100%;
   border: 0; background: #000;
 }
+
+/* AI-Lab reel watch-lightbox — fits the clip to the viewport so it's never
+   cropped, sized by orientation (16:9 horizontal / 9:16 vertical). Reuses the
+   .vmodal overlay + close/meta/hint styling. */
+.reel-card {
+  position: relative;
+  background: #0a0807;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 60px 140px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,197,24,0.25);
+  animation: vmZoom .35s cubic-bezier(.2,.8,.2,1);
+}
+.reel-card.h {
+  aspect-ratio: 16 / 9;
+  width: min(94vw, calc(86vh * 16 / 9));
+  height: auto;
+}
+.reel-card.v {
+  aspect-ratio: 9 / 16;
+  width: min(94vw, calc(86vh * 9 / 16));
+  height: auto;
+}
+.reel-card iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0; background: #000;
+}
 @keyframes vmZoom {
   from { transform: scale(0.85); opacity: 0.4; }
   to   { transform: scale(1);    opacity: 1; }
@@ -2162,25 +2189,37 @@ video.frame-video {
   background: rgba(10, 8, 7, 0.96);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.85s cubic-bezier(.22,1,.36,1);
+  transition: opacity 0.9s cubic-bezier(.22,1,.36,1);
 }
 .hero-intro-in   { opacity: 0; }
 .hero-intro-hold { opacity: 1; }
-.hero-intro-out  { opacity: 0; }
+/* Out phase: the overlay fades with an ease-IN so it "rushes" away as the
+   content zooms through the camera (cross-zoom), revealing the hero. */
+.hero-intro-out  {
+  opacity: 0;
+  transition: opacity 0.85s cubic-bezier(.55, 0, .85, .25);
+}
 .hi-stack {
   text-align: center;
   padding: 0 32px;
-  transform: scale(0.97);
-  transition: transform 1.6s cubic-bezier(.22,1,.36,1);
+  transform: scale(0.9);
+  transition: transform 1.15s cubic-bezier(.22,1,.36,1);
+  will-change: transform, opacity;
 }
+/* Cross-zoom: enter zoomed-in slightly → settle → on exit push past the
+   viewer (scale up + fade) instead of a flat fade. */
+.hero-intro-in   .hi-stack { transform: scale(0.9); }
 .hero-intro-hold .hi-stack { transform: scale(1); }
-.hero-intro-out  .hi-stack { transform: scale(1.02); }
+.hero-intro-out  .hi-stack {
+  transform: scale(1.65);
+  transition: transform 0.85s cubic-bezier(.55, 0, .85, .25);
+}
 .hi-logo {
   display: block;
-  height: clamp(48px, 7vw, 76px);
+  height: clamp(76px, 11vw, 132px);
   width: auto;
   object-fit: contain;
-  margin: 0 auto 28px;
+  margin: 0 auto 30px;
 }
 .hi-text {
   font-family: 'Anton', sans-serif;

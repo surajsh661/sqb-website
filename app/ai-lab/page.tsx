@@ -1,18 +1,17 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Topbar from '@/components/Topbar';
 import Loader from '@/components/Loader';
 import TicketMenu from '@/components/TicketMenu';
-import CaseStudy from '@/components/CaseStudy';
-import HeroThumb from '@/components/HeroThumb';
 import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
-import { SQB_AI_LAB, SQB_FILMS } from '@/lib/data';
+import { SQB_AI_LAB } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
 import { videoSrc, thumbSources, setupReveal } from '@/lib/video-utils';
-import type { AILabItem, Film } from '@/lib/types';
+import type { AILabItem } from '@/lib/types';
 
 const LAB = SQB_AI_LAB;
 
@@ -28,32 +27,19 @@ const PANES = [
     bg: LAB.vfx[0], anchor: 'section-vfx' },
 ];
 
+// Preview (muted, background) source for the grid cards.
 function bgSrc(item: AILabItem) {
   return item.type === 'gd'
     ? `https://drive.google.com/file/d/${item.videoId}/preview`
     : videoSrc(item, { bg: true });
 }
 
-function fakeFilmFromAI(item: AILabItem, sectionTitle: string): Film {
-  return {
-    id: item.id,
-    title: item.title,
-    category: sectionTitle + ' / AI LAB',
-    year: '2026',
-    runtime: '—',
-    genres: ['ai'],
-    type: item.type,
-    videoId: item.videoId,
-    client: "S'QB Labs",
-    talent: 'Generative ensemble',
-    lede: 'A reel from the ' + sectionTitle.toLowerCase() + " track of S'QB AI Labs.",
-    body: "Built end-to-end inside our AI pipeline. Direction, shot design, grading and sound staged the way we'd stage a shoot.",
-    impact: 'Spec',
-    credits: [
-      { role: 'AI SUPERVISOR', name: "S'QB LABS" },
-      { role: 'DIRECTOR', name: "S'QB" },
-    ],
-  };
+// Full player source for the lightbox (with controls + sound).
+function reelSrc(item: AILabItem) {
+  if (item.type === 'vm')
+    return `https://player.vimeo.com/video/${item.videoId}?autoplay=1&loop=1&muted=0&controls=1&dnt=1&playsinline=1&title=0&byline=0&portrait=0`;
+  if (item.type === 'gd') return `https://drive.google.com/file/d/${item.videoId}/preview`;
+  return `https://www.youtube.com/embed/${item.videoId}?autoplay=1&mute=0&loop=1&playlist=${item.videoId}&controls=1&modestbranding=1&rel=0&playsinline=1`;
 }
 
 function AISection({
@@ -77,7 +63,7 @@ function AISection({
       <div className="ai-track-grid">
         {items.map((it) => (
           <div
-            className={'ai-clip' + (it.id === 'r4' ? ' vertical' : '')}
+            className={'ai-clip' + (it.vertical ? ' vertical' : '')}
             key={it.id}
             onClick={() => onOpen(it, title)}
             role="button"
@@ -100,29 +86,26 @@ function AISection({
 export default function AILabPage() {
   const [hover, setHover] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeFilm, setActiveFilm] = useState<Film | null>(null);
-  const [caseOpen, setCaseOpen] = useState(false);
+  // The reel currently open in the watch-lightbox (null = closed).
+  const [reel, setReel] = useState<{ item: AILabItem; section: string } | null>(null);
 
-  const openCase = (film: Film) => {
-    setActiveFilm(film);
-    requestAnimationFrame(() => setCaseOpen(true));
+  const openReel = (item: AILabItem, section: string) => {
+    setReel({ item, section });
     document.body.style.overflow = 'hidden';
   };
-  const closeCase = () => {
-    setCaseOpen(false);
+  const closeReel = () => {
+    setReel(null);
     document.body.style.overflow = '';
-    setTimeout(() => setActiveFilm(null), 800);
-  };
-  const switchCase = (f: Film) => {
-    closeCase();
-    setTimeout(() => openCase(f), 400);
-  };
-
-  const onOpen = (it: AILabItem, sectionTitle: string) => {
-    openCase(fakeFilmFromAI(it, sectionTitle));
   };
 
   useEffect(() => { setupReveal(); }, []);
+
+  useEffect(() => {
+    if (!reel) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeReel(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [reel]);
 
   const scrollTo = (anchor: string) => {
     document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' });
@@ -177,29 +160,56 @@ export default function AILabPage() {
         title={COPY.aiLab.animTitle}
         items={LAB.animated}
         blurb={COPY.aiLab.animBlurb}
-        onOpen={onOpen}
+        onOpen={openReel}
       />
       <AISection
         id="section-real"
         title={COPY.aiLab.realTitle}
         items={LAB.realistic}
         blurb={COPY.aiLab.realBlurb}
-        onOpen={onOpen}
+        onOpen={openReel}
       />
       <AISection
         id="section-vfx"
         title={COPY.aiLab.vfxTitle}
         items={LAB.vfx}
         blurb={COPY.aiLab.vfxBlurb}
-        onOpen={onOpen}
+        onOpen={openReel}
       />
 
       <TrustedBlock />
       <ContactSection compact />
       <Footer />
 
-      <CaseStudy film={activeFilm} films={SQB_FILMS} open={caseOpen} onClose={closeCase} onPick={switchCase} />
       <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+
+      {/* Watch-lightbox — fits the clip to the viewport (no cropping) and adapts
+          to the clip's orientation. Portalled to <body> so no ancestor scroll
+          transform can clip it. */}
+      {reel && typeof document !== 'undefined' &&
+        createPortal(
+          <div className="vmodal" onClick={closeReel}>
+            <div
+              className={'reel-card ' + (reel.item.vertical ? 'v' : 'h')}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe
+                key={reel.item.id}
+                src={reelSrc(reel.item)}
+                title={reel.item.title}
+                allow="autoplay; encrypted-media; fullscreen"
+                allowFullScreen
+              />
+              <div className="vmodal-meta">
+                <span className="tag">{reel.section}</span>
+                <span className="ttl">{reel.item.title}</span>
+              </div>
+              <button className="vmodal-close" aria-label="Close" onClick={closeReel}>×</button>
+            </div>
+            <div className="vmodal-hint">{COPY.common.vmodalHint}</div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

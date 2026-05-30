@@ -341,8 +341,8 @@ export const SQB_FILMS: Film[] = [
 // Explicit curated list of films featured in the homepage hero carousel.
 // Order = display order. Edit this to change what shows on the homepage.
 const HERO_FEATURED_IDS: string[] = [
-  'muthoot-sunheri-soch',
   'naturaltein-bumrah',
+  'muthoot-sunheri-soch',
   'pw-dvc',
   'revolution-edu-scam',
   'kabeera-tseries',
@@ -386,7 +386,8 @@ export const SQB_AI_LAB: AILabData = {
     { id: 'r1', title: 'REAL REEL 01', type: 'gd', videoId: '1F-iqYy4IoBWw9tZSn3krZqEXf-vYxsKJ' },
     { id: 'r2', title: 'REAL REEL 02', type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J' },
     { id: 'r3', title: 'REAL REEL 03', type: 'gd', videoId: '1N_Ia4SnPfNbhOd4n1RAvhJeW8fXXaN-a' },
-    { id: 'r4', title: 'REAL REEL 04', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS' },
+    { id: 'r4', title: 'UNEXPECTED PREGNANCY', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS', vertical: true },
+    { id: 'r5', title: 'HIT THE JACKPOT', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', vertical: true },
   ],
   vfx: [
     { id: 'x1', title: 'VFX REEL 01', type: 'gd', videoId: '1y-faRtLuVRYEuE0OjZWLLZgb3I4prLMf' },

@@ -39,7 +39,7 @@ export interface Film {
   episodes?: Episode[];
 }
 
-export interface AILabItem { id: string; title: string; type: VideoType; videoId: string }
+export interface AILabItem { id: string; title: string; type: VideoType; videoId: string; vertical?: boolean }
 export interface AILabData {
   animated: AILabItem[];
   realistic: AILabItem[];
