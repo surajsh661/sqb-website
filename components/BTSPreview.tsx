@@ -20,22 +20,42 @@ export default function BTSPreview() {
     return (
       <div className="bts-card" key={key}>
         <div className="bts-frame">
-          <iframe
-            src={srcFor(b)}
-            title={b.title}
-            allow="autoplay; encrypted-media"
-            loading="lazy"
-            /* scrolling="no" stops the embed from scrolling its own content
-               vertically and stealing page-scroll. Deprecated but every browser
-               still honours it. */
-            scrolling="no"
-            /* For Instagram only: a sandbox that allows the embed's scripts +
-               same-origin requests + presentation API (fullscreen video) but
-               explicitly does NOT include allow-top-navigation / allow-popups,
-               so the "View on Instagram" link inside the widget can't kick the
-               whole page over to instagram.com. */
-            sandbox={isIg ? 'allow-scripts allow-same-origin allow-presentation' : undefined}
-          />
+          {isIg ? (
+            /* Instagram gates embedded reel PLAYBACK to logged-in sessions, so a
+               raw embed shows "this content isn't available" for most visitors.
+               Instead we render a branded tile whose play button opens the real
+               reel on Instagram (where it always plays). Swap to a hosted clip
+               (vm/gd/yt) if inline playback on-site is ever wanted. */
+            <a
+              className="bts-ig"
+              href={`https://www.instagram.com/reel/${b.videoId}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Watch ${b.title} on Instagram`}
+            >
+              <span className="bts-ig-glow" aria-hidden="true" />
+              <span className="bts-ig-play" aria-hidden="true" />
+              <span className="bts-ig-cta">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="currentColor" strokeWidth="1.6" />
+                  <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.6" />
+                  <circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" />
+                </svg>
+                Watch on Instagram
+              </span>
+            </a>
+          ) : (
+            <iframe
+              src={srcFor(b)}
+              title={b.title}
+              allow="autoplay; encrypted-media"
+              loading="lazy"
+              /* scrolling="no" stops the embed from scrolling its own content
+                 vertically and stealing page-scroll. Deprecated but every browser
+                 still honours it. */
+              scrolling="no"
+            />
+          )}
           <div className="bts-vignette" />
         </div>
         <div className="bts-meta">

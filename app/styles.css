@@ -1367,6 +1367,51 @@ body.no-grain::before { display: none; }
   text-transform: uppercase; color: var(--fg);
 }
 
+/* Instagram BTS tiles — a branded poster that links out to the reel on
+   Instagram (embeds can't play inline for logged-out visitors). Always dark
+   regardless of theme, like the video frames. */
+.bts-ig {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 14px;
+  text-decoration: none; cursor: pointer;
+  background:
+    radial-gradient(120% 80% at 50% 30%, rgba(245,197,24,0.10), transparent 60%),
+    linear-gradient(160deg, #241a12 0%, #130e0a 100%);
+  transition: transform 0.4s ease;
+}
+.bts-ig-glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(60% 42% at 50% 42%, rgba(245,197,24,0.18), transparent 70%);
+  opacity: 0.65; transition: opacity 0.4s ease;
+}
+.bts-ig-play {
+  position: relative;
+  width: 58px; height: 58px; border-radius: 999px;
+  border: 1.5px solid rgba(245,197,24,0.7);
+  background: rgba(19,14,10,0.45);
+  display: grid; place-items: center;
+  transition: transform 0.35s ease, background 0.35s ease;
+}
+.bts-ig-play::after {
+  content: ''; width: 0; height: 0;
+  border-left: 16px solid var(--accent);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  margin-left: 4px;
+}
+.bts-ig-cta {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(245,238,220,0.92);
+}
+.bts-ig-cta svg { width: 15px; height: 15px; flex: 0 0 auto; }
+.bts-ig:hover { transform: scale(1.015); }
+.bts-ig:hover .bts-ig-glow { opacity: 1; }
+.bts-ig:hover .bts-ig-play { transform: scale(1.08); background: rgba(245,197,24,0.16); }
+
 /* Case study mute button — keep it visible but readable */
 .case-mute.disabled { opacity: 0.55; cursor: default; }
 .case-mute.disabled:hover { transform: none; }
