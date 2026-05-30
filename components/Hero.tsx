@@ -64,6 +64,13 @@ const TAU = 0.09;
 const PLAY_DIST = 1.05;
 const MOUNT_DIST = 1.5;
 
+// Cursor reactivity. The CENTRE of the hero is a dead zone: the front film
+// holds still there so it's easy to see and click through to its case study.
+// Only the left / right margins scrub the reel, and the further out the cursor
+// sits, the faster it spins (left = previous films, right = next films).
+const HERO_DEAD_ZONE = 0.5; // fraction of the width (centred) that does NOT scrub
+const HERO_SCRUB_SPEED = 2.2; // films per second at the very edge
+
 interface Props {
   films: Film[];
   onPick: (film: Film) => void;
@@ -255,10 +262,29 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           manualTarget.current = null;
         }
         if (insideZone.current) {
-          // Continuous cursor → target mapping. Cursor X across the zone
-          // scrubs the whole reel (cursorX * N), and snapFloat eases toward it
-          // — motion between cells is continuous, never quantised.
-          target.current = cursorX.current * N;
+          // Dead zone in the middle, scrub margins on the sides. The cursor's
+          // x within the zone (0..1) is split into: a central band that does
+          // NOT move the reel (so the front film sits still and is clickable),
+          // and left / right margins that spin the reel at a speed that grows
+          // the further out the cursor goes.
+          const c = cursorX.current;
+          const half = HERO_DEAD_ZONE / 2;
+          const lo = 0.5 - half;
+          const hi = 0.5 + half;
+          let vel = 0; // films per second
+          if (c < lo) vel = -((lo - c) / lo) * HERO_SCRUB_SPEED; // left → previous
+          else if (c > hi) vel = ((c - hi) / (1 - hi)) * HERO_SCRUB_SPEED; // right → next
+
+          if (vel === 0) {
+            // In the dead zone: settle on the nearest whole film and hold, so
+            // it's stable to look at and click.
+            target.current = Math.round(snapFloat.current);
+          } else {
+            // In a side margin: advance the target continuously at the scrub
+            // speed; snapFloat eases after it for smooth, frame-rate-independent
+            // motion.
+            target.current += vel * dt;
+          }
         } else {
           // Cursor outside the zone: settle on the nearest whole film.
           target.current = Math.round(snapFloat.current);
