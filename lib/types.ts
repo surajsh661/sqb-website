@@ -79,7 +79,7 @@ export interface ClientLogo {
       'original' = show the real artwork unfiltered (full-colour self-contained
       icons); 'invert' = invert luminance in light mode so light artwork with
       internal detail reads as dark-on-cream instead of a solid black blob. */
-  tone?: 'original' | 'invert';
+  tone?: 'original' | 'invert' | 'mono';
 }
 
 export interface Creator {

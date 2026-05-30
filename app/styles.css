@@ -469,7 +469,7 @@ body.no-grain::before { display: none; }
   transform: translateX(-50%);
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px; letter-spacing: 0.3em;
-  color: var(--fg-dim); text-transform: uppercase;
+  color: var(--accent); text-transform: uppercase;
   z-index: 6; display: flex; align-items: center; gap: 12px;
   pointer-events: none;
 }
@@ -1272,9 +1272,13 @@ body.no-grain::before { display: none; }
   filter: grayscale(1) brightness(0) invert(calc(1 - var(--invert)));
   transition: filter .3s ease, opacity .3s ease;
 }
-/* tone:'original' — full-colour, self-contained icons (e.g. ViralO) whose whole
-   square would otherwise flatten to a black box. Show the real artwork. */
+/* tone:'original' — full-colour, self-contained icons whose whole square would
+   otherwise flatten to a black box. Show the real artwork. */
 .client-logo.logo-orig img { filter: none; }
+/* tone:'mono' — desaturate to greyscale but KEEP luminance (no brightness(0)
+   flatten), so colour icons read as a clean grey in both themes instead of a
+   black box (light) or off-brand colour. */
+.client-logo.logo-mono img { filter: grayscale(1) brightness(0.95) contrast(1.05); }
 /* tone:'invert' — light artwork with internal detail (e.g. S&F). In light mode
    the default brightness(0) crushes it to an unreadable black blob; invert the
    luminance instead so it reads as dark-on-cream with detail intact. Dark mode
@@ -2194,45 +2198,55 @@ video.frame-video {
   position: fixed; inset: 0;
   z-index: 250;                    /* above topbar (90) and case studies */
   display: flex; align-items: center; justify-content: center;
-  /* Always dark, independent of theme — the cream-on-dark title must read in
-     both light and dark mode. */
-  background: #0b0908;
+  background: transparent;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.9s cubic-bezier(.22,1,.36,1);
   overflow: hidden;                /* the title flies past the edges */
+  /* Real depth: the title travels toward the camera in Z and passes the
+     screen, rather than just scaling up flat. */
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
 }
+/* The dark cover is a separate layer so it can clear (revealing the hero) WHILE
+   the title is still flying past in the foreground. Always dark, independent of
+   theme — the cream-on-dark title must read in both light and dark mode. */
+.hero-intro::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: #0b0908;
+  transition: opacity 1s ease 0.45s;   /* clears a beat into the fly-through */
+}
+.hero-intro-out::before { opacity: 0; }
 .hero-intro-in   { opacity: 0; }
 .hero-intro-hold { opacity: 1; }
-/* Out: the dark cover clears a beat AFTER the title starts flying, so the hero
-   is revealed *through* the zoom rather than by a flat fade. */
-.hero-intro-out  {
-  opacity: 0;
-  transition: opacity 0.7s cubic-bezier(.6, 0, .9, .35) 0.12s;
-}
+.hero-intro-out  { opacity: 1; }       /* stays up; bg + title animate, not this */
 .hi-stack {
   text-align: center;
   padding: 0 24px;
+  position: relative;
+  transform-style: preserve-3d;        /* let children live in the 3D space */
 }
-/* The TITLE is the focal point of the zoom. It scales around its OWN centre, so
-   it expands IN PLACE (no downward drift the way scaling the whole logo+title
-   block did), with an ease-OUT curve — fast off the mark, then decelerating — as
-   it flies past the screen. */
-.hero-intro-in   .hi-text { transform: scale(0.9); }
-.hero-intro-hold .hi-text { transform: scale(1); }
+/* The TITLE flies straight at the camera (translateZ) and PASSES the screen,
+   then the dark cover behind it has already cleared — so the hero is revealed
+   *through* the pass. Long ease-OUT so the motion is smooth, not abrupt. */
+.hero-intro-in   .hi-text { transform: translateZ(-120px); }
+.hero-intro-hold .hi-text { transform: translateZ(0); }
 .hero-intro-out  .hi-text {
-  transform: scale(6);
-  transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateZ(1130px);       /* with perspective 1200 → flies past */
+  opacity: 0;
+  transition: transform 1.8s cubic-bezier(0.22, 1, 0.32, 1),
+              opacity 0.5s ease 1.35s; /* hold opaque, fade only as it exits */
 }
-/* Logo recedes (shrinks + fades) as the title takes off. */
-.hero-intro-out .hi-logo { transform: scale(0.62); opacity: 0; }
+/* Logo recedes into the distance as the title rushes forward. */
+.hero-intro-out .hi-logo { transform: translateZ(-320px); opacity: 0; }
 .hi-logo {
   display: block;
   height: clamp(76px, 11vw, 132px);
   width: auto;
   object-fit: contain;
   margin: 0 auto 30px;
-  transition: transform 0.7s cubic-bezier(.22,1,.36,1), opacity 0.5s ease;
+  transition: transform 1s cubic-bezier(.22,1,.36,1), opacity 0.6s ease;
 }
 .hi-text {
   font-family: 'Anton', sans-serif;
@@ -2243,8 +2257,7 @@ video.frame-video {
   /* Fixed cream (not var(--fg)) — the overlay is always dark in both themes. */
   color: #f4efe3;
   margin: 0;
-  transform: scale(0.9);
-  transform-origin: center center;
+  transform: translateZ(-120px);
   transition: transform 1.2s cubic-bezier(.22,1,.36,1);
   will-change: transform, opacity;
 }

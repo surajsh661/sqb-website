@@ -34,7 +34,6 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
           <div className="eyebrow"><span className="num">{eyebrowNum}</span> <span>{COPY.contact.eyebrowLabel}</span></div>
           <h2 className="contact-h">{rich(COPY.contact.heading)}</h2>
           <p className="contact-blurb">{rich(COPY.contact.blurb)}</p>
-          <p className="contact-pull">{rich(COPY.contact.pullQuote)}</p>
           <div className="contact-rows">
             <div className="contact-row">
               <span className="k">SURAJ</span>

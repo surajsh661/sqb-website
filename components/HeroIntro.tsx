@@ -14,14 +14,14 @@ export default function HeroIntro() {
   const [phase, setPhase] = useState<Phase>('in');
 
   useEffect(() => {
-    // Timings (1.5s shorter than the previous cut):
-    //   0.00–0.85s   fade in
-    //   0.85–2.00s   hold (~2s on screen)
-    //   2.00–2.90s   fade out
-    //   2.90s        unmount
+    // Timings:
+    //   0.00–0.90s   fade in
+    //   0.90–2.00s   hold (~2s on screen)
+    //   2.00–3.90s   fly-through (title passes the screen in 3D, ~1.9s, smooth)
+    //   3.90s        unmount
     const t1 = window.setTimeout(() => setPhase('hold'), 50);
     const t2 = window.setTimeout(() => setPhase('out'), 2000);
-    const t3 = window.setTimeout(() => setPhase('gone'), 2900);
+    const t3 = window.setTimeout(() => setPhase('gone'), 3900);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);

@@ -99,7 +99,7 @@ export default function ManifestoHeadline() {
         <span className="ai">A</span>{stars}<span className="ai">I</span>
       </span>{' '}
       second. <br />
-      And we&apos;re at the <em>cutting edge</em> of both.
+      <span className="mh-coda">And we&apos;re at the <em>cutting edge</em> of both.</span>
     </h2>
   );
 }

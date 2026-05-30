@@ -16,7 +16,8 @@ export default function ClientLogos() {
               'client-logo' +
               (c.keepDetails ? ' keep-detail' : '') +
               (c.tone === 'original' ? ' logo-orig' : '') +
-              (c.tone === 'invert' ? ' logo-inv' : '')
+              (c.tone === 'invert' ? ' logo-inv' : '') +
+              (c.tone === 'mono' ? ' logo-mono' : '')
             }
             key={i}
             title={c.name}
