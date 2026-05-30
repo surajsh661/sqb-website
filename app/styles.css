@@ -2213,24 +2213,26 @@ video.frame-video {
 .hi-stack {
   text-align: center;
   padding: 0 24px;
-  transform: scale(0.88);
-  transition: transform 1.2s cubic-bezier(.22,1,.36,1);
-  will-change: transform, opacity;
 }
-/* Cross-zoom: enter slightly zoomed-in → settle on hold → on exit ACCELERATE
-   straight toward the viewer and fly past the screen (scale 9). */
-.hero-intro-in   .hi-stack { transform: scale(0.88); }
-.hero-intro-hold .hi-stack { transform: scale(1); }
-.hero-intro-out  .hi-stack {
-  transform: scale(9);
-  transition: transform 0.9s cubic-bezier(.5, 0, .9, .3);
+/* The TITLE is the focal point of the zoom. It scales around its OWN centre, so
+   it expands IN PLACE (no downward drift the way scaling the whole logo+title
+   block did), with an ease-OUT curve — fast off the mark, then decelerating — as
+   it flies past the screen. */
+.hero-intro-in   .hi-text { transform: scale(0.9); }
+.hero-intro-hold .hi-text { transform: scale(1); }
+.hero-intro-out  .hi-text {
+  transform: scale(6);
+  transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* Logo recedes (shrinks + fades) as the title takes off. */
+.hero-intro-out .hi-logo { transform: scale(0.62); opacity: 0; }
 .hi-logo {
   display: block;
   height: clamp(76px, 11vw, 132px);
   width: auto;
   object-fit: contain;
   margin: 0 auto 30px;
+  transition: transform 0.7s cubic-bezier(.22,1,.36,1), opacity 0.5s ease;
 }
 .hi-text {
   font-family: 'Anton', sans-serif;
@@ -2241,6 +2243,10 @@ video.frame-video {
   /* Fixed cream (not var(--fg)) — the overlay is always dark in both themes. */
   color: #f4efe3;
   margin: 0;
+  transform: scale(0.9);
+  transform-origin: center center;
+  transition: transform 1.2s cubic-bezier(.22,1,.36,1);
+  will-change: transform, opacity;
 }
 .hi-text em {
   font-style: normal;

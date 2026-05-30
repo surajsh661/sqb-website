@@ -52,6 +52,15 @@ export default function Verticals() {
   // arrangement instead of the whole row refreshing.
   const rotate = (dir: number) => setRotation((r) => r + dir);
 
+  // Auto-advance one card every 2.5s so all the verticals cycle through on their
+  // own. Paused while the viewer is hovering the row or has a clip open.
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    if (paused || active) return;
+    const id = setInterval(() => setRotation((r) => r + 1), 2500);
+    return () => clearInterval(id);
+  }, [paused, active]);
+
   const buildModalSrc = (v: Vertical) => {
     if (v.type === 'vm')
       return `https://player.vimeo.com/video/${v.videoId}?autoplay=1&loop=1&muted=0&controls=1&dnt=1&playsinline=1&title=0&byline=0&portrait=0`;
@@ -101,7 +110,11 @@ export default function Verticals() {
         <h2>{rich(COPY.verticalsHome.heading)}</h2>
         <div className="blurb">{COPY.verticalsHome.blurb}</div>
       </div>
-      <div className="vrow">
+      <div
+        className="vrow"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
         {/* Cards are rendered twice — desktop just shows the first 5 in the
             static row (the duplicates overflow off-screen and are hidden by
             .vrow's overflow on mobile); mobile uses CSS to animate the inner
