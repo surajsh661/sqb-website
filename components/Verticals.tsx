@@ -13,8 +13,8 @@ import type { Vertical } from '@/lib/types';
 // and glide in / out as the fan rotates. Applied via CSS variables (not a hard
 // transform) and scoped to desktop, so the mobile marquee — which forces
 // transform:none — is left untouched.
-const SLOT_SPACING = 165; // px between adjacent slot centres (tighter coverflow so
-                          // the fan fits beside the heading on desktop)
+const SLOT_SPACING = 178; // px between adjacent slot centres (coverflow that fits
+                          // beside the heading on desktop)
 const VISIBLE = 5;
 const CENTER = 2;
 const SLOT_TILT = [

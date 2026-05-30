@@ -119,6 +119,11 @@ export default function AILabPage() {
       <section className="ailab-hero">
         <div className="ai-eyebrow">{COPY.aiLab.heroEyebrow}</div>
         <h1 className="ai-headline-title">{rich(COPY.aiLab.heroTitle)}</h1>
+        <div className="ai-tags">
+          {COPY.aiLab.heroTags.map((t) => (
+            <span className="ai-tag" key={t}>{t}</span>
+          ))}
+        </div>
         <p className="ai-headline-blurb">{COPY.aiLab.heroBlurb}</p>
 
         <div className="ai-picker">

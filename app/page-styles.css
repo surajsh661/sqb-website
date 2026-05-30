@@ -349,6 +349,18 @@
   font-size: 17px; line-height: 1.55;
   color: var(--fg-dim);
 }
+.ai-tags {
+  display: flex; flex-wrap: wrap; gap: 9px 10px;
+  margin: 20px 0 22px;
+}
+.ai-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 7px 13px; border-radius: 999px;
+  color: var(--accent);
+  border: 1px solid rgba(245,197,24,0.32);
+  background: rgba(245,197,24,0.06);
+}
 
 .ai-picker {
   margin: 60px auto 0;
@@ -458,11 +470,10 @@
    edge with no letterbox bars and no cropping. */
 .ai-track-section .ai-clip { aspect-ratio: 16 / 9; }
 
-/* Realistic section: landscape reels run TWO-up so they read as large as the
-   Animated reels (half the section each). The native ~1.9:1 ratio (1600×843)
-   means Drive fills them with no bars. The two vertical showcase reels
-   (Unexpected Pregnancy + Win the Lottery) sit side by side, centred, on their
-   own row beneath. */
+/* Realistic section. Row 1: two large landscape reels (half the section each,
+   ~Animated size). Row 2: the 3rd landscape reel + the two vertical showcase
+   reels (Unexpected Pregnancy + Win the Lottery) side by side — the verticals
+   sized to match the landscape's height so the row reads as one neat band. */
 #section-real .ai-track-grid {
   grid-template-columns: repeat(2, 1fr);
   gap: 24px 26px;
@@ -475,12 +486,21 @@
   width: 100%;
   max-width: 300px;
 }
-/* Desktop: 3rd landscape reel centred on its own row; the two verticals sit
-   side by side, meeting at the centre. */
 @media (min-width: 901px) {
-  #section-real .ai-clip:nth-child(3) { grid-column: 1 / -1; width: calc(50% - 13px); }
-  #section-real .ai-clip.vertical:nth-child(4) { justify-self: end; }
-  #section-real .ai-clip.vertical:nth-child(5) { justify-self: start; }
+  /* 4 columns: r1|r2 across the top; r3 (2 cols) + the two verticals on row 2. */
+  #section-real .ai-track-grid {
+    grid-template-columns: repeat(4, 1fr);
+    align-items: stretch;
+  }
+  #section-real .ai-clip:nth-child(1) { grid-column: 1 / 3; }
+  #section-real .ai-clip:nth-child(2) { grid-column: 3 / 5; }
+  #section-real .ai-clip:nth-child(3) { grid-column: 1 / 3; }   /* r3 sets row height */
+  #section-real .ai-clip.vertical {
+    width: auto; height: 100%; max-width: none;   /* match the landscape height */
+    justify-self: center;
+  }
+  #section-real .ai-clip.vertical:nth-child(4) { grid-column: 3; }
+  #section-real .ai-clip.vertical:nth-child(5) { grid-column: 4; }
 }
 /* VFX reels are also natively ~1.9:1 — match the card so they fill cleanly. */
 #section-vfx .ai-clip { aspect-ratio: 1600 / 843; }
@@ -586,26 +606,27 @@
 .sqb-loader-icon .lr-svg {
   width: 100%; height: 100%;
 }
+/* Show BOTH at once — the camera (with its blinking REC dot) AND the twinkling
+   AI stars — so the loader reads as "filmmaking + AI" immediately, no matter how
+   briefly it's on screen. Both are line-art outlines, so they layer cleanly. */
 .sqb-loader-icon .lr-film {
-  animation: lrFilmFade 2s ease-in-out infinite;
+  opacity: 1;
+  animation: lrFilmPulse 1.5s ease-in-out infinite;
   transform-origin: center;
 }
 .sqb-loader-icon .lr-stars {
-  animation: lrStarsFade 2s ease-in-out infinite;
+  opacity: 1;                       /* overrides the inline opacity=0 */
+  animation: lrStarsPulse 1.5s ease-in-out infinite;
   transform-origin: center;
 }
 @keyframes lrSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-@keyframes lrFilmFade {
-  0%, 30%   { opacity: 1; transform: scale(1); }
-  45%       { opacity: 0; transform: scale(0.85); }
-  55%       { opacity: 0; transform: scale(0.85); }
-  70%, 100% { opacity: 1; transform: scale(1); }
+@keyframes lrFilmPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.82; }
 }
-@keyframes lrStarsFade {
-  0%, 30%   { opacity: 0; transform: scale(0.85); }
-  45%       { opacity: 0; transform: scale(0.85); }
-  55%       { opacity: 1; transform: scale(1); }
-  70%, 100% { opacity: 0; transform: scale(0.85); }
+@keyframes lrStarsPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.93); }
+  50%      { opacity: 1;   transform: scale(1); }
 }
 
 /* === Flying 2D social logos on Social page === */
@@ -1537,16 +1558,23 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   position: relative;
   height: 480px;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
-          mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  /* Fade ALL four edges so icons dissolve softly (gradient, not a hard crop) on
+     the sides as well as top/bottom — keeps the stream inside the section. */
+  -webkit-mask-image:
+    linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%),
+    linear-gradient(90deg,  transparent 0%, #000 16%, #000 84%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%),
+    linear-gradient(90deg,  transparent 0%, #000 16%, #000 84%, transparent 100%);
+  mask-composite: intersect;
 }
 .sh-icon {
   position: absolute;
   left: 50%;
   bottom: -90px;
-  width: 84px; height: 84px;
+  width: 80px; height: 80px;
   transform: translateX(-50%);
-  transform-style: preserve-3d;
   animation: shFloat 10.5s linear infinite;
   animation-delay: var(--d, 0s);
   color: var(--c, var(--accent));
@@ -1693,18 +1721,18 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 
 /* Longer stream + real depth (perspective) so the icons float in 3D. Stays
    inside this box (overflow:hidden + mask), so it never passes the section. */
-.sh-stream { height: 520px !important; perspective: 1100px; perspective-origin: 60% 50%; }
+.sh-stream { height: 520px !important; }
 /* Float UP while drifting LEFT and slanting (tilt up-and-to-the-left), with a
    gentle 3D wobble — a more satisfying, dimensional drift. */
-/* Gentle up-and-to-the-left float with a slant + soft 3D wobble. Horizontal
-   drift kept small so the icons stay INSIDE the stream column (don't spill over
-   the CAAS title). */
+/* Gentle up-and-to-the-left float with a slant. 2D only (no perspective) so the
+   icons can't escape the stream's overflow clip, and the drift stays small so
+   nothing spills over the CAAS title. */
 @keyframes shFloat {
-  0%   { transform: translate(-50%, 170px) scale(0.72) rotateZ(7deg) rotateX(10deg) rotateY(-7deg); opacity: 0; }
+  0%   { transform: translate(-50%, 170px) scale(0.74) rotateZ(7deg); opacity: 0; }
   14%  { opacity: 1; }
-  52%  { transform: translate(calc(-50% - 6px), -120px) scale(1.04) rotateZ(-6deg) rotateX(-4deg) rotateY(6deg); opacity: 1; }
+  52%  { transform: translate(calc(-50% - 6px), -120px) scale(1.03) rotateZ(-5deg); opacity: 1; }
   86%  { opacity: 0.5; }
-  100% { transform: translate(calc(-50% - 14px), -500px) scale(0.82) rotateZ(-11deg) rotateX(6deg) rotateY(-5deg); opacity: 0; }
+  100% { transform: translate(calc(-50% - 12px), -500px) scale(0.84) rotateZ(-10deg); opacity: 0; }
 }
 
 /* ============================================================

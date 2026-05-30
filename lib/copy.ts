@@ -165,8 +165,8 @@ export const COPY = {
 
   // ── Home page · Vertical works strip ──────────────────────────────────────
   verticalsHome: {
-    heading: `VERTICAL *STORIES*`,
-    blurb: `9:16 stories built for the medium they live in.`,
+    heading: `VERTICAL *CINEMA*`,
+    blurb: `We make vertical web shows end to end — from writing and ideation through casting, shooting, directing and editing, to final delivery with grade, BGM and VFX. And when a show is AI, we take it from script all the way to the final AI animation.`,
   },
 
   // ── "Trusted by global brands" block (shown on Video / AI Lab / Social) ────
@@ -217,7 +217,7 @@ export const COPY = {
 
     vcEyebrow: `9:16 · BUILT FOR PHONES`,
     vcTitle: `VERTICAL *CINEMA*`,
-    vcBlurb: `Phone-shaped storytelling that respects the medium. Serialized hooks, action that lands in three seconds, drama framed for the thumb.`,
+    vcBlurb: `We make vertical web shows end to end. For an AI show we go from script and storyboard all the way to the final AI animation; for live-action we own ideation, writing, casting and the shoot, then deliver the finished cut with BGM, colour grade and any VFX the OTT needs. Built for OTT platforms and global brands — and delivered straight to the vertical platforms they live on.`,
     vcTallyLabel: `VERTICAL FILMS`,
   },
 
@@ -226,7 +226,9 @@ export const COPY = {
   // ═══════════════════════════════════════════════════════════════════════════
   aiLab: {
     heroEyebrow: `S'QB AI LABS`,
-    heroTitle: `AI CINEMA · BUILT TO RUN ON *BIG SCREENS*`,
+    heroTitle: `AI BUILT TO *SCALE*`,
+    // Capability tags shown under the AI Lab headline.
+    heroTags: [`AI Creatives`, `AI Influencers`, `AI Films`, `2D Animation`, `3D Animation`, `VFX`, `AI IP Creation`],
     heroBlurb: `We build AI shows, films, and animation series for OTT platforms, theatrical, and broadcast — alongside original YouTube IPs like Sunheri Soch S4: docu-films directed and generated entirely with our AI pipeline. Story first. Generative second. Always cinema-grade.`,
 
     // The 3 hover panels at the top of the page (short descriptions).
