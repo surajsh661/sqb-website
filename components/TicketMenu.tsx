@@ -65,9 +65,9 @@ export default function TicketMenu({ open, onClose }: Props) {
           </div>
           <div className="ticket-foot">
             <div className="socials">
-              <span>IG ↗</span>
-              <span>YT ↗</span>
-              <span>IN ↗</span>
+              <a href="https://www.instagram.com/sqbpictures/" target="_blank" rel="noopener noreferrer">IG ↗</a>
+              <a href="https://www.linkedin.com/company/sqbpictures/" target="_blank" rel="noopener noreferrer">IN ↗</a>
+              <a href="https://wa.me/919013082883" target="_blank" rel="noopener noreferrer">WA ↗</a>
             </div>
             <div className="barcode">
               {Array.from({ length: 22 }).map((_, i) => (
