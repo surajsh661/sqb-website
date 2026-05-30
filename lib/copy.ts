@@ -165,7 +165,7 @@ export const COPY = {
 
   // ── Home page · Vertical works strip ──────────────────────────────────────
   verticalsHome: {
-    heading: `VERTICAL *WORKS*`,
+    heading: `VERTICAL *STORIES*`,
     blurb: `9:16 stories built for the medium they live in.`,
   },
 

@@ -784,7 +784,39 @@ body.no-grain::before { display: none; }
    reordering the DOM (which would reload the videos). Off-window cards sit at
    --vop:0 and glide in / out. */
 @media (min-width: 901px) {
-  .vrow-track { position: relative; width: 100%; height: 580px; }
+  /* Desktop: heading + blurb on the LEFT, the card fan moved UP into the RIGHT
+     column (rather than a giant title with the fan centred below). Mobile keeps
+     the marquee layout untouched. */
+  .verticals {
+    display: grid;
+    grid-template-columns: minmax(280px, 30%) 1fr;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    column-gap: 8px;
+    padding: 92px 44px 84px;
+  }
+  .verticals .head {
+    grid-column: 1; grid-row: 1;
+    display: block;            /* stack heading over blurb */
+    padding: 0; margin: 0;
+    align-self: center;
+  }
+  .verticals .head h2 {
+    font-size: clamp(52px, 6.2vw, 116px);   /* smaller "VERTICAL STORIES" */
+    margin-bottom: 22px;
+  }
+  .verticals .head .blurb { max-width: 300px; }
+  .verticals .vrow {
+    grid-column: 2; grid-row: 1;
+    padding: 0;
+    align-self: center;
+  }
+  .verticals .vrow-controls {
+    grid-column: 2; grid-row: 2;
+    margin-top: 6px;
+  }
+
+  .vrow-track { position: relative; width: 100%; height: 560px; }
   .vcard {
     position: absolute; top: 50%; left: 50%; margin: 0;
     transform:
