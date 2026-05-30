@@ -109,7 +109,6 @@ export default function Verticals() {
     <section className="verticals" data-screen-label="04 Verticals">
       <div className="head">
         <h2>{rich(COPY.verticalsHome.heading)}</h2>
-        <div className="blurb">{COPY.verticalsHome.blurb}</div>
       </div>
       <div
         className="vrow"
@@ -170,6 +169,8 @@ export default function Verticals() {
         <button onClick={() => rotate(-1)} aria-label="prev">←</button>
         <button onClick={() => rotate(1)} aria-label="next">→</button>
       </div>
+
+      <p className="vc-home-blurb">{COPY.verticalsHome.blurb}</p>
 
       {/* The modal is portalled to <body> so it escapes this section's scroll
           transform — otherwise position:fixed resolves against the transformed

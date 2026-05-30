@@ -178,8 +178,8 @@ export const COPY = {
   //  VIDEO PAGE  (the "/work" page — the menu calls it VIDEO)
   // ═══════════════════════════════════════════════════════════════════════════
   work: {
-    visionEyebrow: `THE CONTENT STUDIO`,
-    visionTitle: `BUILT FOR *THE FUTURE*`,
+    visionEyebrow: ``,
+    visionTitle: `THE CONTENT *STUDIO*`,
     visionBlurb: `Whether you're starting with a vague idea or a fully fleshed-out concept, S'QB can bring your vision to life. We deliver high-fidelity, high-volume video content across every format imaginable — from cinematic AI films to camera-shot TVCs, vertical micro-dramas to long-form documentary.`,
     // The arrow → after the button is added automatically.
     visionCta: `START PROJECT`,

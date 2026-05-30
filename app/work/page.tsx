@@ -115,7 +115,6 @@ function WorkInner() {
 
       <section className="work-vision">
         <div className="wv-inner">
-          <div className="wv-eyebrow">{COPY.work.visionEyebrow}</div>
           <h1 className="wv-title">{rich(COPY.work.visionTitle)}</h1>
           <p className="wv-blurb">{COPY.work.visionBlurb}</p>
           <a

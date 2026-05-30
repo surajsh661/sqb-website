@@ -84,15 +84,23 @@ export default function SocialPage() {
               { c: '#9a55ff', svg: <svg viewBox="0 0 24 24"><text x="12" y="16.6" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="11.5" fill="#E48BFF" letterSpacing="-0.4">Pr</text></svg> },
               // After Effects (tool)
               { c: '#7d5cff', svg: <svg viewBox="0 0 24 24"><text x="12" y="16.6" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="11.5" fill="#AC9BFF" letterSpacing="-0.4">Ae</text></svg> },
+              // LinkedIn (platform)
+              { c: '#0A66C2', svg: <svg viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="4.4" fill="#0A66C2" /><path d="M7 9.6h2V17H7zM8 8.3a1.15 1.15 0 1 0 0-2.3 1.15 1.15 0 0 0 0 2.3zM10.6 9.6h1.9v1.02h.03c.27-.5.93-1.03 1.92-1.03 2.05 0 2.43 1.35 2.43 3.1V17h-2v-2.97c0-.71-.01-1.62-.99-1.62-.99 0-1.14.77-1.14 1.57V17h-2z" fill="#fff" /></svg> },
               // Music / sound design
               { c: '#FF4E8A', svg: <svg viewBox="0 0 24 24"><path d="M9 16.8V6.4l9-1.7v9.1" fill="none" stroke="#FF6FA3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><ellipse cx="6.6" cy="16.9" rx="2.7" ry="2.4" fill="#FF6FA3" /><ellipse cx="15.6" cy="15.1" rx="2.7" ry="2.4" fill="#FF6FA3" /></svg> },
-              // X / Twitter (platform)
-              { c: '#9bb8d3', svg: <svg viewBox="0 0 24 24"><path d="M3 3h3.7l5 6.8L17.4 3H21l-6.9 8.3L21.5 21h-3.7l-5.3-7.2L6.4 21H3l7.3-8.7z" fill="#fff" /></svg> },
+              // Like
+              { c: '#FF4E6A', svg: <svg viewBox="0 0 24 24"><path d="M12 20.3l-1.3-1.2C6.1 14.9 3.2 12.3 3.2 9.1 3.2 6.6 5.2 4.7 7.6 4.7c1.4 0 2.7.65 3.5 1.7.8-1.05 2.1-1.7 3.5-1.7 2.4 0 4.4 1.9 4.4 4.4 0 3.2-2.9 5.8-7.5 10z" fill="#FF4E6A" /></svg> },
+              // Comment
+              { c: '#36C5F0', svg: <svg viewBox="0 0 24 24"><path d="M4 4.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-4 3.2v-3.2a1.5 1.5 0 0 1-1.5-1.5V6A1.5 1.5 0 0 1 4 4.5z" fill="#36C5F0" /></svg> },
+              // Follow
+              { c: '#9C6BFF', svg: <svg viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.6" fill="#9C6BFF" /><path d="M3.6 19c0-3.3 2.6-5.3 5.9-5.3s5.9 2 5.9 5.3z" fill="#9C6BFF" /><path d="M18.6 7v6M15.6 10h6" stroke="#9C6BFF" strokeWidth="2" strokeLinecap="round" /></svg> },
+              // Views
+              { c: '#FFC83D', svg: <svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="#FFC83D" strokeWidth="2" /><circle cx="12" cy="12" r="3" fill="#FFC83D" /></svg> },
             ].map((it, i) => (
               <div
                 className="sh-icon"
                 key={i}
-                style={{ ['--d' as any]: i * 1.2 + 's', ['--c' as any]: it.c }}
+                style={{ ['--d' as any]: -(i * 1.35 + 1.7) + 's', ['--c' as any]: it.c }}
               >
                 <div className="sh-icon-inner">{it.svg}</div>
               </div>
