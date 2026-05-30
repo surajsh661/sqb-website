@@ -1,5 +1,7 @@
 /* S'QB Pictures — yellow/black system w/ light + dark themes */
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap');
+/* Fonts are loaded via <link rel="preconnect"> + stylesheet in app/layout.tsx
+   (in <head>) instead of a render-blocking CSS @import, so they download in
+   parallel with this stylesheet and show in their true style much faster. */
 
 :root, [data-theme="dark"] {
   --ink: #0E0E0E;
@@ -844,7 +846,10 @@ body.no-grain::before { display: none; }
   filter: grayscale(1) brightness(1.05) contrast(1.05);
 }
 [data-theme="light"] .client-logo.keep-detail img {
-  filter: grayscale(1) brightness(0.95) contrast(1.05);
+  /* These logos (e.g. Muthoot) are supplied as WHITE artwork, invisible on the
+     light cream background. Render them as a solid black silhouette in light
+     mode so they read correctly. */
+  filter: grayscale(1) brightness(0);
 }
 .client-logo .text-logo {
   font-family: 'Anton', sans-serif; font-size: 32px;
@@ -1249,7 +1254,10 @@ body.no-grain::before { display: none; }
   filter: grayscale(1) brightness(1.05) contrast(1.05);
 }
 [data-theme="light"] .client-logo.keep-detail img {
-  filter: grayscale(1) brightness(0.95) contrast(1.05);
+  /* These logos (e.g. Muthoot) are supplied as WHITE artwork, invisible on the
+     light cream background. Render them as a solid black silhouette in light
+     mode so they read correctly. */
+  filter: grayscale(1) brightness(0);
 }
 .client-logo .text-logo {
   font-family: 'Anton', sans-serif; font-size: 32px;
