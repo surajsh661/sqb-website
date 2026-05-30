@@ -1734,17 +1734,25 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   text-shadow: 0 0 28px rgba(255,0,51,0.5) !important;
 }
 
-/* Subscriber count pinned to the far right corner of the creator header. */
-.creator-head { position: relative; }
-.creator-head > div:first-child { display: block; }
+/* Subs count sits on the right of the creator name */
+.creator-head > div:first-child {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px 24px;
+  align-items: end;
+}
+.creator-head .creator-eyebrow { grid-column: 1 / -1; }
+.creator-head .creator-name { grid-column: 1; }
 .creator-head .creator-subs {
-  position: absolute; top: 0; right: 0;
+  grid-column: 2; grid-row: 2;
   text-align: right;
+  align-self: end;
   margin-top: 0;
   flex-direction: column;
   align-items: flex-end;
   display: flex;
 }
+.creator-head .creator-blurb { grid-column: 1 / -1; }
 .creator-head .creator-subs .cs-label { display: block; margin-top: 4px; }
 
 /* Longer stream + real depth (perspective) so the icons float in 3D. Stays
@@ -1848,8 +1856,6 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 
   .creator { padding: 60px 18px; }
   .creator-head { grid-template-columns: 1fr; }
-  /* On mobile, let the subs flow under the name instead of absolute-corner. */
-  .creator-head .creator-subs { position: static; align-items: flex-start; text-align: left; margin-top: 10px; }
   .creator-name { font-size: clamp(40px, 12vw, 72px); }
   .creator-marquee-track { gap: 12px; }
   .creator-thumb { width: 220px; }
