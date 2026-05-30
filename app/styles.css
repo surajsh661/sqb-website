@@ -766,34 +766,44 @@ body.no-grain::before { display: none; }
   align-items: center;
   flex: 0 0 auto;
 }
-/* Hide the duplicate cards on desktop — they exist only to let the mobile
-   marquee loop seamlessly. */
-.vrow-track > .vcard:nth-child(n + 6) { display: none; }
+/* The duplicate ('.vdup') pass exists only so the mobile marquee loops
+   seamlessly; it's hidden on desktop in the min-width:901px block below. */
 .vcard {
   flex: 0 0 auto;
   width: 220px; aspect-ratio: 9 / 16;
   background: #000; border-radius: 18px; overflow: hidden;
   position: relative; cursor: pointer;
   box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px var(--rule);
-  transition: transform .55s cubic-bezier(.22,1,.36,1);
+  transition: transform .55s cubic-bezier(.22,1,.36,1), opacity .45s ease;
 }
-/* Desktop fan only (mobile ≤900px is a marquee with transform:none — keep it
-   untouched). Slot position is driven by CSS variables set per-card in React,
-   so the fan rearranges by gliding this transform, never by reordering the DOM
-   (which would reload the videos). Defaults keep a lone card centred + upright. */
+/* Desktop fan only (mobile ≤900px is a marquee — keep it untouched). Cards are
+   absolutely positioned and placed at their slot via CSS variables set per-card
+   in React, so the fan rearranges by gliding this transform — never by
+   reordering the DOM (which would reload the videos). Off-window cards sit at
+   --vop:0 and glide in / out. */
 @media (min-width: 901px) {
+  .vrow-track { position: relative; width: 100%; height: 580px; }
   .vcard {
+    position: absolute; top: 50%; left: 50%; margin: 0;
     transform:
+      translate(-50%, -50%)
       translateX(var(--vtx, 0px)) translateY(var(--vty, 0px))
       rotate(var(--vrot, 0deg)) scale(var(--vscale, 1));
     z-index: var(--vz, 1);
+    opacity: var(--vop, 1);
   }
-  /* Hover pops the card forward but KEEPS its slot's horizontal position
-     (--vtx), so side cards enlarge in place instead of jumping to the centre. */
+  /* Off-window cards are invisible — don't let them catch clicks. */
+  .vcard[data-off="1"] { pointer-events: none; }
+  /* Duplicate pass exists only for the mobile marquee. */
+  .vcard.vdup { display: none; }
+  /* Hover pops the card forward but KEEPS its slot's position (--vtx), so side
+     cards enlarge in place instead of jumping to the centre. */
   .vcard:hover {
     transform:
+      translate(-50%, -50%)
       translateX(var(--vtx, 0px)) translateY(-10px) rotate(0deg) scale(1.22);
     z-index: 5;
+    opacity: 1;
   }
 }
 
@@ -1420,8 +1430,11 @@ body.no-grain::before { display: none; }
 @keyframes vmFade { from { opacity: 0; } to { opacity: 1; } }
 .vmodal-card {
   position: relative;
-  width: min(420px, 92vw);
-  height: min(86vh, 740px);
+  /* Width-driven 9:16 that fits BOTH the viewport width (92vw) and height
+     (86vh → the equivalent width), so the portrait video is never cropped on
+     any screen. height derives from aspect-ratio. */
+  width: min(92vw, calc(86vh * 9 / 16));
+  height: auto;
   aspect-ratio: 9 / 16;
   background: #0a0807;
   border-radius: 18px;
@@ -1838,15 +1851,12 @@ video.frame-video {
     will-change: transform;
   }
   .vrow:hover .vrow-track { animation-play-state: paused; }
-  .vrow-track > .vcard:nth-child(n + 6) { display: block; }
-  .verticals .vcard,
-  .verticals .vcard:nth-child(1),
-  .verticals .vcard:nth-child(2),
-  .verticals .vcard:nth-child(3),
-  .verticals .vcard:nth-child(4),
-  .verticals .vcard:nth-child(5) {
+  /* Show the duplicate pass so the marquee can loop. */
+  .vrow-track > .vcard.vdup { display: block; }
+  .verticals .vcard {
     width: 55vw; flex: 0 0 55vw;
-    transform: none;
+    transform: none; opacity: 1;
+    position: relative; top: auto; left: auto;
   }
   /* Manual nav arrows on the verticals row don't make sense in marquee mode. */
   .verticals .vrow-controls { display: none; }

@@ -364,12 +364,17 @@ export const SQB_HERO_FILMS: Film[] = (() => {
 })();
 
 // Verticals exposed for home-page section
-export const SQB_VERTICALS: Vertical[] = SQB_FILMS
-  .filter((f) => (f.genres || []).includes('vertical'))
-  .map((f) => ({
-    id: f.id, title: f.title, tag: f.category,
-    type: f.type, videoId: f.videoId, genres: f.genres,
-  }));
+export const SQB_VERTICALS: Vertical[] = [
+  ...SQB_FILMS
+    .filter((f) => (f.genres || []).includes('vertical'))
+    .map((f) => ({
+      id: f.id, title: f.title, tag: f.category,
+      type: f.type, videoId: f.videoId, genres: f.genres,
+    })),
+  // Additional AI-show verticals hosted on Google Drive.
+  { id: 'hit-the-jackpot', title: 'HIT THE JACKPOT', tag: 'AI SHOW', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', genres: ['vertical'] },
+  { id: 'unexpected-pregnancy', title: 'UNEXPECTED PREGNANCY', tag: 'AI SHOW', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS', genres: ['vertical'] },
+];
 
 export const SQB_AI_LAB: AILabData = {
   // Headline copy (eyebrow / title / blurb) now lives in lib/copy.ts → COPY.aiLab

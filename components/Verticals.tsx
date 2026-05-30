@@ -1,16 +1,21 @@
 'use client';
 import { useEffect, useState, type CSSProperties } from 'react';
+import { createPortal } from 'react-dom';
 import { SQB_VERTICALS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
 import { videoSrc } from '@/lib/video-utils';
 import type { Vertical } from '@/lib/types';
 
-// Fan geometry — 5 slots, centre is slot 2. Each card is translated to its slot
-// and tilted; the centre is scaled up. Position is applied through CSS variables
-// (not a hard `transform`) so the mobile marquee — which forces transform:none —
-// is left untouched.
+// Fan geometry — a 5-card window (centre = slot 2) drawn from however many
+// verticals exist. Each visible card is translated to its slot and tilted, the
+// centre scaled up; cards outside the window wait just off an edge (invisible)
+// and glide in / out as the fan rotates. Applied via CSS variables (not a hard
+// transform) and scoped to desktop, so the mobile marquee — which forces
+// transform:none — is left untouched.
 const SLOT_SPACING = 240; // px between adjacent slot centres
+const VISIBLE = 5;
+const CENTER = 2;
 const SLOT_TILT = [
   { ty: 20, rot: -9, scale: 1 }, // 0 — far left
   { ty: 0, rot: -4, scale: 1 }, // 1 — left
@@ -19,6 +24,21 @@ const SLOT_TILT = [
   { ty: 20, rot: 9, scale: 1 }, // 4 — far right
 ];
 const SLOT_Z = [1, 2, 3, 2, 1];
+
+// Map a card's slot (0..N-1) to its on-screen placement. Slots 0..4 are the
+// visible fan; anything else parks just off an edge, invisible, ready to glide
+// in. (The slot just "behind" the far-left card exits left; the rest wait right.)
+function slotPlacement(slot: number, N: number) {
+  if (slot < VISIBLE) {
+    const t = SLOT_TILT[slot];
+    return { tx: (slot - CENTER) * SLOT_SPACING, ty: t.ty, rot: t.rot, scale: t.scale, z: SLOT_Z[slot], op: 1, off: false };
+  }
+  const exitLeft = slot === N - 1;
+  return {
+    tx: (exitLeft ? -(CENTER + 1) : CENTER + 1) * SLOT_SPACING,
+    ty: 20, rot: exitLeft ? -9 : 9, scale: 1, z: 0, op: 0, off: true,
+  };
+}
 
 export default function Verticals() {
   const N = SQB_VERTICALS.length;
@@ -88,27 +108,29 @@ export default function Verticals() {
             track into a seamless marquee using both passes. */}
         <div className="vrow-track">
           {[...SQB_VERTICALS, ...SQB_VERTICALS].map((v, i) => {
-            // Fixed dom order + stable key: never remounts on rotation.
+            // Fixed dom order + stable key: never remounts on rotation. The
+            // first pass is the desktop fan; the second ('vdup') exists only to
+            // make the mobile marquee loop seamlessly.
             const firstPass = i < N;
             const fidx = i % N;
             const slot = (((fidx - rotation) % N) + N) % N; // 0..N-1
-            const tilt = SLOT_TILT[slot] || SLOT_TILT[0];
-            // translateX bridges the card's fixed flow position to its slot.
-            const tx = (slot - fidx) * SLOT_SPACING;
+            const p = slotPlacement(slot, N);
             const style: CSSProperties | undefined = firstPass
               ? ({
-                  '--vtx': tx + 'px',
-                  '--vty': tilt.ty + 'px',
-                  '--vrot': tilt.rot + 'deg',
-                  '--vscale': String(tilt.scale),
-                  '--vz': String(SLOT_Z[slot] ?? 1),
+                  '--vtx': p.tx + 'px',
+                  '--vty': p.ty + 'px',
+                  '--vrot': p.rot + 'deg',
+                  '--vscale': String(p.scale),
+                  '--vz': String(p.z),
+                  '--vop': String(p.op),
                 } as CSSProperties)
               : undefined;
             return (
               <div
-                className={'vcard' + (firstPass && slot === 2 ? ' center' : '')}
+                className={'vcard' + (firstPass ? '' : ' vdup') + (firstPass && slot === CENTER ? ' center' : '')}
                 key={v.id + '-' + i}
                 style={style}
+                data-off={firstPass && p.off ? '1' : undefined}
                 title={v.title}
                 onClick={() => setActive(v)}
                 role="button"
@@ -135,25 +157,30 @@ export default function Verticals() {
         <button onClick={() => rotate(1)} aria-label="next">→</button>
       </div>
 
-      {active && (
-        <div className="vmodal" onClick={() => setActive(null)}>
-          <div className="vmodal-card" onClick={(e) => e.stopPropagation()}>
-            <iframe
-              key={active.id}
-              src={buildModalSrc(active)}
-              title={active.title}
-              allow="autoplay; encrypted-media; fullscreen"
-              allowFullScreen
-            />
-            <div className="vmodal-meta">
-              <span className="tag">{active.tag}</span>
-              <span className="ttl">{active.title}</span>
+      {/* The modal is portalled to <body> so it escapes this section's scroll
+          transform — otherwise position:fixed resolves against the transformed
+          section, mis-centring the card and clipping the top of the video. */}
+      {active && typeof document !== 'undefined' &&
+        createPortal(
+          <div className="vmodal" onClick={() => setActive(null)}>
+            <div className="vmodal-card" onClick={(e) => e.stopPropagation()}>
+              <iframe
+                key={active.id}
+                src={buildModalSrc(active)}
+                title={active.title}
+                allow="autoplay; encrypted-media; fullscreen"
+                allowFullScreen
+              />
+              <div className="vmodal-meta">
+                <span className="tag">{active.tag}</span>
+                <span className="ttl">{active.title}</span>
+              </div>
+              <button className="vmodal-close" aria-label="Close" onClick={() => setActive(null)}>×</button>
             </div>
-            <button className="vmodal-close" aria-label="Close" onClick={() => setActive(null)}>×</button>
-          </div>
-          <div className="vmodal-hint">{COPY.common.vmodalHint}</div>
-        </div>
-      )}
+            <div className="vmodal-hint">{COPY.common.vmodalHint}</div>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
