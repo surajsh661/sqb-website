@@ -523,7 +523,7 @@ export const SQB_LOGOS: ClientLogo[] = [
   { name: 'GeeksforGeeks',      src: '/clients/gfg.png',       size: 1.77 },
   { name: 'Unacademy',          src: '/clients/unacademy.png', size: 1.76 },
   { name: 'Vahaflix',           src: '/clients/vahaflix.png',  size: 1.05 },
-  { name: 'Dashtoon',           src: '/clients/dashtoon.png',  size: 1.10, tone: 'original' },
+  { name: 'Dashtoon',           src: '/clients/dashtoon.png',  size: 1.10, keepDetails: true },
   { name: 'Indiefolio',         src: '/clients/indiefolio.png',size: 1.10 },
   { name: 'Industree',          src: '/clients/industree.png', size: 1.10, keepDetails: true },
   { name: 'LAPCA',              src: '/clients/lapca.png',     size: 1.33 },

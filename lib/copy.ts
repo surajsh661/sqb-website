@@ -150,7 +150,7 @@ export const COPY = {
 
   // ── Home page · "Behind the scenes" strip ─────────────────────────────────
   bts: {
-    eyebrowNumber: `06`,
+    eyebrowNumber: `05`,
     eyebrowLabel: `BEHIND THE SCENES`,
     heading: `FROM THE *FLOOR*.`,
     blurb: `Rigs, blocks, grade rooms, AI lab nights. The work behind the work.`,
@@ -158,7 +158,7 @@ export const COPY = {
 
   // ── Home page · Testimonials ("The receipts") ─────────────────────────────
   testimonials: {
-    eyebrowNumber: `05`,
+    eyebrowNumber: `04`,
     eyebrowLabel: `WORDS FROM PAST CLIENTS`,
     heading: `THE *RECEIPTS*.`,
   },

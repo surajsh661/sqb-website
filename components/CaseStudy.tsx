@@ -222,7 +222,7 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
           <div className="item"><div className="label">RUNTIME</div><div className="val">{film.runtime}</div></div>
           <div className="item">
             <div className="label">IMPACT</div>
-            <div className="val" style={{ fontFamily: 'Anton, sans-serif', fontSize: 28, color: 'var(--accent)' }}>{film.impact}</div>
+            <div className="val val-impact">{film.impact}</div>
           </div>
         </div>
         <div className="right">

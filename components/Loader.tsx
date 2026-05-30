@@ -37,7 +37,7 @@ export default function Loader() {
             <line x1="92" y1="126" x2="92" y2="146" />
             <line x1="74" y1="146" x2="92" y2="146" />
           </g>
-          <g className="lr-stars" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="0" style={{ transformOrigin: '100px 100px' }}>
+          <g className="lr-stars" fill="none" stroke="#F5C518" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="0" style={{ transformOrigin: '100px 100px' }}>
             <path d="M100 60 L104.5 95.5 L140 100 L104.5 104.5 L100 140 L95.5 104.5 L60 100 L95.5 95.5 Z" />
             <path d="M48 50 L52 70 L72 74 L52 78 L48 98 L44 78 L24 74 L44 70 Z" />
             <path d="M152 148 L155 162 L169 166 L155 170 L152 184 L149 170 L135 166 L149 162 Z" />

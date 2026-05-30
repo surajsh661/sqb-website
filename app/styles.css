@@ -47,14 +47,19 @@ html, body {
 }
 body { min-height: 100vh; position: relative; }
 
-/* Custom site cursor — an 8-bit (pixel-art) yellow pointer with a black outline,
-   ~30% larger than the default. Built from a yellow pixel layer over a slightly
-   larger black pixel layer (so the merged black shows as a clean 1px outline).
-   Text fields keep the native I-beam. */
+/* Custom site cursor — 8-bit (pixel-art) yellow pointer with a black outline.
+   Default = arrow; video / media thumbnails get an 8-bit pointing hand. Built
+   from a yellow pixel layer over a slightly larger black layer (the exposed
+   black reads as a clean outline). Text fields keep the native I-beam. */
 body,
-a, button, [role="button"], .vcard, .ai-clip, .wf-chip, .reach-out-btn,
+a, button, [role="button"], .wf-chip, .reach-out-btn, .wv-cta,
 .tt, .theme-toggle, label, summary {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='50' viewBox='0 0 34 50'%3E%3Cg fill='%23000000'%3E%3Crect x='0.2' y='0.2' width='5.6' height='5.6'/%3E%3Crect x='0.2' y='4.2' width='9.6' height='5.6'/%3E%3Crect x='0.2' y='8.2' width='13.6' height='5.6'/%3E%3Crect x='0.2' y='12.2' width='17.6' height='5.6'/%3E%3Crect x='0.2' y='16.2' width='21.6' height='5.6'/%3E%3Crect x='0.2' y='20.2' width='25.6' height='5.6'/%3E%3Crect x='0.2' y='24.2' width='29.6' height='5.6'/%3E%3Crect x='0.2' y='28.2' width='33.6' height='5.6'/%3E%3Crect x='0.2' y='32.2' width='21.6' height='5.6'/%3E%3Crect x='12.2' y='36.2' width='9.6' height='5.6'/%3E%3Crect x='12.2' y='40.2' width='9.6' height='5.6'/%3E%3Crect x='12.2' y='44.2' width='9.6' height='5.6'/%3E%3C/g%3E%3Cg fill='%23F5C518'%3E%3Crect x='1' y='1' width='4' height='4'/%3E%3Crect x='1' y='5' width='8' height='4'/%3E%3Crect x='1' y='9' width='12' height='4'/%3E%3Crect x='1' y='13' width='16' height='4'/%3E%3Crect x='1' y='17' width='20' height='4'/%3E%3Crect x='1' y='21' width='24' height='4'/%3E%3Crect x='1' y='25' width='28' height='4'/%3E%3Crect x='1' y='29' width='32' height='4'/%3E%3Crect x='1' y='33' width='20' height='4'/%3E%3Crect x='13' y='37' width='8' height='4'/%3E%3Crect x='13' y='41' width='8' height='4'/%3E%3Crect x='13' y='45' width='8' height='4'/%3E%3C/g%3E%3C/svg%3E") 2 2, auto;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='43' viewBox='0 0 29 43'%3E%3Cg fill='%23000000'%3E%3Crect x='0.45' y='0.45' width='4.00' height='4.00'/%3E%3Crect x='0.45' y='3.35' width='6.90' height='4.00'/%3E%3Crect x='0.45' y='6.25' width='9.80' height='4.00'/%3E%3Crect x='0.45' y='9.15' width='12.70' height='4.00'/%3E%3Crect x='0.45' y='12.05' width='15.60' height='4.00'/%3E%3Crect x='0.45' y='14.95' width='18.50' height='4.00'/%3E%3Crect x='0.45' y='17.85' width='21.40' height='4.00'/%3E%3Crect x='0.45' y='20.75' width='24.30' height='4.00'/%3E%3Crect x='0.45' y='23.65' width='27.20' height='4.00'/%3E%3Crect x='0.45' y='26.55' width='18.50' height='4.00'/%3E%3Crect x='0.45' y='29.45' width='9.80' height='4.00'/%3E%3Crect x='12.05' y='29.45' width='9.80' height='4.00'/%3E%3Crect x='14.95' y='32.35' width='9.80' height='4.00'/%3E%3Crect x='17.85' y='35.25' width='9.80' height='4.00'/%3E%3Crect x='20.75' y='38.15' width='6.90' height='4.00'/%3E%3C/g%3E%3Cg fill='%23F5C518'%3E%3Crect x='1.00' y='1.00' width='2.90' height='2.90'/%3E%3Crect x='1.00' y='3.90' width='5.80' height='2.90'/%3E%3Crect x='1.00' y='6.80' width='8.70' height='2.90'/%3E%3Crect x='1.00' y='9.70' width='11.60' height='2.90'/%3E%3Crect x='1.00' y='12.60' width='14.50' height='2.90'/%3E%3Crect x='1.00' y='15.50' width='17.40' height='2.90'/%3E%3Crect x='1.00' y='18.40' width='20.30' height='2.90'/%3E%3Crect x='1.00' y='21.30' width='23.20' height='2.90'/%3E%3Crect x='1.00' y='24.20' width='26.10' height='2.90'/%3E%3Crect x='1.00' y='27.10' width='17.40' height='2.90'/%3E%3Crect x='1.00' y='30.00' width='8.70' height='2.90'/%3E%3Crect x='12.60' y='30.00' width='8.70' height='2.90'/%3E%3Crect x='15.50' y='32.90' width='8.70' height='2.90'/%3E%3Crect x='18.40' y='35.80' width='8.70' height='2.90'/%3E%3Crect x='21.30' y='38.70' width='5.80' height='2.90'/%3E%3C/g%3E%3C/svg%3E") 2 2, auto;
+}
+/* 8-bit hand over clickable video / media thumbnails. */
+.vcard, .video-cell, .ai-clip, .vc-ticket, .creator-thumb, .ce-card,
+.cm-card, .case-tap, .vt-art {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='37' viewBox='0 0 26 37'%3E%3Cg fill='%23000000'%3E%3Crect x='9.15' y='0.45' width='6.90' height='4.00'/%3E%3Crect x='9.15' y='3.35' width='6.90' height='4.00'/%3E%3Crect x='9.15' y='6.25' width='6.90' height='4.00'/%3E%3Crect x='9.15' y='9.15' width='6.90' height='4.00'/%3E%3Crect x='9.15' y='12.05' width='9.80' height='4.00'/%3E%3Crect x='9.15' y='14.95' width='12.70' height='4.00'/%3E%3Crect x='3.35' y='17.85' width='4.00' height='4.00'/%3E%3Crect x='9.15' y='17.85' width='15.60' height='4.00'/%3E%3Crect x='3.35' y='20.75' width='21.40' height='4.00'/%3E%3Crect x='6.25' y='23.65' width='18.50' height='4.00'/%3E%3Crect x='6.25' y='26.55' width='18.50' height='4.00'/%3E%3Crect x='6.25' y='29.45' width='18.50' height='4.00'/%3E%3Crect x='6.25' y='32.35' width='18.50' height='4.00'/%3E%3C/g%3E%3Cg fill='%23F5C518'%3E%3Crect x='9.70' y='1.00' width='5.80' height='2.90'/%3E%3Crect x='9.70' y='3.90' width='5.80' height='2.90'/%3E%3Crect x='9.70' y='6.80' width='5.80' height='2.90'/%3E%3Crect x='9.70' y='9.70' width='5.80' height='2.90'/%3E%3Crect x='9.70' y='12.60' width='8.70' height='2.90'/%3E%3Crect x='9.70' y='15.50' width='11.60' height='2.90'/%3E%3Crect x='3.90' y='18.40' width='2.90' height='2.90'/%3E%3Crect x='9.70' y='18.40' width='14.50' height='2.90'/%3E%3Crect x='3.90' y='21.30' width='20.30' height='2.90'/%3E%3Crect x='6.80' y='24.20' width='17.40' height='2.90'/%3E%3Crect x='6.80' y='27.10' width='17.40' height='2.90'/%3E%3Crect x='6.80' y='30.00' width='17.40' height='2.90'/%3E%3Crect x='6.80' y='32.90' width='17.40' height='2.90'/%3E%3C/g%3E%3C/svg%3E") 11 2, pointer;
 }
 input, textarea, select, [contenteditable] { cursor: text; }
 
@@ -1000,46 +1005,29 @@ body.no-grain::before { display: none; }
   position: fixed; inset: 0; z-index: 200;
   background: rgba(14,14,14,0.85); backdrop-filter: blur(20px);
   display: flex; align-items: center; justify-content: center;
-  perspective: 1800px; pointer-events: none; opacity: 0;
+  padding: 28px 0; overflow-y: auto;   /* fit + scroll on short screens */
+  pointer-events: none; opacity: 0;
   transition: opacity .5s ease;
 }
 [data-theme="light"] .ticket-overlay { background: rgba(246,241,229,0.78); }
 .ticket-overlay.open { pointer-events: auto; opacity: 1; }
 
 .ticket {
-  width: 380px; position: relative;
-  transform-style: preserve-3d; transform-origin: top center;
-  transform: rotateX(-90deg) translateY(-200px);
-  transition: transform .9s cubic-bezier(.22,1,.36,1);
+  width: min(340px, 86vw); position: relative;
+  transform: scale(0.92) translateY(14px); opacity: 0;
+  transition: transform .5s cubic-bezier(.22,1,.36,1), opacity .4s ease;
 }
-.ticket-overlay.open .ticket { transform: rotateX(0) translateY(0); }
+.ticket-overlay.open .ticket { transform: scale(1) translateY(0); opacity: 1; }
 
 .ticket-section {
   background: #F2EBDD; color: #111;
-  padding: 28px 30px; position: relative;
-  transform-origin: top center;
-  transition: transform .7s cubic-bezier(.22,1,.36,1);
+  padding: 24px 26px 28px; position: relative;
+  border-radius: 10px;
+  display: flex; flex-direction: column; gap: 16px;
+  box-shadow: 0 28px 60px rgba(0,0,0,0.5);
 }
-.ticket-overlay:not(.open) .ticket-section.fold-1,
-.ticket-overlay:not(.open) .ticket-section.fold-2,
-.ticket-overlay:not(.open) .ticket-section.fold-3 { transform: rotateX(-180deg); }
-.ticket-overlay.open .ticket-section.fold-1 { transition-delay: .4s; }
-.ticket-overlay.open .ticket-section.fold-2 { transition-delay: .55s; }
-.ticket-overlay.open .ticket-section.fold-3 { transition-delay: .7s; }
 
-.perf {
-  position: relative; height: 0;
-  border-top: 2px dashed rgba(17,17,17,0.25);
-}
-.perf::before, .perf::after {
-  content: ""; position: absolute;
-  width: 24px; height: 24px; border-radius: 50%;
-  background: var(--bg); top: -12px;
-}
-.perf::before { left: -12px; }
-.perf::after { right: -12px; }
-
-.ticket-header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 18px; }
+.ticket-header { display: flex; justify-content: space-between; align-items: flex-start; }
 .ticket-header .stub {
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
@@ -1050,25 +1038,39 @@ body.no-grain::before { display: none; }
   font-size: 22px; color: #111; letter-spacing: 0; margin-top: 4px;
 }
 .ticket-close {
-  width: 32px; height: 32px; border: 1px solid rgba(17,17,17,0.2);
+  width: 34px; height: 34px; border: 1px solid rgba(17,17,17,0.2); border-radius: 7px;
   background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
   font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #111;
 }
-.ticket-menu li { list-style: none; display: flex; align-items: baseline; gap: 16px; padding: 8px 0; cursor: pointer; transition: transform .3s ease; }
-.ticket-menu li:hover { transform: translateX(8px); color: var(--accent-2); }
-.ticket-menu .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(17,17,17,0.4); letter-spacing: 0.15em; }
-.ticket-menu .name { font-family: 'Anton', sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: -0.01em; }
+.ticket-menu { display: flex; flex-direction: column; gap: 2px; }
+.ticket-menu a {
+  font-family: 'Anton', sans-serif; font-size: 32px; line-height: 1.25;
+  text-transform: uppercase; letter-spacing: -0.01em; color: #111;
+  text-decoration: none; transition: transform .25s ease, color .25s ease;
+}
+.ticket-menu a:hover { transform: translateX(8px); color: var(--accent-2); }
 
-.ticket-info { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(17,17,17,0.55); }
-.ticket-info .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted rgba(17,17,17,0.18); }
-.ticket-info .row strong { color: #111; font-weight: 500; }
+.ticket-perf { height: 0; border-top: 2px dashed rgba(17,17,17,0.22); margin: 4px 0; }
 
-.ticket-foot { display: flex; justify-content: space-between; align-items: center; }
-.ticket-foot .socials { display: flex; gap: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #111; }
-.ticket-foot .socials a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
-.ticket-foot .socials a:hover { opacity: 0.55; }
-.ticket-foot .barcode { display: flex; gap: 2px; align-items: center; }
-.ticket-foot .barcode i { display: block; width: 2px; background: #111; }
+.ticket-socials { display: flex; gap: 14px; align-items: center; }
+.ticket-socials a {
+  width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(17,17,17,0.22);
+  display: flex; align-items: center; justify-content: center; color: #111;
+  transition: background .2s ease, color .2s ease;
+}
+.ticket-socials a:hover { background: #111; color: #F2EBDD; }
+.ticket-socials svg { width: 20px; height: 20px; }
+
+.ticket-reach {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 50px; border-radius: 999px; border: none; cursor: pointer;
+  background: #ff7a1a; color: #1a1410;
+  font-family: 'Inter', sans-serif; font-style: italic; font-weight: 900;
+  font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase;
+  -webkit-text-stroke: 0.4px #1a1410; margin-top: 2px;
+}
+.ticket-reach span { -webkit-text-stroke: 0.9px currentColor; }
+.ticket-reach:hover { background: #ff9d3d; }
 
 /* CASE STUDY */
 .case-study {
@@ -1121,6 +1123,7 @@ body.no-grain::before { display: none; }
 .case-body .left .item { margin-bottom: 32px; }
 .case-body .left .item .label { color: var(--accent); margin-bottom: 6px; }
 .case-body .left .item .val { color: var(--fg); font-size: 14px; letter-spacing: 0.05em; }
+.case-body .left .item .val-impact { font-family: 'Anton', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 0; }
 .case-body .right p { font-size: 22px; line-height: 1.5; margin-bottom: 24px; color: var(--fg); }
 .case-body .right p.lede {
   font-family: 'Anton', sans-serif;
@@ -1902,11 +1905,11 @@ video.frame-video {
   width: 100%; height: 100%;
   object-fit: contain; object-position: right center;
   filter: none;
-  opacity: 0.5;
+  opacity: 1;
 }
 [data-theme="light"] .footer-cta-logo .fcl-img {
   filter: invert(1);
-  opacity: 0.5;
+  opacity: 1;
 }
 .footer-cta-logo .fcl-grain { display: none !important; }
 .footer-cta-logo svg { display: none !important; }
@@ -1938,11 +1941,31 @@ video.frame-video {
   .case-hero .bg::after { display: none; }
   .case-hero.vertical .bg { aspect-ratio: 9 / 16; max-width: 300px; margin: 0 auto; }
   .case-hero.vertical .bg iframe { width: 100%; height: 100%; top: 0; left: 0; transform: none; }
-  .case-hero .content { padding: 22px 20px 0; }
-  .case-hero h1 { font-size: clamp(34px, 9vw, 60px); }
-  .case-hero .case-meta { grid-template-columns: repeat(2, 1fr); gap: 14px; font-size: 11px; margin-top: 16px; }
-  .case-body { padding: 40px 20px; gap: 28px; }
-  .case-body .right p { font-size: 17px; }
+  /* YouTube-app-style: video, then a tight title + one compact meta strip, then
+     the description, then small credits. Keeps it clean instead of cramped. */
+  .case-hero .content { padding: 16px 18px 0; }
+  .case-hero .eyebrow { font-size: 10px; margin-bottom: 6px; }
+  .case-hero h1 { font-size: clamp(24px, 7.2vw, 40px); line-height: 1.08; }
+  .case-hero .case-meta {
+    display: flex; flex-wrap: wrap; gap: 6px 16px;
+    margin-top: 12px; font-size: 10.5px;
+  }
+  .case-hero .case-meta > div { display: flex; gap: 6px; align-items: baseline; }
+  .case-hero .case-meta .label { display: inline; margin: 0; }
+  .case-body { padding: 24px 18px 44px; gap: 22px; }
+  /* The spec column duplicates the meta strip under the title (client/year/
+     runtime/impact) — talent is already in the title, category in the eyebrow —
+     so hide it on mobile for a clean YouTube-style title → info → description. */
+  .case-body .left { display: none; }
+  .case-body .right p { font-size: 15px; line-height: 1.55; margin-bottom: 15px; }
+  .case-body .right p.lede { font-size: 18px; line-height: 1.45; }
+  /* Credits — were Anton 28px in big padded cells; shrink for mobile. */
+  .credits-grid { margin-top: 26px; grid-template-columns: 1fr 1fr; }
+  .credits-grid .credit { padding: 13px 14px; }
+  .credits-grid .credit:nth-child(3n) { border-right: 1px solid var(--rule); }
+  .credits-grid .credit:nth-child(2n) { border-right: 0; }
+  .credits-grid .credit .role { font-size: 9px; margin-bottom: 4px; }
+  .credits-grid .credit .name { font-size: 16px; line-height: 1.1; }
   .case-back.prominent { top: 14px; left: 14px; }
 }
 
@@ -1960,9 +1983,13 @@ video.frame-video {
   .logo-mark img { height: 32px; }
   .nav-center { display: none; }
   .reach-out-btn { padding: 8px 14px; font-size: 11px; gap: 8px; }
-  /* Mobile chrome: matched 42px square controls + a visible hamburger that
-     opens the full-screen menu (the only nav on phones). */
-  .theme-toggle, .tt { width: 42px !important; height: 42px !important; }
+  /* Mobile chrome: a visible hamburger that opens the menu. The home toggle is
+     a sliding PILL — keep its pill shape (forcing it to a 42px square knocked
+     the yellow knob off-centre). The sub-page .tt is a round icon button. */
+  .theme-toggle { width: 56px !important; height: 30px !important; }
+  .theme-toggle .knob { top: 3px; width: 24px; height: 24px; }
+  [data-theme="light"] .theme-toggle .knob { left: 29px; }
+  .tt { width: 42px !important; height: 42px !important; }
   .menu-trigger { display: flex; }
 
   /* Hero — shorter so the video isn't marooned in empty space; cursor hint off */
@@ -2086,10 +2113,9 @@ video.frame-video {
   /* Trusted heading */
   .trusted-head h2 { font-size: clamp(40px, 12vw, 72px); }
 
-  /* Case study — hero stacking handled in the ≤900 pass; just refine type here. */
-  .case-hero h1 { font-size: clamp(34px, 10vw, 60px); }
-  .case-meta { grid-template-columns: repeat(2, 1fr); gap: 14px; font-size: 11px; }
-  .case-body { grid-template-columns: 1fr; gap: 40px; padding: 40px 18px; }
+  /* Case study — clean YouTube-style stack; sizing handled in the ≤900 pass. */
+  .case-hero h1 { font-size: clamp(24px, 7.2vw, 40px); }
+  .case-body { grid-template-columns: 1fr; gap: 22px; padding: 24px 18px 44px; }
   .case-body .left, .case-body .right { padding: 0; }
   .credits-grid { grid-template-columns: 1fr 1fr; }
   .case-next { padding: 56px 20px; flex-direction: column; align-items: flex-start; gap: 16px; }

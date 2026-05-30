@@ -42,9 +42,6 @@ export default function Engine() {
   return (
     <section className="engine" data-screen-label="07 The Engine">
       <div className="heading">
-        <div className="eyebrow" style={{ justifyContent: 'center' }}>
-          <span className="num">{COPY.engine.eyebrowNumber}</span> <span>{COPY.engine.eyebrowLabel}</span>
-        </div>
         <h2>{rich(COPY.engine.heading)}</h2>
         <div className="sub">{COPY.engine.subline}</div>
       </div>

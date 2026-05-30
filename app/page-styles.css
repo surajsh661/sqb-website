@@ -38,9 +38,14 @@
 .sqb-nav .nav a {
   color: var(--fg-dim); text-decoration: none; cursor: pointer;
   transition: color .25s;
+  position: relative; padding: 4px 0;
 }
 .sqb-nav .nav a:hover, .sqb-nav .nav a.active { color: var(--fg); }
-.sqb-nav .nav a.active::before { content: "● "; color: var(--accent); }
+/* Active = yellow underline (matches the home topbar), not a dot. */
+.sqb-nav .nav a.active::after {
+  content: ""; position: absolute; bottom: -2px; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
 .sqb-nav .right { display: flex; align-items: center; gap: 14px; }
 .sqb-nav .tt {
   width: 36px; height: 36px; border-radius: 50%;
@@ -628,12 +633,12 @@
 }
 @keyframes lrSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 @keyframes lrFilmPulse {
-  0%, 100% { opacity: 1;    transform: translateX(-38px) scale(0.74); }
-  50%      { opacity: 0.82; transform: translateX(-38px) scale(0.74); }
+  0%, 100% { opacity: 1;    transform: translateX(-45px) scale(0.74); }
+  50%      { opacity: 0.82; transform: translateX(-45px) scale(0.74); }
 }
 @keyframes lrStarsPulse {
-  0%, 100% { opacity: 0.6; transform: translate(52px, 4px) scale(0.32); }
-  50%      { opacity: 1;   transform: translate(52px, 4px) scale(0.36); }
+  0%, 100% { opacity: 0.6; transform: translate(60px, 4px) scale(0.32); }
+  50%      { opacity: 1;   transform: translate(60px, 4px) scale(0.36); }
 }
 
 /* === Flying 2D social logos on Social page === */
@@ -779,15 +784,15 @@
 /* A bold white streak sweeps across once, then waits — repeats every 10s. */
 .reach-out-btn::after, .sqb-nav .reach-out-btn::after,
 .wv-cta::after {
-  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 45%;
-  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%);
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 55%;
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.65) 35%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.65) 65%, transparent 100%);
   transform: translateX(-220%) skewX(-18deg);
-  animation: roShine 10s ease-in-out infinite;
+  animation: roShine 7s ease-in-out infinite;   /* sweep every 7s (was 10s) */
   pointer-events: none; z-index: 4;
 }
 @keyframes roShine {
   0%   { transform: translateX(-220%) skewX(-18deg); }
-  9%   { transform: translateX(330%)  skewX(-18deg); }
+  12%  { transform: translateX(330%)  skewX(-18deg); }
   100% { transform: translateX(330%)  skewX(-18deg); }
 }
 .social-hero {
@@ -1729,25 +1734,17 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   text-shadow: 0 0 28px rgba(255,0,51,0.5) !important;
 }
 
-/* Subs count sits on the right of the creator name */
-.creator-head > div:first-child {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px 24px;
-  align-items: end;
-}
-.creator-head .creator-eyebrow { grid-column: 1 / -1; }
-.creator-head .creator-name { grid-column: 1; }
+/* Subscriber count pinned to the far right corner of the creator header. */
+.creator-head { position: relative; }
+.creator-head > div:first-child { display: block; }
 .creator-head .creator-subs {
-  grid-column: 2; grid-row: 2;
+  position: absolute; top: 0; right: 0;
   text-align: right;
-  align-self: end;
   margin-top: 0;
   flex-direction: column;
   align-items: flex-end;
   display: flex;
 }
-.creator-head .creator-blurb { grid-column: 1 / -1; }
 .creator-head .creator-subs .cs-label { display: block; margin-top: 4px; }
 
 /* Longer stream + real depth (perspective) so the icons float in 3D. Stays
@@ -1851,6 +1848,8 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 
   .creator { padding: 60px 18px; }
   .creator-head { grid-template-columns: 1fr; }
+  /* On mobile, let the subs flow under the name instead of absolute-corner. */
+  .creator-head .creator-subs { position: static; align-items: flex-start; text-align: left; margin-top: 10px; }
   .creator-name { font-size: clamp(40px, 12vw, 72px); }
   .creator-marquee-track { gap: 12px; }
   .creator-thumb { width: 220px; }

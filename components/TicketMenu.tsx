@@ -1,30 +1,25 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { COPY } from '@/lib/copy';
 
 interface Props { open: boolean; onClose: () => void }
 
-const ITEMS: [string, string, string][] = [
-  [COPY.menu.itemAll,      'all',      '01'],
-  [COPY.menu.itemAd,       'ad',       '02'],
-  [COPY.menu.itemFilm,     'film',     '03'],
-  [COPY.menu.itemAi,       'ai',       '04'],
-  [COPY.menu.itemMusic,    'music',    '05'],
-  [COPY.menu.itemVertical, 'vertical', '06'],
-  [COPY.menu.itemContact,  'contact',  '07'],
+// Mobile menu — the four nav destinations, social links, then Reach Out.
+const NAV: [string, string][] = [
+  ['HOME', '/'],
+  ['VIDEO', '/work'],
+  ['AI LAB', '/ai-lab'],
+  ['SOCIAL', '/social'],
 ];
 
 export default function TicketMenu({ open, onClose }: Props) {
-  const router = useRouter();
-  const onPick = (key: string) => {
-    if (key === 'contact') {
+  const reachOut = () => {
+    onClose();
+    setTimeout(() => {
       document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      onClose();
-    } else {
-      router.push(`/work?filter=${encodeURIComponent(key)}`);
-      onClose();
-    }
+    }, 120);
   };
+
   return (
     <div className={'ticket-overlay' + (open ? ' open' : '')} onClick={onClose}>
       <div className="ticket" onClick={(e) => e.stopPropagation()}>
@@ -36,51 +31,30 @@ export default function TicketMenu({ open, onClose }: Props) {
             </div>
             <button className="ticket-close" onClick={onClose} aria-label="Close menu">✕</button>
           </div>
-          <div className="ticket-info" style={{ marginTop: 8 }}>
-            <div className="row"><span>{COPY.menu.screenLabel}</span><strong>{COPY.menu.screenValue}</strong></div>
-            <div className="row"><span>{COPY.menu.showLabel}</span><strong>{COPY.menu.showValue}</strong></div>
-            <div className="row"><span>{COPY.menu.seatLabel}</span><strong>{COPY.menu.seatValue}</strong></div>
-          </div>
-        </div>
 
-        <div className="perf" />
-
-        <div className="ticket-section fold-1">
-          <ul className="ticket-menu">
-            {ITEMS.map(([name, key, num]) => (
-              <li key={num} onClick={() => onPick(key)}>
-                <span className="num">{num}</span>
-                <span className="name">{name}</span>
-              </li>
+          <nav className="ticket-menu">
+            {NAV.map(([label, href]) => (
+              <Link key={href} href={href} onClick={onClose}>{label}</Link>
             ))}
-          </ul>
-        </div>
+          </nav>
 
-        <div className="perf" />
+          <div className="ticket-perf" />
 
-        <div className="ticket-section fold-2">
-          <div className="ticket-info" style={{ marginBottom: 16 }}>
-            <div className="row"><span>{COPY.menu.emailLabel}</span><strong>SURAJSHARMA@SQBPICTURES.COM</strong></div>
-            <div className="row"><span>{COPY.menu.whatsappLabel}</span><strong>+91 90130 82883</strong></div>
+          <div className="ticket-socials">
+            <a href="https://www.instagram.com/sqbpictures/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" /></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/sqbpictures/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM3.3 9h3.4v11.5H3.3zM9.2 9h3.26v1.57h.05c.45-.86 1.56-1.77 3.2-1.77 3.43 0 4.06 2.26 4.06 5.2v6.5h-3.4v-5.76c0-1.37-.02-3.14-1.91-3.14-1.92 0-2.21 1.5-2.21 3.04v5.86H9.2z" /></svg>
+            </a>
+            <a href="https://wa.me/919013082883" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3 .78.8-2.92-.2-.31A8.2 8.2 0 1 1 12 20.2zm4.5-6.16c-.25-.13-1.46-.72-1.69-.8-.23-.08-.39-.13-.56.13-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06a6.7 6.7 0 0 1-3.35-2.93c-.25-.43.25-.4.72-1.33.08-.16.04-.3-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.42l-.48-.01a.92.92 0 0 0-.67.31c-.23.25-.88.86-.88 2.1s.9 2.43 1.03 2.6c.13.16 1.78 2.72 4.3 3.81 1.6.69 2.23.75 3.03.63.49-.07 1.46-.6 1.67-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.47-.28z" /></svg>
+            </a>
           </div>
-          <div className="ticket-foot">
-            <div className="socials">
-              <a href="https://www.instagram.com/sqbpictures/" target="_blank" rel="noopener noreferrer">IG ↗</a>
-              <a href="https://www.linkedin.com/company/sqbpictures/" target="_blank" rel="noopener noreferrer">IN ↗</a>
-              <a href="https://wa.me/919013082883" target="_blank" rel="noopener noreferrer">WA ↗</a>
-            </div>
-            <div className="barcode">
-              {Array.from({ length: 22 }).map((_, i) => (
-                <i key={i} style={{ height: 22 + (i % 3) * 4, width: i % 4 === 0 ? 3 : 2 }} />
-              ))}
-            </div>
-          </div>
-        </div>
 
-        <div className="perf" />
-
-        <div className="ticket-section fold-3" style={{ padding: '14px 30px', textAlign: 'center' }}>
-          <div className="ticket-info">{COPY.menu.copyright}</div>
+          <button className="ticket-reach" onClick={reachOut}>
+            {COPY.nav.reachOut} <span>→</span>
+          </button>
         </div>
       </div>
     </div>

@@ -167,7 +167,15 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   }, [cellW, cellH]);
 
   // Mouse tracking — refs only, no React state.
+  // IMPORTANT: cursor-scrub is for pointer devices only. On touch, a tap fires a
+  // single synthetic mousemove that would latch insideZone=true at the tap's x
+  // (often in a scrub margin) with no mouseleave to clear it — so the reel would
+  // spin forever. Touch devices navigate with the ← / WATCH / → controls instead.
   useEffect(() => {
+    const isTouch =
+      typeof window !== 'undefined' &&
+      ('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0);
+    if (isTouch) return;
     const onMove = (e: MouseEvent) => {
       const el = zoneRef.current;
       if (!el) return;
@@ -345,12 +353,16 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   useEffect(() => {
     const apply = () => {
       const slots = cellSlotsRef.current;
+      // On phones, decode ONLY the centred video (not its neighbours) — playing
+      // 3 video streams at once is what made mobile "constantly loading" / slow.
+      const playDist =
+        typeof window !== 'undefined' && window.innerWidth < 700 ? 0.5 : PLAY_DIST;
       for (let i = 0; i < slots.length; i++) {
         const slot = slots[i];
         if (!slot) continue;
         const iframe = slot.querySelector<HTMLIFrameElement>('iframe.frame-video');
         if (!iframe || !iframe.contentWindow) continue;
-        const play = Math.abs(wrapDelta(i - playCenterRef.current, N)) <= PLAY_DIST;
+        const play = Math.abs(wrapDelta(i - playCenterRef.current, N)) <= playDist;
         const src = iframe.src || '';
         try {
           if (src.includes('youtube')) {
