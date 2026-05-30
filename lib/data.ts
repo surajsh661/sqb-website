@@ -278,13 +278,13 @@ export const SQB_FILMS: Film[] = [
   {
     id: 'revolution-edu-scam',
     title: 'REVOLUTION — THE EDUCATION SCAM',
-    category: 'DOCU-SERIES / MAKING-OF', year: '2023', runtime: 'Season 1',
+    category: 'WEB SERIES / DRAMA', year: '2023', runtime: '7 EP · ~4H 30M',
     genres: ['show', 'docu', 'film'],
     type: 'vm', videoId: '964882350',
-    client: 'Niyashi Motion Pictures', talent: 'Hiten Tejwani · Rakesh Bedi · Hemant Pandey · Mimoh Chakraborty · Bijendra Kala',
-    lede: "A long-form docu-drama on India's education industrial complex — shot in Mumbai in 2023. What you see here is the making-of.",
-    body: "A character-led, cinematic series under the banner of Niyashi Motion Pictures, featuring television names including Hiten Tejwani, Rakesh Bedi, Hemant Pandey, Mimoh Chakraborty and Bijendra Kala. Shot across Mumbai in 2023; the series is currently in distribution and will premiere on a leading OTT platform soon. This reel is a glimpse behind the scenes.",
-    timeline: '—', release: 'OTT — coming soon', impact: 'In distribution — premiering on a leading OTT platform',
+    client: "S'QB Originals", talent: 'Hiten Tejwani · Rakesh Bedi · Hemant Pandey · Mimoh Chakraborty · Bijendra Kala',
+    lede: 'A long-form drama web series — a vigilante out to bust the country\'s edtech scams while keeping his identity hidden. Shot in Mumbai; what you see here is the making-of.',
+    body: "Seven episodes of 35–40 minutes each (≈4h 30m total). A character-led thriller following a masked vigilante who exposes the education-industry scams bleeding India's students dry — without ever revealing who he is. Featuring Hiten Tejwani, Rakesh Bedi, Hemant Pandey, Mimoh Chakraborty and Bijendra Kala. Currently in distribution, premiering on a leading OTT platform soon.",
+    timeline: '7 episodes', release: 'OTT — coming soon', impact: 'In distribution — premiering on a leading OTT platform',
     credits: [
       { role: 'DIRECTORS', name: 'SURAJ SHARMA · SALAR SHEIKH' },
       { role: 'WRITERS', name: 'SURAJ SHARMA · SHUBHAM SHAH' },
@@ -368,6 +368,7 @@ const HERO_FEATURED_IDS: string[] = [
   'muthoot-sunheri-soch',
   'pw-dvc',
   'revolution-edu-scam',
+  'sparks-off-pitch',
   'kabeera-tseries',
   'sunstone-lsg',
 ];

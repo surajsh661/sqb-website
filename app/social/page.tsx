@@ -94,8 +94,6 @@ export default function SocialPage() {
               { c: '#36C5F0', svg: <svg viewBox="0 0 24 24"><path d="M4 4.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-4 3.2v-3.2a1.5 1.5 0 0 1-1.5-1.5V6A1.5 1.5 0 0 1 4 4.5z" fill="#36C5F0" /></svg> },
               // Follow
               { c: '#9C6BFF', svg: <svg viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.6" fill="#9C6BFF" /><path d="M3.6 19c0-3.3 2.6-5.3 5.9-5.3s5.9 2 5.9 5.3z" fill="#9C6BFF" /><path d="M18.6 7v6M15.6 10h6" stroke="#9C6BFF" strokeWidth="2" strokeLinecap="round" /></svg> },
-              // Views
-              { c: '#FFC83D', svg: <svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="#FFC83D" strokeWidth="2" /><circle cx="12" cy="12" r="3" fill="#FFC83D" /></svg> },
             ].map((it, i) => (
               <div
                 className="sh-icon"

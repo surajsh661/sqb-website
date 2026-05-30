@@ -392,6 +392,13 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     }
   };
 
+  // Step the reel one film either way — used by the mobile prev/next controls
+  // (touch devices have no cursor to scrub with).
+  const nudge = (dir: number) => {
+    manualTarget.current = Math.round(snapFloat.current) + dir;
+    manualUntil.current = performance.now() + 1100;
+  };
+
   const centerFilm = films[activeIdx];
 
   // Dynamic hero-title sizing so long titles never overflow the viewport.
@@ -494,6 +501,13 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
           <span className="arrow" />
         </div>
       )}
+
+      {/* Touch controls — only shown on phones/tablets (no cursor to scrub). */}
+      <div className="hero-touch-nav" aria-hidden="false">
+        <button onClick={() => nudge(-1)} aria-label="Previous">←</button>
+        <button className="hero-open" onClick={() => onPick(films[activeIdx])}>WATCH</button>
+        <button onClick={() => nudge(1)} aria-label="Next">→</button>
+      </div>
     </section>
   );
 }

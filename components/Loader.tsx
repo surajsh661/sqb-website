@@ -32,13 +32,13 @@ export default function Loader() {
             <circle cx="159" cy="97" r="4" />
             <line x1="48" y1="68" x2="42" y2="58" />
             <line x1="42" y1="58" x2="34" y2="58" />
-            <circle cx="118" cy="92" r="3" fill="#fff" />
+            <circle cx="118" cy="92" r="3.4" fill="#F5C518" stroke="none" />
             <line x1="74" y1="126" x2="74" y2="146" />
             <line x1="92" y1="126" x2="92" y2="146" />
             <line x1="74" y1="146" x2="92" y2="146" />
           </g>
           <g className="lr-stars" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="0" style={{ transformOrigin: '100px 100px' }}>
-            <path d="M100 28 L108 92 L172 100 L108 108 L100 172 L92 108 L28 100 L92 92 Z" />
+            <path d="M100 60 L104.5 95.5 L140 100 L104.5 104.5 L100 140 L95.5 104.5 L60 100 L95.5 95.5 Z" />
             <path d="M48 50 L52 70 L72 74 L52 78 L48 98 L44 78 L24 74 L44 70 Z" />
             <path d="M152 148 L155 162 L169 166 L155 170 L152 184 L149 170 L135 166 L149 162 Z" />
           </g>

@@ -112,8 +112,8 @@ export const COPY = {
     foundersHeading: `FOUNDERS`,
     contactHeading: `CONTACT`,
     followHeading: `FOLLOW`,
-    copyright: `© 2026 NIYASHI MOTION PICTURES PVT LTD · S'QB PICTURES · ALL FRAMES RESERVED.`,
-    cube: `S'CUBE · 4·S OF SURAJ SHARMA + SHUBHAM SHAH`,
+    copyright: `© 2026 S'QB PICTURES · ALL FRAMES RESERVED.`,
+    cube: ``,
   },
 
   // ── Top navigation bar (the links at the very top of every page) ───────────

@@ -623,12 +623,12 @@
 }
 @keyframes lrSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 @keyframes lrFilmPulse {
-  0%, 100% { opacity: 1;    transform: translateX(-34px) scale(0.82); }
-  50%      { opacity: 0.82; transform: translateX(-34px) scale(0.82); }
+  0%, 100% { opacity: 1;    transform: translateX(-46px) scale(0.8); }
+  50%      { opacity: 0.82; transform: translateX(-46px) scale(0.8); }
 }
 @keyframes lrStarsPulse {
-  0%, 100% { opacity: 0.55; transform: translate(58px, -2px) scale(0.4); }
-  50%      { opacity: 1;    transform: translate(58px, -2px) scale(0.44); }
+  0%, 100% { opacity: 0.6; transform: translate(72px, 0) scale(0.34); }
+  50%      { opacity: 1;   transform: translate(72px, 0) scale(0.38); }
 }
 
 /* === Flying 2D social logos on Social page === */
@@ -759,6 +759,7 @@
   background: #ff7a1a !important;
   border-color: #ff7a1a !important;
   color: #1a1410 !important;
+  -webkit-text-stroke: 0.7px #1a1410;   /* thicken the glyphs — extra bold */
 }
 .reach-out-btn:hover, .sqb-nav .reach-out-btn:hover {
   background: #ff9d3d !important;
@@ -1447,7 +1448,7 @@
 .ws-barrel-stage.dragging { cursor: grabbing; }
 
 /* Camera REC dot pulse on loading screen */
-.sqb-loader-icon .lr-film circle[fill="#fff"] {
+.sqb-loader-icon .lr-film circle[fill="#F5C518"] {
   animation: recBlink 1s ease-in-out infinite;
 }
 @keyframes recBlink {
@@ -1586,27 +1587,27 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 /* Glassmorphism recipe reproduced from the reference icon kit: a faint diagonal
    white wash over a 10px backdrop blur, a hairline light border, a soft drop
    shadow, and a brand-coloured INSET glow. The brand glyph carries its colour. */
+/* Realistic Apple-style 3D glass: a vertical light→dark gradient body, a crisp
+   bright top rim, a soft inner shadow at the base for depth, and a real drop
+   shadow. No flat white blob. */
 .sh-icon-inner {
   width: 100%; height: 100%;
   position: relative;
   display: grid; place-items: center;
-  border-radius: 26%;
-  background: linear-gradient(135deg, rgba(248,251,255,0.055) 0%, rgba(255,255,255,0) 100%);
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-  border: 0.8px solid rgba(216,216,216,0.08);
+  border-radius: 27%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.035) 46%, rgba(0,0,0,0.10) 100%);
+  -webkit-backdrop-filter: blur(13px);
+          backdrop-filter: blur(13px);
+  border: 1px solid rgba(255,255,255,0.10);
   box-shadow:
-    6px 5px 16px rgba(0,0,0,0.42),
-    inset 0 0 9px rgba(255,255,255,0.16);
+    inset 0 1px 0.5px rgba(255,255,255,0.3),
+    inset 0 -12px 18px rgba(0,0,0,0.4),
+    0 14px 26px rgba(0,0,0,0.55);
 }
-/* Top-left specular highlight (the kit's screen-blended "Ellipse 2") plus a soft
-   neutral glow pooled behind the glyph (black-and-white treatment). */
+/* A faint top-edge highlight only — no bright shine blob over the glyph. */
 .sh-icon-inner::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  mix-blend-mode: screen;
-  background:
-    radial-gradient(38% 34% at 30% 24%, rgba(255,255,255,0.55), rgba(255,255,255,0) 70%),
-    radial-gradient(64% 60% at 50% 54%, rgba(255,255,255,0.14), transparent 74%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0) 30%);
 }
 /* Black & white: desaturate every glyph to a clean light monochrome while
    keeping internal detail (knockouts stay brightest). */
@@ -1726,7 +1727,7 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 
 /* Longer stream + real depth (perspective) so the icons float in 3D. Stays
    inside this box (overflow:hidden + mask), so it never passes the section. */
-.sh-stream { height: 520px !important; }
+.sh-stream { height: 400px !important; }
 /* Float UP while drifting LEFT and slanting (tilt up-and-to-the-left), with a
    gentle 3D wobble — a more satisfying, dimensional drift. */
 /* Gentle up-and-to-the-left float with a slant. 2D only (no perspective) so the

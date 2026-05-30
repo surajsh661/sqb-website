@@ -47,6 +47,15 @@ html, body {
 }
 body { min-height: 100vh; position: relative; }
 
+/* Custom site cursor — a yellow, black-stroked arrow ~1.5× the default size.
+   Text fields keep the native I-beam. */
+body,
+a, button, [role="button"], .vcard, .ai-clip, .wf-chip, .reach-out-btn,
+.tt, .theme-toggle, label, summary {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M4 3 L4 23 L9.5 18 L13 25.5 L16.5 24 L13 16.5 L20 16.5 Z' fill='%23F5C518' stroke='%23000000' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, auto;
+}
+input, textarea, select, [contenteditable] { cursor: text; }
+
 /* film grain — animation removed; constant retransform + mix-blend-mode on a
    full-viewport overlay was forcing a GPU composite every frame. Grain still
    reads, just as a static texture. Massive scroll/animation perf win. */
@@ -196,20 +205,22 @@ body.no-grain::before { display: none; }
 [data-theme="light"] .theme-toggle .knob { left: 30px; }
 
 .menu-trigger {
-  display: flex; align-items: center; gap: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--fg);
-  cursor: pointer; user-select: none;
-  background: transparent; border: none;
+  display: none;                 /* desktop navigates via the nav links */
+  align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 11px;
+  color: var(--fg); cursor: pointer; user-select: none;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--rule);
 }
-.menu-trigger .lines { width: 24px; height: 14px; position: relative; }
+[data-theme="light"] .menu-trigger { background: rgba(0,0,0,0.05); }
+.menu-trigger .lines { width: 20px; height: 14px; position: relative; }
 .menu-trigger .lines span {
   position: absolute; left: 0; right: 0;
-  height: 1.5px; background: currentColor;
+  height: 2px; border-radius: 2px; background: currentColor;
 }
-.menu-trigger .lines span:nth-child(1) { top: 2px; }
-.menu-trigger .lines span:nth-child(2) { bottom: 2px; }
+.menu-trigger .lines span:nth-child(1) { top: 0; }
+.menu-trigger .lines span:nth-child(2) { top: 6px; }
+.menu-trigger .lines span:nth-child(3) { top: 12px; }
 
 /* HERO — cursor-reactive row with glass-distortion side bleed */
 .hero {
@@ -490,6 +501,27 @@ body.no-grain::before { display: none; }
 .cursor-hint .arrow::before { right: 0; transform: translateY(-50%) rotate(-30deg); transform-origin: right; }
 .cursor-hint .arrow::after { right: 0; transform: translateY(-50%) rotate(30deg); transform-origin: right; }
 .cursor-hint .arrow.flip { transform: scaleX(-1); }
+
+/* Mobile hero controls — prev / watch / next (touch has no cursor to scrub). */
+.hero-touch-nav { display: none; }
+@media (max-width: 900px) {
+  .hero-touch-nav {
+    display: flex; gap: 12px; align-items: center; justify-content: center;
+    position: absolute; left: 0; right: 0; bottom: 16px; z-index: 8;
+  }
+  .hero-touch-nav button {
+    min-width: 48px; height: 48px; padding: 0 16px; border-radius: 999px;
+    background: rgba(255,255,255,0.09); border: 1px solid var(--rule);
+    color: var(--fg); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  [data-theme="light"] .hero-touch-nav button { background: rgba(0,0,0,0.06); }
+  .hero-touch-nav .hero-open {
+    background: var(--accent); color: #1a1410;
+    font-family: 'Inter', sans-serif; font-weight: 800; font-style: italic;
+    font-size: 13px; letter-spacing: 0.12em; padding: 0 22px;
+  }
+}
 
 @media (max-width: 800px) {
   .hero-title { font-size: clamp(42px, 14vw, 80px); }
@@ -951,6 +983,8 @@ body.no-grain::before { display: none; }
 }
 .footer-grid h4 { color: var(--accent); font-weight: 500; margin-bottom: 18px; font-size: 10px; }
 .footer-grid a, .footer-grid p { color: var(--fg); display: block; margin-bottom: 8px; text-decoration: none; }
+.footer-grid a .foot-ico { width: 15px; height: 15px; display: inline-block; vertical-align: -2.5px; margin-right: 8px; opacity: 0.85; }
+.footer-grid a:hover .foot-ico { opacity: 1; color: var(--accent); }
 .footer-bottom {
   margin-top: 60px; padding-top: 20px;
   border-top: 1px solid var(--rule);
@@ -1898,12 +1932,14 @@ video.frame-video {
   .logo-mark .stack .tagline { font-size: 9px; }
   .logo-mark img { height: 32px; }
   .nav-center { display: none; }
-  .reach-out-btn { padding: 8px 14px; font-size: 10px; gap: 8px; }
-  .theme-toggle { width: 36px; height: 36px; }
-  .menu-trigger { padding: 8px 12px; gap: 8px; }
+  .reach-out-btn { padding: 8px 14px; font-size: 11px; gap: 8px; }
+  /* Mobile chrome: matched 42px square controls + a visible hamburger that
+     opens the full-screen menu (the only nav on phones). */
+  .theme-toggle, .tt { width: 42px !important; height: 42px !important; }
+  .menu-trigger { display: flex; }
 
-  /* Hero — make the carousel a bit shorter, drop the cursor hint */
-  .hero { height: 75vh; }
+  /* Hero — shorter so the video isn't marooned in empty space; cursor hint off */
+  .hero { height: 64vh; min-height: 460px; }
   .cursor-hint { display: none; }
   .hero-tagline { font-size: 11px; bottom: 10px; }
   .hero-title-wrap { left: 18px; right: 18px; bottom: 80px; }
