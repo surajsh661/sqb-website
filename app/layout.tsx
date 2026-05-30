@@ -4,20 +4,30 @@ import './styles.css';
 import './page-styles.css';
 
 const SITE = 'https://sqbpictures.com';
+const TITLE = "S'QB Pictures — AI & Video Production House in Delhi NCR & Mumbai";
 const DESCRIPTION =
-  "S'QB Pictures is a Delhi–Mumbai film studio building India's most ambitious AI-enabled films, ads and shows for the country's biggest brands. Filmmakers first, AI operators second.";
+  "S'QB Pictures is an AI-first video production house in Delhi NCR and Mumbai — ad films, TVCs, AI films, music videos and branded series for India's biggest brands. Filmmakers first, AI operators second.";
+const SAME_AS = [
+  'https://www.instagram.com/sqbpictures/',
+  'https://www.linkedin.com/company/sqbpictures/',
+];
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "S'QB Pictures — Tell Your Story Today",
+    default: TITLE,
     template: "%s — S'QB Pictures",
   },
   description: DESCRIPTION,
   keywords: [
-    "S'QB Pictures", 'AI film studio', 'AI films India', 'branded series',
-    'TVC production', 'music video', 'docu-series', 'Delhi', 'Mumbai',
-    'video production studio', 'generative video', 'AI VFX',
+    "S'QB Pictures", 'AI production house', 'video production house',
+    'best video production house in Delhi NCR', 'best AI production house',
+    'AI video production house in India', 'AI production house India',
+    'video production house Delhi NCR', 'AI video production company India',
+    'video production company Delhi NCR', 'ad film production Delhi',
+    'TVC production India', 'AI film studio', 'AI films India', 'music video',
+    'branded series', 'vertical cinema', 'generative video', 'AI VFX',
+    'Delhi NCR', 'Mumbai', 'India',
   ],
   applicationName: "S'QB Pictures",
   authors: [{ name: "S'QB Pictures" }],
@@ -34,32 +44,107 @@ export const metadata: Metadata = {
     type: 'website',
     url: SITE,
     siteName: "S'QB Pictures",
-    title: "S'QB Pictures — Tell Your Story Today",
+    title: TITLE,
     description: DESCRIPTION,
     locale: 'en_IN',
-    images: [{ url: '/logo-dark.png', width: 1200, height: 630, alt: "S'QB Pictures" }],
+    images: [{ url: '/logo-dark.png', width: 1200, height: 630, alt: "S'QB Pictures — AI & video production house" }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "S'QB Pictures — Tell Your Story Today",
+    title: TITLE,
     description: DESCRIPTION,
     images: ['/logo-dark.png'],
   },
 };
 
-const ORG_JSONLD = {
+// Structured data — one @graph so search engines + AI assistants understand the
+// entity: who S'QB is (Organization), the site (WebSite), the production service
+// (ProfessionalService, with the services + areas it covers), and plain-language
+// answers (FAQPage) to the exact questions people / AI agents ask.
+const JSONLD = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: "S'QB Pictures",
-  url: SITE,
-  logo: `${SITE}/logo-source.png`,
-  description: DESCRIPTION,
-  email: 'surajsharma@sqbpictures.com',
-  areaServed: ['IN', 'AE', 'SA', 'SG', 'GB', 'US'],
-  address: { '@type': 'PostalAddress', addressCountry: 'IN', addressRegion: 'Delhi / Mumbai' },
-  sameAs: [
-    'https://www.instagram.com/sqbpictures/',
-    'https://www.linkedin.com/company/sqbpictures/',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE}/#org`,
+      name: "S'QB Pictures",
+      alternateName: ['SQB Pictures', "S'QB"],
+      url: SITE,
+      logo: `${SITE}/logo-source.png`,
+      image: `${SITE}/logo-dark.png`,
+      description: DESCRIPTION,
+      slogan: 'Tell Your Story Today',
+      email: 'surajsharma@sqbpictures.com',
+      founders: [
+        { '@type': 'Person', name: 'Suraj Sharma' },
+        { '@type': 'Person', name: 'Shubham Shah' },
+      ],
+      knowsAbout: [
+        'AI video production', 'video production', 'ad films', 'TVC production',
+        'AI films', 'VFX', 'music videos', 'vertical cinema', 'branded series',
+      ],
+      areaServed: ['Delhi NCR', 'Mumbai', 'India', 'IN', 'AE', 'SA', 'SG', 'GB', 'US'],
+      address: { '@type': 'PostalAddress', addressCountry: 'IN', addressRegion: 'Delhi NCR / Mumbai' },
+      sameAs: SAME_AS,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE}/#website`,
+      url: SITE,
+      name: "S'QB Pictures",
+      publisher: { '@id': `${SITE}/#org` },
+      inLanguage: 'en-IN',
+    },
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${SITE}/#service`,
+      name: "S'QB Pictures — AI & Video Production House",
+      url: SITE,
+      image: `${SITE}/logo-dark.png`,
+      description: DESCRIPTION,
+      parentOrganization: { '@id': `${SITE}/#org` },
+      email: 'surajsharma@sqbpictures.com',
+      areaServed: [
+        { '@type': 'City', name: 'Delhi NCR' },
+        { '@type': 'City', name: 'New Delhi' },
+        { '@type': 'City', name: 'Gurugram' },
+        { '@type': 'City', name: 'Noida' },
+        { '@type': 'City', name: 'Mumbai' },
+        { '@type': 'Country', name: 'India' },
+      ],
+      serviceType: [
+        'AI video production', 'Video production', 'Ad film production',
+        'TVC production', 'AI film production', 'Music video production',
+        'VFX', 'Vertical and short-form content',
+      ],
+      sameAs: SAME_AS,
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${SITE}/#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Is S’QB Pictures an AI production house?',
+          acceptedAnswer: { '@type': 'Answer', text: "Yes. S'QB Pictures is an AI-first video and AI production house — it pairs cinematic, filmmaker-led craft with generative-AI pipelines to make ad films, TVCs, AI films, music videos and branded series." },
+        },
+        {
+          '@type': 'Question',
+          name: 'Is S’QB Pictures a good video production house in Delhi NCR?',
+          acceptedAnswer: { '@type': 'Answer', text: "S'QB Pictures is a Delhi NCR and Mumbai based video production house that has delivered work for some of India's biggest brands, spanning ad films, TVCs, AI films and music videos." },
+        },
+        {
+          '@type': 'Question',
+          name: 'What does S’QB Pictures produce?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Ad films and TVCs, AI films, music videos, branded and original series, VFX and vertical / short-form content for brands and platforms.' },
+        },
+        {
+          '@type': 'Question',
+          name: 'Where is S’QB Pictures located?',
+          acceptedAnswer: { '@type': 'Answer', text: "S'QB Pictures operates out of Delhi NCR and Mumbai and produces work for clients across India and overseas." },
+        },
+      ],
+    },
   ],
 };
 
@@ -90,7 +175,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSONLD) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(JSONLD) }}
         />
       </head>
       <body>
