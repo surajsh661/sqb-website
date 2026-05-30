@@ -100,7 +100,7 @@ export default function SocialPage() {
               <div
                 className="sh-icon"
                 key={i}
-                style={{ ['--d' as any]: -(i * 1.35 + 1.7) + 's', ['--c' as any]: it.c }}
+                style={{ ['--d' as any]: -(i * 1.6 + 1.5) + 's', ['--c' as any]: it.c }}
               >
                 <div className="sh-icon-inner">{it.svg}</div>
               </div>

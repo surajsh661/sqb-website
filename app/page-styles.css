@@ -1575,14 +1575,14 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   position: absolute;
   left: 50%;
   bottom: -90px;
-  width: 90px; height: 90px;
+  width: 86px; height: 86px;
   transform: translateX(-50%);
-  animation: shFloat 10.5s linear infinite;
+  animation: shFloat 16s linear infinite;
   animation-delay: var(--d, 0s);
   color: var(--c, var(--accent));
 }
-.sh-icon:nth-child(odd)  { margin-left: -60px; }
-.sh-icon:nth-child(even) { margin-left:  60px; }
+.sh-icon:nth-child(odd)  { margin-left: -68px; }
+.sh-icon:nth-child(even) { margin-left:  68px; }
 /* Glassmorphism recipe reproduced from the reference icon kit: a faint diagonal
    white wash over a 10px backdrop blur, a hairline light border, a soft drop
    shadow, and a brand-coloured INSET glow. The brand glyph carries its colour. */
@@ -1597,21 +1597,23 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   border: 0.8px solid rgba(216,216,216,0.08);
   box-shadow:
     6px 5px 16px rgba(0,0,0,0.42),
-    inset 0 0 9px color-mix(in srgb, var(--c, #f5c518) 40%, transparent);
+    inset 0 0 9px rgba(255,255,255,0.16);
 }
 /* Top-left specular highlight (the kit's screen-blended "Ellipse 2") plus a soft
-   brand glow pooled behind the glyph. */
+   neutral glow pooled behind the glyph (black-and-white treatment). */
 .sh-icon-inner::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   mix-blend-mode: screen;
   background:
     radial-gradient(38% 34% at 30% 24%, rgba(255,255,255,0.55), rgba(255,255,255,0) 70%),
-    radial-gradient(64% 60% at 50% 54%, color-mix(in srgb, var(--c, #f5c518) 32%, transparent), transparent 74%);
+    radial-gradient(64% 60% at 50% 54%, rgba(255,255,255,0.14), transparent 74%);
 }
+/* Black & white: desaturate every glyph to a clean light monochrome while
+   keeping internal detail (knockouts stay brightest). */
 .sh-icon-inner svg {
   position: relative;
   width: 64%; height: 64%;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45));
+  filter: grayscale(1) brightness(1.55) contrast(1.04) drop-shadow(0 2px 4px rgba(0,0,0,0.45));
 }
 @keyframes shFloat {
   0%   { transform: translate(-50%, 0) scale(0.8) rotate(-6deg); opacity: 0; }
