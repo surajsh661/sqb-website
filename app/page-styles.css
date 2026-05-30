@@ -20,7 +20,7 @@
   display: flex; align-items: center; gap: 14px;
   text-decoration: none; color: var(--fg);
 }
-.sqb-nav .lm img { height: 36px; width: auto; }
+.sqb-nav .lm img { width: 56px; height: 56px; object-fit: contain; } /* match home topbar logo size */
 .sqb-nav .lm .stack { display: flex; flex-direction: column; gap: 2px; }
 .sqb-nav .lm .tg {
   font-family: 'JetBrains Mono', monospace; font-size: 9px;

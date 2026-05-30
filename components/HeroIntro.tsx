@@ -34,7 +34,8 @@ export default function HeroIntro() {
   return (
     <div className={'hero-intro hero-intro-' + phase} aria-hidden="true">
       <div className="hi-stack">
-        <span className="hi-eyebrow">{COPY.intro.eyebrow}</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="hi-logo" src="/logo-dark.png" alt="S'QB Pictures" />
         <h2 className="hi-text">
           {rich(COPY.intro.headline)}
           <span className="hi-dot">.</span>

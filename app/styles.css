@@ -735,6 +735,8 @@ body.no-grain::before { display: none; }
   font-size: 14px; color: var(--fg-dim); line-height: 1.6;
 }
 
+/* (Mobile engine layout lives in the max-width:900px / 600px blocks below.) */
+
 /* VERTICAL projects (tilted card row) */
 .verticals {
   position: relative; padding: 160px 0 120px;
@@ -1870,25 +1872,32 @@ video.frame-video {
   .cat { padding: 22px 0; border-bottom: 1px solid var(--rule); border-right: 0; }
   .cat .name { font-size: clamp(28px, 9vw, 52px); }
 
-  /* Engine — stack founders + bios vertically on tablet/phone, drop the
-     shape-outside curve (the wrap doesn't read well below ~720px wide). */
+  /* Engine — stack on tablet/phone. The desktop layout absolutely-centres the
+     two founder circles between two bios; here we put the circles in normal
+     flow side by side, then the two bios below. */
   .engine-row {
-    flex-direction: column; gap: 28px; padding: 30px 18px 50px;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 0; max-width: 660px;
+    gap: 28px; padding: 24px 20px 0;
   }
-  .founder-portrait { width: 220px; height: 220px; }
-  .founder-portrait .fp-name { font-size: 26px; }
+  /* The key fix: the pair was still position:absolute (so the circles
+     overlapped). Drop it back into flow. */
+  .founder-pair {
+    position: static; transform: none;
+    flex-direction: row; justify-content: center; gap: 16px;
+    pointer-events: auto; order: 0;
+  }
+  .founder-portrait { width: 200px; height: 200px; padding: 0 10px 16px; }
+  .founder-portrait .fp-name { font-size: 24px; }
+  .founder-portrait .fp-role { margin-bottom: 6px; }
   .founder-bio {
-    max-width: 100%; text-align: left;
-    font-size: 15px;
+    max-width: 600px; text-align: left; font-size: 15px;
   }
+  .founder-bio.left { grid-column: auto; padding: 0; order: 1; }
+  .founder-bio.right { grid-column: auto; padding: 0; order: 2; text-align: left; }
   .founder-bio.left p::before,
   .founder-bio.right p::before { display: none; }
   .founder-bio.right p { text-align: left; }
-  /* Mobile reading order: Suraj circle → Suraj bio → Shubham circle → Shubham bio */
-  .engine-row .founder-portrait:nth-of-type(1) { order: 1; }
-  .engine-row .founder-bio.left { order: 2; }
-  .engine-row .founder-portrait:nth-of-type(2) { order: 3; }
-  .engine-row .founder-bio.right { order: 4; }
 
   .engine .heading h2 { font-size: clamp(48px, 12vw, 80px); }
   .engine .footnote p { font-size: 14px; }
@@ -1958,9 +1967,9 @@ video.frame-video {
   /* Manifesto */
   .manifesto h2 { font-size: clamp(32px, 11vw, 60px); }
 
-  /* Engine — slightly smaller portrait on phone */
-  .founder-portrait { width: 190px; height: 190px; }
-  .founder-portrait .fp-name { font-size: 22px; }
+  /* Engine — portraits sized so both circles sit side by side on a phone. */
+  .founder-portrait { width: clamp(118px, 40vw, 150px); height: clamp(118px, 40vw, 150px); }
+  .founder-portrait .fp-name { font-size: clamp(15px, 4.6vw, 20px); }
 
   /* Footer — single column */
   .footer-grid { grid-template-columns: 1fr; }
@@ -2166,14 +2175,12 @@ video.frame-video {
 }
 .hero-intro-hold .hi-stack { transform: scale(1); }
 .hero-intro-out  .hi-stack { transform: scale(1.02); }
-.hi-eyebrow {
+.hi-logo {
   display: block;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 28px;
+  height: clamp(48px, 7vw, 76px);
+  width: auto;
+  object-fit: contain;
+  margin: 0 auto 28px;
 }
 .hi-text {
   font-family: 'Anton', sans-serif;
@@ -2193,4 +2200,27 @@ video.frame-video {
 @media (prefers-reduced-motion: reduce) {
   /* Skip the intro for users who opt out of motion. */
   .hero-intro { display: none; }
+}
+
+/* ───────────── Mobile hero polish ─────────────
+   The desktop meta is a single space-between row (REC/spec on the left, index/
+   client on the right). On a phone that crammed both halves together and each
+   wrapped into an ugly 3-line stack. Stack them into two clean, single-line
+   rows instead, and give the title block a touch more breathing room. */
+@media (max-width: 760px) {
+  .hero-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 14px;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+  }
+  .hero-meta .left,
+  .hero-meta .right {
+    gap: 14px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  .hero-title-wrap { left: 20px; right: 20px; bottom: 7vh; }
 }
