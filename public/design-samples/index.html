@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>S'QB — Design Direction Samples</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E0E0E;--fg:#F4ECDB;--dim:#B5AE9F;--rule:#2A2722;--accent:#F5C518;
+  --display:'Anton',sans-serif;--body:'Hanken Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6;min-height:100dvh;display:flex;flex-direction:column;padding:8vh 6vw}
+.kick{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--display);font-size:clamp(40px,8vw,92px);line-height:.9;text-transform:uppercase;letter-spacing:-.005em}
+p.lead{color:var(--dim);max-width:60ch;margin-top:18px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:48px}
+a.card{display:block;text-decoration:none;color:var(--fg);border:1px solid var(--rule);border-radius:14px;padding:26px;transition:border-color .25s var(--ease),transform .25s var(--ease),background .25s var(--ease)}
+a.card:hover{border-color:var(--accent);transform:translateY(-4px);background:#161412}
+a.card:active{transform:scale(.99)}
+.n{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent)}
+.t{font-family:var(--display);font-size:30px;text-transform:uppercase;margin:14px 0 8px;letter-spacing:.01em}
+.d{color:var(--dim);font-size:14px}
+.f{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);margin-top:18px;text-transform:uppercase}
+footer{margin-top:auto;padding-top:48px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+</style>
+</head>
+<body>
+  <div class="kick">S'QB Pictures · Design directions</div>
+  <h1>Pick a direction</h1>
+  <p class="lead">Three takes on the same content. All share the fixes: no numbered eyebrows, tactile button presses, smooth ease-out motion, reduced-motion support. They differ on typography and how much the mono "spec" voice is used. Hover the cards to feel the motion.</p>
+  <div class="grid">
+    <a class="card" href="./sample-1-refined.html">
+      <span class="n">01</span>
+      <div class="t">Refined Cinema</div>
+      <div class="d">Your Anton headlines, but Inter swapped for the warmer Hanken Grotesk. Mono dialed back. Lowest risk — an evolution of the current site.</div>
+      <div class="f">Anton + Hanken Grotesk →</div>
+    </a>
+    <a class="card" href="./sample-2-poster.html">
+      <span class="n">02</span>
+      <div class="t">Bold Poster</div>
+      <div class="d">Expressive display, asymmetric hero (giant type + tall film panel), pill chips. Most personality, furthest from the current look.</div>
+      <div class="f">Bricolage Grotesque + Archivo →</div>
+    </a>
+    <a class="card" href="./sample-3-filmlab.html">
+      <span class="n">03</span>
+      <div class="t">Film-Lab Terminal</div>
+      <div class="d">Owns the mono as a deliberate DI-suite system: status bar, HUD overlays, hairline grid. Most distinct, reads technical over warm.</div>
+      <div class="f">Archivo + JetBrains Mono →</div>
+    </a>
+  </div>
+  <footer>S'QB Pictures · samples only — not the live site</footer>
+</body>
+</html>

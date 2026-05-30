@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en" data-sample="3">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>S'QB — Sample 3 · Film-Lab Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0A; --bg2:#121212; --fg:#E8E6E1; --dim:#8A877F; --rule:#222;
+  --accent:#F5C518;
+  --display:'Archivo',sans-serif; --mono:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:14px;line-height:1.6;overflow-x:hidden}
+.sample-tag{position:fixed;top:0;left:0;z-index:99;font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;background:var(--accent);color:#0A0A0A;padding:5px 10px}
+
+.bar{display:flex;align-items:center;justify-content:space-between;padding:16px 36px;border-bottom:1px solid var(--rule)}
+.logo{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em;display:flex;align-items:center;gap:12px}
+.logo .v{font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.24em;color:var(--dim);border:1px solid var(--rule);padding:3px 6px;border-radius:3px}
+.nav{display:flex;gap:26px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.nav a{color:var(--dim);text-decoration:none;cursor:pointer;transition:color .2s var(--ease)}
+.nav a:hover{color:var(--fg)}
+.nav a.active{color:var(--fg)}
+.nav a.active::before{content:"› ";color:var(--accent)}
+.right{display:flex;align-items:center;gap:14px}
+.cta{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:#0A0A0A;border:0;padding:11px 16px;cursor:pointer;transition:transform .15s var(--ease),filter .2s var(--ease)}
+.cta:hover{filter:brightness(1.08)}
+.cta:active{transform:scale(.97)}
+.menu{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:none;border:0;color:var(--fg);cursor:pointer;opacity:.7;transition:opacity .2s var(--ease)}
+.menu:hover{opacity:1}
+
+/* spec line above hero — a real status row, not a decorative eyebrow */
+.statusbar{display:flex;gap:0;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.statusbar div{padding:10px 20px;border-right:1px solid var(--rule)}
+.statusbar div b{color:var(--accent);font-weight:500}
+.statusbar .grow{flex:1;border-right:0;text-align:right}
+
+.hero{padding:40px 36px 70px}
+.title{font-family:var(--display);font-weight:800;font-size:clamp(46px,9vw,128px);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;max-width:18ch}
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-height:58vh;margin-top:30px;border:1px solid var(--rule);overflow:hidden;
+  background:linear-gradient(160deg,#16242a,#0d1316 45%,#1c130a 85%)}
+.stage::after{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/></svg>");opacity:.08;mix-blend-mode:overlay}
+.stage .grade{position:absolute;inset:0;background:radial-gradient(ellipse 80% 75% at 50% 48%,transparent 38%,rgba(0,0,0,.6) 100%)}
+.stage b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:clamp(34px,7vw,86px);color:#e4c977;letter-spacing:-.01em;text-transform:uppercase;text-shadow:0 6px 26px rgba(0,0,0,.6)}
+.stage .hud{position:absolute;left:14px;right:14px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:#fff;text-transform:uppercase;opacity:.85}
+.stage .hud.top{top:14px}
+.stage .hud.bot{bottom:14px;opacity:.6}
+.stage .rec::before{content:"● ";color:#ff4d3d;animation:blink 1.4s infinite}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:.25}}
+.metarow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:1px solid var(--rule);border-top:0;margin-top:0}
+.metarow div{padding:14px 18px;border-right:1px solid var(--rule)}
+.metarow div:last-child{border-right:0}
+.metarow .k{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.metarow .val{font-family:var(--display);font-weight:700;font-size:18px;color:var(--fg)}
+
+.say{padding:80px 36px;border-top:1px solid var(--rule)}
+.say p{font-family:var(--display);font-weight:700;font-size:clamp(26px,4.4vw,58px);line-height:1.12;letter-spacing:-.02em;text-transform:uppercase;max-width:20ch}
+.say em{font-style:normal;color:var(--accent)}
+
+.people{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+.who{display:flex;align-items:center;gap:18px;padding:34px 36px;border-right:1px solid var(--rule)}
+.who:last-child{border-right:0}
+.ph{width:80px;height:80px;background:linear-gradient(150deg,#262220,#131110);border:1px solid var(--rule)}
+.role{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.name{font-family:var(--display);font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:-.01em}
+
+footer{border-top:1px solid var(--rule);padding:24px 36px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+.hero .title{animation:rise .8s var(--ease) both;animation-delay:.08s}
+.hero .stage{animation:rise .85s var(--ease) both;animation-delay:.18s}
+.hero .metarow{animation:rise .85s var(--ease) both;animation-delay:.26s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:760px){.bar{padding:12px 16px}.nav{display:none}.statusbar{overflow-x:auto}.hero,.say{padding-left:16px;padding-right:16px}.people{grid-template-columns:1fr}.who{border-right:0;border-bottom:1px solid var(--rule)}}
+</style>
+</head>
+<body>
+<div class="sample-tag">Sample 3 — Film-Lab Terminal · Archivo + JetBrains Mono (mono as system)</div>
+<header class="bar">
+  <div class="logo">S'QB <span class="v">PICTURES</span></div>
+  <nav class="nav"><a class="active">Home</a><a>Video</a><a>AI Lab</a><a>Social</a></nav>
+  <div class="right"><button class="cta">Reach out →</button><button class="menu">Menu</button></div>
+</header>
+
+<div class="statusbar">
+  <div>STATUS <b>● LIVE</b></div>
+  <div>SLATE 01 / 06</div>
+  <div>FORMAT 16:9 · 5.1</div>
+  <div class="grow">MUTHOOT FINANCE × REDFM</div>
+</div>
+
+<section class="hero">
+  <h1 class="title">Muthoot — Sunheri Soch</h1>
+  <div class="stage">
+    <div class="grade"></div>
+    <div class="hud top"><span class="rec">REC</span><span>TC 00:42:18</span></div>
+    <b>Sunheri Soch</b>
+    <div class="hud bot"><span>AI FILM SERIES</span><span>ISO 800 · 24FPS</span></div>
+  </div>
+  <div class="metarow">
+    <div><div class="k">Year</div><div class="val">2025–26</div></div>
+    <div><div class="k">Episodes</div><div class="val">22</div></div>
+    <div><div class="k">Runtime</div><div class="val">5–7 min</div></div>
+    <div><div class="k">Client</div><div class="val">Muthoot × RedFM</div></div>
+  </div>
+</section>
+
+<section class="say">
+  <p>A film studio that happens to use AI. <em>Filmmakers first, operators second.</em></p>
+</section>
+
+<section class="people">
+  <div class="who"><div class="ph"></div><div><div class="role">Founder · Director</div><div class="name">Suraj</div></div></div>
+  <div class="who"><div class="ph"></div><div><div class="role">Founder · Producer</div><div class="name">Shubham Shah</div></div></div>
+</section>
+
+<footer><span>S'QB Pictures</span><span>Pan-India · Worldwide</span></footer>
+</body>
+</html>
