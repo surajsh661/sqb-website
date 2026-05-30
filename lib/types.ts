@@ -75,6 +75,11 @@ export interface ClientLogo {
       flat brightness(0)+invert silhouette — for logos whose internal detail
       would be lost in the silhouette flatten. */
   keepDetails?: boolean;
+  /** Special light-mode handling for logos the default silhouette destroys:
+      'original' = show the real artwork unfiltered (full-colour self-contained
+      icons); 'invert' = invert luminance in light mode so light artwork with
+      internal detail reads as dark-on-cream instead of a solid black blob. */
+  tone?: 'original' | 'invert';
 }
 
 export interface Creator {

@@ -12,7 +12,12 @@ export default function ClientLogos() {
       <div className="logo-track">
         {[...list, ...list].map((c, i) => (
           <div
-            className={'client-logo' + (c.keepDetails ? ' keep-detail' : '')}
+            className={
+              'client-logo' +
+              (c.keepDetails ? ' keep-detail' : '') +
+              (c.tone === 'original' ? ' logo-orig' : '') +
+              (c.tone === 'invert' ? ' logo-inv' : '')
+            }
             key={i}
             title={c.name}
           >

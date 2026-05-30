@@ -1272,6 +1272,14 @@ body.no-grain::before { display: none; }
   filter: grayscale(1) brightness(0) invert(calc(1 - var(--invert)));
   transition: filter .3s ease, opacity .3s ease;
 }
+/* tone:'original' — full-colour, self-contained icons (e.g. ViralO) whose whole
+   square would otherwise flatten to a black box. Show the real artwork. */
+.client-logo.logo-orig img { filter: none; }
+/* tone:'invert' — light artwork with internal detail (e.g. S&F). In light mode
+   the default brightness(0) crushes it to an unreadable black blob; invert the
+   luminance instead so it reads as dark-on-cream with detail intact. Dark mode
+   keeps the default white silhouette. */
+[data-theme="light"] .client-logo.logo-inv img { filter: grayscale(1) invert(1); }
 /* keepDetails: skip the brightness(0) flatten so internal detail survives.
    Just desaturate + a small brightness lift so the original art reads on
    the dark background without being crushed to a silhouette. */
@@ -2186,33 +2194,36 @@ video.frame-video {
   position: fixed; inset: 0;
   z-index: 250;                    /* above topbar (90) and case studies */
   display: flex; align-items: center; justify-content: center;
-  background: rgba(10, 8, 7, 0.96);
+  /* Always dark, independent of theme — the cream-on-dark title must read in
+     both light and dark mode. */
+  background: #0b0908;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.9s cubic-bezier(.22,1,.36,1);
+  overflow: hidden;                /* the title flies past the edges */
 }
 .hero-intro-in   { opacity: 0; }
 .hero-intro-hold { opacity: 1; }
-/* Out phase: the overlay fades with an ease-IN so it "rushes" away as the
-   content zooms through the camera (cross-zoom), revealing the hero. */
+/* Out: the dark cover clears a beat AFTER the title starts flying, so the hero
+   is revealed *through* the zoom rather than by a flat fade. */
 .hero-intro-out  {
   opacity: 0;
-  transition: opacity 0.85s cubic-bezier(.55, 0, .85, .25);
+  transition: opacity 0.7s cubic-bezier(.6, 0, .9, .35) 0.12s;
 }
 .hi-stack {
   text-align: center;
-  padding: 0 32px;
-  transform: scale(0.9);
-  transition: transform 1.15s cubic-bezier(.22,1,.36,1);
+  padding: 0 24px;
+  transform: scale(0.88);
+  transition: transform 1.2s cubic-bezier(.22,1,.36,1);
   will-change: transform, opacity;
 }
-/* Cross-zoom: enter zoomed-in slightly → settle → on exit push past the
-   viewer (scale up + fade) instead of a flat fade. */
-.hero-intro-in   .hi-stack { transform: scale(0.9); }
+/* Cross-zoom: enter slightly zoomed-in → settle on hold → on exit ACCELERATE
+   straight toward the viewer and fly past the screen (scale 9). */
+.hero-intro-in   .hi-stack { transform: scale(0.88); }
 .hero-intro-hold .hi-stack { transform: scale(1); }
 .hero-intro-out  .hi-stack {
-  transform: scale(1.65);
-  transition: transform 0.85s cubic-bezier(.55, 0, .85, .25);
+  transform: scale(9);
+  transition: transform 0.9s cubic-bezier(.5, 0, .9, .3);
 }
 .hi-logo {
   display: block;
@@ -2227,7 +2238,8 @@ video.frame-video {
   line-height: 0.92;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  color: var(--fg);
+  /* Fixed cream (not var(--fg)) — the overlay is always dark in both themes. */
+  color: #f4efe3;
   margin: 0;
 }
 .hi-text em {
