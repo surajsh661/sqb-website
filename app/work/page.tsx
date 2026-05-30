@@ -23,12 +23,38 @@ import type { Film, Genre } from '@/lib/types';
 // Capability-card icons live in code (one per card, in the same order as
 // COPY.work.capabilities). Edit the words in lib/copy.ts.
 const CAP_ICONS: React.ReactNode[] = [
-  <svg key="a" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="18" height="14" rx="1.5" /><path d="M3 10h18" /><path d="M7 6l-2-3" /><path d="M11 6l-2-3" /><path d="M15 6l-2-3" /><path d="M19 6l-2-3" /></svg>,
-  <svg key="b" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" /><path d="M4 7.5L12 12l8-4.5" /><path d="M12 12v9" /></svg>,
+  <svg key="a" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="9" width="18" height="11" rx="1.5" /><rect x="3" y="5.2" width="18" height="3.8" rx="1" /><path d="M7 5.4 L5.2 8.8 M11 5.4 L9.2 8.8 M15 5.4 L13.2 8.8 M19 5.4 L17.2 8.8" /></svg>,
+  <svg key="b" viewBox="0 0 24 24">{(() => {
+    // 8-bit T-Rex (Chrome dino), facing right. '1' = filled pixel, eye = the gap.
+    const map = [
+      '0000000001111100',
+      '0000000001111100',
+      '0000000001011100',
+      '0000000001111110',
+      '0000011111111100',
+      '0000111111111000',
+      '0110011111110000',
+      '0111111111100000',
+      '0011111111100000',
+      '0001111111110000',
+      '0001111111100000',
+      '0001100110000000',
+      '0001100110000000',
+      '0011100111000000',
+    ];
+    const P = 1.32, ox = 1.4, oy = 2.2;
+    const rects: React.ReactNode[] = [];
+    map.forEach((row, ri) => {
+      for (let ci = 0; ci < row.length; ci++) {
+        if (row[ci] === '1') rects.push(<rect key={ri + '_' + ci} x={ox + ci * P} y={oy + ri * P} width={P + 0.25} height={P + 0.25} fill="currentColor" />);
+      }
+    });
+    return rects;
+  })()}</svg>,
   <svg key="c" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2z" /><path d="M19 17l.7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7L19 17z" /></svg>,
   <svg key="d" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5" /><path d="M11 18h2" /><path d="M10 6h4" /></svg>,
   <svg key="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H5s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v4s3.03-.55 4-2c1.08-1.62 0-5 0-5" /></svg>,
-  <svg key="f" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="11" r="6" /><circle cx="9" cy="11" r="2" /><rect x="14.5" y="8" width="6.5" height="6" rx="1" /></svg>,
+  <svg key="f" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5.2" y="9.6" width="8" height="7" rx="1.4" /><path d="M5.2 11.5 L2 9.7 V16.4 L5.2 14.6 Z" /><circle cx="9.3" cy="13.1" r="1.5" /><path d="M8 9.6 V8.1 h2.6 V9.6" /><rect x="15.6" y="5.7" width="4" height="7" rx="2" /><path d="M16.2 7.9 h2.8 M16.2 9.9 h2.8" /><path d="M14.8 11 a2.8 2.8 0 0 0 5.6 0" /><path d="M17.6 13.8 V17.4 M15.9 17.4 H19.3" /></svg>,
 ];
 
 function WorkInner() {

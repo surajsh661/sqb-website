@@ -25,7 +25,7 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
     }
   };
 
-  const eyebrowNum = compact ? '★' : '11';
+  const eyebrowNum = compact ? '★' : '07';
 
   return (
     <section className="contact" id="contact" data-screen-label="11 Contact">

@@ -95,17 +95,21 @@
   color: var(--fg-dim);
   margin-bottom: 36px;
 }
+/* Start Project — same treatment as Reach Out (Inter italic heavy, pill, shine,
+   bold arrow) but kept YELLOW (var(--accent)) instead of orange. */
 .wv-cta {
   display: inline-flex; align-items: center; gap: 10px;
-  padding: 14px 22px; border-radius: 4px;
+  padding: 13px 28px; border-radius: 999px;
   background: var(--accent); color: #1a1410;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px; letter-spacing: 0.22em; font-weight: 700;
+  font-family: 'Inter', sans-serif; font-style: italic; font-weight: 900;
+  font-size: 13px; letter-spacing: 0.04em;
   text-transform: uppercase; text-decoration: none;
+  -webkit-text-stroke: 0.4px #1a1410;
+  position: relative; overflow: hidden;
   transition: transform .2s ease, background .2s ease;
 }
 .wv-cta:hover { transform: translateY(-2px); background: var(--accent-2); }
-.wv-cta span { transition: transform .2s ease; }
+.wv-cta span { transition: transform .2s ease; -webkit-text-stroke: 0.9px currentColor; font-weight: 900; }
 .wv-cta:hover span { transform: translateX(4px); }
 
 /* Capabilities */
@@ -602,9 +606,10 @@
 }
 .sqb-loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
 .sqb-loader-icon { width: 160px; height: 160px; position: relative; }
-.sqb-loader-icon svg { width: 100%; height: 100%; }
+.sqb-loader-icon svg { width: 100%; height: 100%; overflow: visible; }
 .sqb-loader-icon .lr-svg {
   width: 100%; height: 100%;
+  overflow: visible;   /* the camera + stars are spread apart past the viewBox; don't crop them */
 }
 /* Show BOTH at once, SIDE BY SIDE — the camera (with its blinking REC dot) on the
    left and a smaller twinkling AI-star cluster on the right — so the loader reads
@@ -623,12 +628,12 @@
 }
 @keyframes lrSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 @keyframes lrFilmPulse {
-  0%, 100% { opacity: 1;    transform: translateX(-46px) scale(0.8); }
-  50%      { opacity: 0.82; transform: translateX(-46px) scale(0.8); }
+  0%, 100% { opacity: 1;    transform: translateX(-38px) scale(0.74); }
+  50%      { opacity: 0.82; transform: translateX(-38px) scale(0.74); }
 }
 @keyframes lrStarsPulse {
-  0%, 100% { opacity: 0.6; transform: translate(72px, 0) scale(0.34); }
-  50%      { opacity: 1;   transform: translate(72px, 0) scale(0.38); }
+  0%, 100% { opacity: 0.6; transform: translate(52px, 4px) scale(0.32); }
+  50%      { opacity: 1;   transform: translate(52px, 4px) scale(0.36); }
 }
 
 /* === Flying 2D social logos on Social page === */
@@ -759,11 +764,31 @@
   background: #ff7a1a !important;
   border-color: #ff7a1a !important;
   color: #1a1410 !important;
-  -webkit-text-stroke: 0.7px #1a1410;   /* thicken the glyphs — extra bold */
+  -webkit-text-stroke: 0.4px #1a1410;   /* ~10% less heavy than before (was 0.7) */
+  position: relative;
+  overflow: hidden;                     /* clip the shine sweep to the pill */
 }
 .reach-out-btn:hover, .sqb-nav .reach-out-btn:hover {
   background: #ff9d3d !important;
   border-color: #ff9d3d !important;
+}
+/* Bolder arrow — the thin unicode glyph gets a stroke so it reads as heavy. */
+.reach-out-btn .ro-arrow, .sqb-nav .reach-out-btn .ro-arrow {
+  -webkit-text-stroke: 0.9px currentColor; font-weight: 900;
+}
+/* A bold white streak sweeps across once, then waits — repeats every 10s. */
+.reach-out-btn::after, .sqb-nav .reach-out-btn::after,
+.wv-cta::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 45%;
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%);
+  transform: translateX(-220%) skewX(-18deg);
+  animation: roShine 10s ease-in-out infinite;
+  pointer-events: none; z-index: 4;
+}
+@keyframes roShine {
+  0%   { transform: translateX(-220%) skewX(-18deg); }
+  9%   { transform: translateX(330%)  skewX(-18deg); }
+  100% { transform: translateX(330%)  skewX(-18deg); }
 }
 .social-hero {
   padding: 180px 32px 60px;

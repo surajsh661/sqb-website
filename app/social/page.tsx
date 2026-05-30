@@ -81,9 +81,9 @@ export default function SocialPage() {
               // Instagram (gradient)
               { c: '#E4405F', svg: <svg viewBox="0 0 24 24"><defs><linearGradient id="igG" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#FEDA75" /><stop offset="0.45" stopColor="#FA7E1E" /><stop offset="0.7" stopColor="#D62976" /><stop offset="1" stopColor="#962FBF" /></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5.4" fill="none" stroke="url(#igG)" strokeWidth="2.1" /><circle cx="12" cy="12" r="4.1" fill="none" stroke="url(#igG)" strokeWidth="2.1" /><circle cx="17.2" cy="6.8" r="1.2" fill="url(#igG)" /></svg> },
               // Premiere Pro (tool)
-              { c: '#9a55ff', svg: <svg viewBox="0 0 24 24"><text x="12" y="16.6" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="11.5" fill="#E48BFF" letterSpacing="-0.4">Pr</text></svg> },
+              { c: '#9a55ff', svg: <svg viewBox="0 0 24 24"><text x="12" y="16.8" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="13.2" fill="#E48BFF" letterSpacing="-0.4">Pr</text></svg> },
               // After Effects (tool)
-              { c: '#7d5cff', svg: <svg viewBox="0 0 24 24"><text x="12" y="16.6" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="11.5" fill="#AC9BFF" letterSpacing="-0.4">Ae</text></svg> },
+              { c: '#7d5cff', svg: <svg viewBox="0 0 24 24"><text x="12" y="16.8" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="13.2" fill="#AC9BFF" letterSpacing="-0.4">Ae</text></svg> },
               // LinkedIn (platform)
               { c: '#0A66C2', svg: <svg viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="4.4" fill="#0A66C2" /><path d="M7 9.6h2V17H7zM8 8.3a1.15 1.15 0 1 0 0-2.3 1.15 1.15 0 0 0 0 2.3zM10.6 9.6h1.9v1.02h.03c.27-.5.93-1.03 1.92-1.03 2.05 0 2.43 1.35 2.43 3.1V17h-2v-2.97c0-.71-.01-1.62-.99-1.62-.99 0-1.14.77-1.14 1.57V17h-2z" fill="#fff" /></svg> },
               // Music / sound design

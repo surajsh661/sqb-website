@@ -58,7 +58,7 @@ export const COPY = {
   // The big numbers themselves (100, 10000, 2–10×) are set in code; you can
   // edit the LABELS under each number here.
   stats: {
-    eyebrowNumber: `04`,
+    eyebrowNumber: `03`,
     eyebrowLabel: `BY THE NUMBERS · GLOBAL REACH`,
     clientsLabel: `CLIENTS // INDIAN + GLOBAL`,
     filmsLabel: `FILMS DELIVERED`,
@@ -67,7 +67,7 @@ export const COPY = {
 
   // ── Section 07 · "The Engine" (founders) ──────────────────────────────────
   engine: {
-    eyebrowNumber: `07`,
+    eyebrowNumber: `04`,
     eyebrowLabel: `THE PEOPLE`,
     heading: `THE *ENGINE*`,
     subline: `FOUNDERS · FILMMAKERS FIRST · AI OPERATORS SECOND`,
@@ -150,7 +150,7 @@ export const COPY = {
 
   // ── Home page · "Behind the scenes" strip ─────────────────────────────────
   bts: {
-    eyebrowNumber: `09`,
+    eyebrowNumber: `06`,
     eyebrowLabel: `BEHIND THE SCENES`,
     heading: `FROM THE *FLOOR*.`,
     blurb: `Rigs, blocks, grade rooms, AI lab nights. The work behind the work.`,
@@ -158,7 +158,7 @@ export const COPY = {
 
   // ── Home page · Testimonials ("The receipts") ─────────────────────────────
   testimonials: {
-    eyebrowNumber: `08`,
+    eyebrowNumber: `05`,
     eyebrowLabel: `WORDS FROM PAST CLIENTS`,
     heading: `THE *RECEIPTS*.`,
   },

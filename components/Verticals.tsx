@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { SQB_VERTICALS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
@@ -54,13 +54,23 @@ export default function Verticals() {
   const rotate = (dir: number) => setRotation((r) => r + dir);
 
   // Auto-advance one card every 2.5s so all the verticals cycle through on their
-  // own. Paused while the viewer is hovering the row or has a clip open.
+  // own. The interval is set up ONCE on mount and never torn down — it reads the
+  // pause/active state through refs and just skips a tick when paused. (The old
+  // version recreated the interval whenever paused/active changed, so a missed
+  // mouseleave or the initial render could leave it stuck and it would only move
+  // once you clicked an arrow.) Paused while hovering the row or with a clip open.
   const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  const activeRef = useRef(false);
+  useEffect(() => { pausedRef.current = paused; }, [paused]);
+  useEffect(() => { activeRef.current = !!active; }, [active]);
   useEffect(() => {
-    if (paused || active) return;
-    const id = setInterval(() => setRotation((r) => r + 1), 2500);
+    const id = setInterval(() => {
+      if (pausedRef.current || activeRef.current) return;
+      setRotation((r) => r + 1);
+    }, 2500);
     return () => clearInterval(id);
-  }, [paused, active]);
+  }, []);
 
   const buildModalSrc = (v: Vertical) => {
     if (v.type === 'vm')
