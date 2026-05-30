@@ -59,7 +59,6 @@ const ORG_JSONLD = {
   address: { '@type': 'PostalAddress', addressCountry: 'IN', addressRegion: 'Delhi / Mumbai' },
   sameAs: [
     'https://www.instagram.com/sqbpictures/',
-    'https://www.youtube.com/@sqbpictures',
     'https://www.linkedin.com/company/sqbpictures/',
   ],
 };
@@ -75,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Inter:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:wght@300;400;500&display=swap"
         />
 
         {/* Connect early to the video / image hosts so embeds start sooner. */}
