@@ -2034,7 +2034,7 @@ video.frame-video {
   /* Topbar — drop the mid-nav, shrink chrome */
   .topbar { padding: 12px 18px; }
   .logo-mark .stack .tagline { font-size: 9px; }
-  .logo-mark img { height: 46px; }
+  .logo-mark img { height: 64px; }
   .nav-center { display: none; }
   .reach-out-btn { padding: 8px 14px; font-size: 11px; gap: 8px; }
   /* Mobile chrome: a visible hamburger that opens the menu. The home toggle is
@@ -2187,7 +2187,7 @@ video.frame-video {
 
   .topbar { padding: 10px 14px; }
   .logo-mark { gap: 6px; }
-  .logo-mark img { height: 44px; }
+  .logo-mark img { height: 62px; }
   .logo-mark .stack { display: none; } /* logo only, no tagline strip on tiny screens */
   .reach-out-btn { display: none; } /* keep menu hamburger only */
 
