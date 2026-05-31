@@ -58,32 +58,41 @@ export default function BTSPreview() {
     if (!active) return;
     const track = marqueeRef.current;
     if (!track) return;
-    const isTouch =
-      'ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0;
-    if (!isTouch) return; // desktop keeps the CSS marquee
+    // Only when the strip is actually a native horizontal scroller (the mobile
+    // ≤900px layout). On desktop the CSS marquee handles motion, so skip.
+    const isScroller = getComputedStyle(track).overflowX !== 'visible';
+    if (!isScroller) return;
 
     let raf = 0;
     let pausedUntil = 0;
+    let userScrolling = false;
     const SPEED = 0.4; // px per frame ≈ 24px/s drift
     const tick = () => {
       const half = track.scrollWidth / 2;
-      if (performance.now() > pausedUntil && half > 0) {
+      if (!userScrolling && performance.now() > pausedUntil && half > 0) {
         track.scrollLeft += SPEED;
         if (track.scrollLeft >= half) track.scrollLeft -= half; // seamless loop
       }
       raf = requestAnimationFrame(tick);
     };
-    // Any touch / manual scroll pauses the drift for 2.5s so the user stays in control.
+    // Touch (or any manual scroll) pauses the auto-drift for 2.5s so the user
+    // stays in control. Touch listeners simply never fire on non-touch devices.
     const hold = () => { pausedUntil = performance.now() + 2500; };
-    track.addEventListener('touchstart', hold, { passive: true });
+    const onTouchStart = () => { userScrolling = true; };
+    const onTouchEnd = () => { userScrolling = false; hold(); };
+    track.addEventListener('touchstart', onTouchStart, { passive: true });
+    track.addEventListener('touchend', onTouchEnd, { passive: true });
+    track.addEventListener('touchcancel', onTouchEnd, { passive: true });
     track.addEventListener('touchmove', hold, { passive: true });
-    track.addEventListener('scroll', hold, { passive: true });
+    track.addEventListener('wheel', hold, { passive: true });
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
-      track.removeEventListener('touchstart', hold);
+      track.removeEventListener('touchstart', onTouchStart);
+      track.removeEventListener('touchend', onTouchEnd);
+      track.removeEventListener('touchcancel', onTouchEnd);
       track.removeEventListener('touchmove', hold);
-      track.removeEventListener('scroll', hold);
+      track.removeEventListener('wheel', hold);
     };
   }, [active]);
 
