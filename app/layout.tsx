@@ -4,7 +4,7 @@ import './styles.css';
 import './page-styles.css';
 
 const SITE = 'https://sqbpictures.com';
-const TITLE = "S'QB Pictures — AI & Video Production House in Delhi NCR & Mumbai";
+const TITLE = "S'QB Pictures — Tell Your Story Today! | AI + Video Production";
 const DESCRIPTION =
   "S'QB Pictures is an AI-first video production house in Delhi NCR and Mumbai — ad films, TVCs, AI films, music videos and branded series for India's biggest brands. Filmmakers first, AI operators second.";
 const SAME_AS = [
@@ -34,7 +34,9 @@ export const metadata: Metadata = {
   creator: "S'QB Pictures",
   publisher: "S'QB Pictures",
   alternates: { canonical: '/' },
-  icons: { icon: '/logo-source.png' },
+  // Favicon is served from app/icon.png + app/favicon.ico + app/apple-icon.png
+  // (a tight square S'QB mark — the old full logo turned to mush at 16px, so
+  // Google showed a generic globe). Next.js App Router auto-wires those files.
   robots: {
     index: true,
     follow: true,
