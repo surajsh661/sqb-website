@@ -285,6 +285,8 @@ function WorkInner() {
                 tabIndex={0}
               >
                 <div className="vt-art">
+                  {/* blurred backdrop fills the letterbox behind the contained thumb */}
+                  <HeroThumb film={f} className="vt-blur" />
                   <HeroThumb film={f} />
                   <div className="vt-dot top" />
                   <div className="vt-dot bot" />

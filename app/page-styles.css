@@ -1265,20 +1265,35 @@
 .vt-art::before {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, transparent 70%, rgba(0,0,0,0.35) 100%);
-  z-index: 1; pointer-events: none;
+  z-index: 2; pointer-events: none;
 }
 .vt-art img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center center;
+  /* Most show thumbnails come back as 16:9 landscape (Vimeo 640x360). In a 9:16
+     portrait card, `cover` zoomed them ~3x and cropped to the chest. `contain`
+     shows the whole frame; the blurred copy behind (.vt-art::after) fills the
+     letterbox so it still reads as a full card, not black bars. */
+  object-fit: contain; object-position: center center;
   display: block;
-  background: #0a0807;
+  z-index: 1;
+}
+/* Blurred fill behind the contained thumbnail (uses the same image via the
+   parent's CSS var) so the 16:9 frame sits on a soft matching backdrop. */
+.vt-art .vt-blur {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: blur(18px) brightness(0.5) saturate(1.1);
+  transform: scale(1.15);
+  z-index: 0;
 }
 .vt-dot {
   position: absolute; left: 50%;
   width: 38px; height: 38px;
   border-radius: 50%;
   transform: translateX(-50%);
+  z-index: 3;
 }
 .vt-dot.top {
   top: 14px; right: auto;
