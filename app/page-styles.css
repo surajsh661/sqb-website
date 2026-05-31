@@ -1800,7 +1800,7 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 @media (max-width: 900px) {
   /* Shared sub-page nav */
   .sqb-nav { padding: 12px 18px; }
-  .sqb-nav .lm img { height: 32px; }
+  .sqb-nav .lm img { width: 46px; height: 46px; }
   .sqb-nav .lm .stack .tg { font-size: 9px; }
   .sqb-nav .nav { display: none; }
   .sqb-nav .right { gap: 8px; }

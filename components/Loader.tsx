@@ -4,15 +4,13 @@ import { useEffect, useState } from 'react';
 export default function Loader() {
   const [done, setDone] = useState(false);
   useEffect(() => {
-    const minShownUntil = performance.now() + 350;
-    const hide = () => {
-      const wait = Math.max(0, minShownUntil - performance.now());
-      setTimeout(() => setDone(true), wait);
-    };
-    const t = setTimeout(hide, 700);
-    window.addEventListener('load', hide);
-    const failsafe = setTimeout(hide, 3000);
-    return () => { clearTimeout(t); clearTimeout(failsafe); window.removeEventListener('load', hide); };
+    // Hide fast on a fixed timer — do NOT wait for window 'load'. 'load' only
+    // fires after every resource (including the video iframes) finishes, which
+    // kept the dark overlay up while the hero sat hidden and the videos couldn't
+    // even start painting. Revealing the hero quickly lets the iframes decode
+    // their first frame sooner, so the videos appear faster, not slower.
+    const t = setTimeout(() => setDone(true), 500);
+    return () => clearTimeout(t);
   }, []);
 
   return (
