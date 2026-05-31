@@ -703,7 +703,7 @@ body.no-grain::before { display: none; }
 .founder-portrait {
   position: relative;
   overflow: hidden;
-  width: 280px; height: 280px;
+  width: 210px; height: 210px;
   border: 2px solid var(--accent);
   border-radius: 50%;
   background: var(--ink-2);
@@ -2127,7 +2127,7 @@ video.frame-video {
   .founder-bio p,
   .founder-bio.left p,
   .founder-bio.right p { text-align: center; }
-  .founder-portrait { width: 190px; height: 190px; padding: 0; }
+  .founder-portrait { width: 160px; height: 160px; padding: 0; }
   .fp-caption { margin-top: 14px; }
   .fp-caption .fp-name { font-size: 24px; }
   .fp-caption .fp-role { font-size: 11px; margin-bottom: 5px; }
@@ -2199,7 +2199,7 @@ video.frame-video {
   .manifesto h2 { font-size: clamp(32px, 11vw, 60px); }
 
   /* Engine — portrait circle size on small phones (caption sits below it). */
-  .founder-portrait { width: clamp(150px, 52vw, 190px); height: clamp(150px, 52vw, 190px); }
+  .founder-portrait { width: clamp(130px, 44vw, 160px); height: clamp(130px, 44vw, 160px); }
   .fp-caption .fp-name { font-size: clamp(20px, 6vw, 24px); }
 
   /* Footer — single column */
