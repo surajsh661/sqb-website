@@ -105,6 +105,63 @@ export default function Verticals() {
     return () => clearInterval(id);
   }, []);
 
+  // Mobile: the row becomes a native horizontal scroller that auto-drifts AND
+  // can be swiped left/right (the desktop CSS-rotation fan can't be grabbed by a
+  // finger). Same approach as the BTS strip: float-accumulator drift that resumes
+  // from the user's position (no reset), and a per-card overlay that distinguishes
+  // a horizontal drag (scroll) from a tap (open the clip).
+  const vrowRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!mounted) return;
+    const row = vrowRef.current;
+    if (!row) return;
+    if (getComputedStyle(row).overflowX === 'visible') return; // desktop fan — skip
+    let raf = 0;
+    let pausedUntil = 0;
+    let pos = row.scrollLeft;
+    const SPEED = 0.5;
+    const tick = () => {
+      const half = row.scrollWidth / 2;
+      if (half > 0) {
+        if (!activeRef.current && performance.now() > pausedUntil) {
+          pos += SPEED; row.scrollLeft = pos;
+        } else { pos = row.scrollLeft; }
+        if (row.scrollLeft >= half) { row.scrollLeft -= half; pos = row.scrollLeft; }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    const hold = () => { pausedUntil = performance.now() + 2000; };
+    row.addEventListener('pointerdown', hold);
+    row.addEventListener('touchmove', hold, { passive: true });
+    row.addEventListener('scroll', hold, { passive: true });
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      row.removeEventListener('pointerdown', hold);
+      row.removeEventListener('touchmove', hold);
+      row.removeEventListener('scroll', hold);
+    };
+  }, [mounted]);
+
+  // Drag vs tap detection so swiping the row doesn't fire a card's open-modal click.
+  const vSwipe = useRef<{ x: number; y: number; left: number; drag: boolean } | null>(null);
+  const onCardPointerDown = (e: React.PointerEvent) => {
+    const row = vrowRef.current;
+    vSwipe.current = { x: e.clientX, y: e.clientY, left: row ? row.scrollLeft : 0, drag: false };
+  };
+  const onCardPointerMove = (e: React.PointerEvent) => {
+    const s = vSwipe.current; const row = vrowRef.current;
+    if (!s || !row) return;
+    const dx = e.clientX - s.x; const dy = e.clientY - s.y;
+    if (!s.drag && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) s.drag = true;
+    if (s.drag) { row.scrollLeft = s.left - dx; e.preventDefault(); }
+  };
+  const onCardActivate = (v: Vertical) => {
+    if (vSwipe.current?.drag) { vSwipe.current = null; return; } // was a swipe, not a tap
+    vSwipe.current = null;
+    setActive(v);
+  };
+
   const buildModalSrc = (v: Vertical) => {
     if (v.type === 'vm')
       return `https://player.vimeo.com/video/${v.videoId}?autoplay=1&loop=1&muted=0&controls=1&dnt=1&playsinline=1&title=0&byline=0&portrait=0`;
@@ -155,6 +212,7 @@ export default function Verticals() {
       </div>
       <div
         className="vrow"
+        ref={vrowRef}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
@@ -188,7 +246,9 @@ export default function Verticals() {
                 style={style}
                 data-off={firstPass && p.off ? '1' : undefined}
                 title={v.title}
-                onClick={() => setActive(v)}
+                onClick={() => onCardActivate(v)}
+                onPointerDown={onCardPointerDown}
+                onPointerMove={onCardPointerMove}
                 role="button"
                 tabIndex={0}
               >

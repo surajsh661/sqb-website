@@ -2080,18 +2080,21 @@ video.frame-video {
      the track left by -50% for a seamless loop. */
   .verticals .vrow {
     padding: 30px 0 50px;
-    overflow: hidden;
+    /* Native horizontal scroller so the row is swipeable; JS drives the drift. */
+    overflow-x: auto; overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     perspective: none;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   }
+  .verticals .vrow::-webkit-scrollbar { display: none; }
   .vrow-track {
     width: max-content;
     gap: 14px;
-    animation: vSlide 45s linear infinite;
-    will-change: transform;
+    animation: none !important;   /* JS drift instead of CSS marquee */
+    will-change: auto;
   }
-  .vrow:hover .vrow-track { animation-play-state: paused; }
   /* Show the duplicate pass so the marquee can loop. */
   .vrow-track > .vcard.vdup { display: block; }
   .verticals .vcard {
