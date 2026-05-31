@@ -5,6 +5,15 @@ import './page-styles.css';
 
 const SITE = 'https://sqbpictures.com';
 const TITLE = "S'QB Pictures — Tell Your Story Today! | AI + Video Production";
+
+// ── Google Search Console verification ───────────────────────────────────────
+// 1. Go to https://search.google.com/search-console → add property
+//    "https://sqbpictures.com" → choose the "HTML tag" method.
+// 2. Google shows a tag like:
+//    <meta name="google-site-verification" content="AbC123...xyz" />
+// 3. Paste ONLY the content value (the part in quotes) between the quotes below,
+//    then commit/deploy and click "Verify" in Search Console.
+const GOOGLE_SITE_VERIFICATION = ''; // e.g. 'AbC123_paste_your_code_here_xyz'
 const DESCRIPTION =
   "S'QB Pictures is an AI-first video production house in Delhi NCR and Mumbai — ad films, TVCs, AI films, music videos and branded series for India's biggest brands. Filmmakers first, AI operators second.";
 const SAME_AS = [
@@ -34,6 +43,11 @@ export const metadata: Metadata = {
   creator: "S'QB Pictures",
   publisher: "S'QB Pictures",
   alternates: { canonical: '/' },
+  // Only emits the <meta name="google-site-verification"> tag once you paste a
+  // code above — left empty it stays out of the HTML.
+  ...(GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: GOOGLE_SITE_VERIFICATION } }
+    : {}),
   // Favicon is served from app/icon.png + app/favicon.ico + app/apple-icon.png
   // (a tight square S'QB mark — the old full logo turned to mush at 16px, so
   // Google showed a generic globe). Next.js App Router auto-wires those files.
