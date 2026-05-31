@@ -63,6 +63,13 @@ a, button, [role="button"], .wf-chip, .reach-out-btn, .wv-cta,
   cursor: url('/cursor-hand.png') 10 2, pointer !important;
 }
 input, textarea, select, [contenteditable] { cursor: text; }
+/* Arrow cursor → Suraj's uploaded 8-bit icon. This rule comes last so it wins
+   over the SVG arrow declared above; the hand rule keeps its !important. */
+body,
+a, button, [role="button"], .wf-chip, .reach-out-btn, .wv-cta,
+.tt, .theme-toggle, label, summary {
+  cursor: url('/cursor-arrow.png') 2 2, auto;
+}
 
 /* film grain — animation removed; constant retransform + mix-blend-mode on a
    full-viewport overlay was forcing a GPU composite every frame. Grain still
