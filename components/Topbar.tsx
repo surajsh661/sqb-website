@@ -1,38 +1,30 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { COPY } from '@/lib/copy';
 
 interface Props {
   active?: 'home' | 'work' | 'ai-lab' | 'social';
   /** Retained for API compatibility; the hamburger menu has been removed. */
   onOpenMenu?: () => void;
+  /** Opens the Get-a-Quote form. */
+  onReachOut?: () => void;
   /** Use sub-page nav (sqb-nav) styling instead of topbar */
   variant?: 'topbar' | 'nav';
 }
 
+// Light mode has been archived — the site is dark only. The <html data-theme>
+// is hard-locked to "dark" in app/layout.tsx, so there is no toggle here.
 export default function Topbar({
   active = 'home',
   onOpenMenu,
+  onReachOut,
   variant = 'topbar',
 }: Props) {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-
-  useEffect(() => {
-    const stored = (typeof window !== 'undefined' && localStorage.getItem('sqb-theme')) as 'dark' | 'light' | null;
-    if (stored === 'light' || stored === 'dark') setTheme(stored);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.body.dataset.theme = theme;
-    try { localStorage.setItem('sqb-theme', theme); } catch {}
-  }, [theme]);
-
-  const logoSrc = theme === 'dark' ? '/logo-dark.png' : '/logo-light.png';
-  const scrollToContact = (e: React.MouseEvent) => {
+  const logoSrc = '/logo-dark.png';
+  const reachOut = (e: React.MouseEvent) => {
     e.preventDefault();
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (onReachOut) onReachOut();
+    else document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   if (variant === 'nav') {
@@ -49,12 +41,9 @@ export default function Topbar({
           <Link href="/social" className={active === 'social' ? 'active' : ''}>{COPY.nav.social}</Link>
         </div>
         <div className="right">
-          <a className="reach-out-btn" href="#contact" onClick={scrollToContact}>
+          <a className="reach-out-btn" href="#contact" onClick={reachOut}>
             {COPY.nav.reachOut} <span className="ro-arrow">→</span>
           </a>
-          <button className="tt" onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}>
-            {theme === 'dark' ? '☾' : '☀'}
-          </button>
           <button className="menu-trigger" onClick={onOpenMenu} aria-label="Open menu">
             <span className="lines"><span /><span /><span /></span>
           </button>
@@ -81,19 +70,9 @@ export default function Topbar({
         <Link href="/social" className={active === 'social' ? 'active' : ''}>{COPY.nav.social}</Link>
       </nav>
       <div className="top-right">
-        <a className="reach-out-btn" href="#contact" onClick={scrollToContact}>
+        <a className="reach-out-btn" href="#contact" onClick={reachOut}>
           {COPY.nav.reachOut} <span className="ro-arrow">→</span>
         </a>
-        <button
-          className="theme-toggle"
-          onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-          aria-label="Toggle theme"
-          title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
-        >
-          {/* ︎ = text-presentation selector → forces a non-emoji glyph so the
-              moon never renders as a blue emoji on mobile. */}
-          <span className="knob">{theme === 'dark' ? '☾︎' : '☀︎'}</span>
-        </button>
         <button className="menu-trigger" onClick={onOpenMenu} aria-label="Open menu">
           <span className="lines"><span /><span /><span /></span>
         </button>

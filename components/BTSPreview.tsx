@@ -49,61 +49,95 @@ export default function BTSPreview() {
     return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); };
   }, []);
 
-  // Mobile: the strip is a NATIVE horizontal scroller (CSS marquee can't be
-  // grabbed by a finger, and the IG iframes eat the touch). We auto-advance
-  // scrollLeft so it keeps drifting, but the moment the user touches it we pause,
-  // then resume shortly after they let go. Loops seamlessly because the cards
-  // are rendered twice — when we pass the half-way point we jump back by half.
+  // Mobile: the strip is a NATIVE horizontal scroller (the CSS marquee can't be
+  // grabbed by a finger). It auto-drifts via scrollLeft and the user can swipe
+  // it. Crucially, drift RESUMES from wherever the user left it (no jump/reset),
+  // and the seamless loop is anchored to the real scrollLeft so a swipe never
+  // snaps back to the start. The embeds stay interactive (clickable like desktop)
+  // — the swipe is handled per-card by .bts-swipe overlays (see renderCard),
+  // which only intercept a horizontal DRAG and pass clean taps to the iframe.
   useEffect(() => {
     if (!active) return;
     const track = marqueeRef.current;
     if (!track) return;
-    // Only when the strip is actually a native horizontal scroller (the mobile
-    // ≤900px layout). On desktop the CSS marquee handles motion, so skip.
     const isScroller = getComputedStyle(track).overflowX !== 'visible';
     if (!isScroller) return;
 
     let raf = 0;
     let pausedUntil = 0;
-    let userScrolling = false;
-    // Float accumulator: scrollLeft only stores INTEGERS, so adding 0.4 each
-    // frame would round back to 0 forever and never move. Track the position as
-    // a float here and write the rounded value to scrollLeft.
     let pos = track.scrollLeft;
     const SPEED = 0.5; // px per frame ≈ 30px/s drift
     const tick = () => {
       const half = track.scrollWidth / 2;
-      if (!userScrolling && performance.now() > pausedUntil && half > 0) {
-        pos += SPEED;
-        if (pos >= half) pos -= half; // seamless loop (cards are rendered twice)
-        track.scrollLeft = pos;
+      if (half > 0) {
+        if (performance.now() > pausedUntil) {
+          pos += SPEED;
+          track.scrollLeft = pos; // (scrollLeft truncates to int; pos is the float)
+        } else {
+          pos = track.scrollLeft; // while paused / user-driven, follow the real pos
+        }
+        // Seamless loop anchored to the REAL position so swiping never resets:
+        // if we've passed the half-way duplicate point, rebase by one half.
+        if (track.scrollLeft >= half) { track.scrollLeft -= half; pos = track.scrollLeft; }
+        else if (track.scrollLeft <= 0 && pos < 0) { track.scrollLeft += half; pos = track.scrollLeft; }
       }
       raf = requestAnimationFrame(tick);
     };
-    // Touch (or any manual scroll) pauses the auto-drift for 2.5s so the user
-    // stays in control. Touch listeners simply never fire on non-touch devices.
-    const hold = () => { pos = track.scrollLeft; pausedUntil = performance.now() + 2500; };
-    const onTouchStart = () => { userScrolling = true; };
-    const onTouchEnd = () => {
-      userScrolling = false;
-      pos = track.scrollLeft; // resync the float to where the user left it
-      pausedUntil = performance.now() + 2500;
-    };
-    track.addEventListener('touchstart', onTouchStart, { passive: true });
-    track.addEventListener('touchend', onTouchEnd, { passive: true });
-    track.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    // Pause the drift for 2s after any user interaction, then it resumes from the
+    // current spot (pos is re-read from scrollLeft above, so no jump).
+    const hold = () => { pausedUntil = performance.now() + 2000; };
+    track.addEventListener('pointerdown', hold);
     track.addEventListener('touchmove', hold, { passive: true });
+    track.addEventListener('scroll', hold, { passive: true });
     track.addEventListener('wheel', hold, { passive: true });
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
-      track.removeEventListener('touchstart', onTouchStart);
-      track.removeEventListener('touchend', onTouchEnd);
-      track.removeEventListener('touchcancel', onTouchEnd);
+      track.removeEventListener('pointerdown', hold);
       track.removeEventListener('touchmove', hold);
+      track.removeEventListener('scroll', hold);
       track.removeEventListener('wheel', hold);
     };
   }, [active]);
+
+  // Per-card swipe overlay: catches a horizontal DRAG and scrolls the strip, but
+  // lets a clean TAP fall through to the iframe (so embeds open/play like desktop).
+  const swipe = useRef<{ x: number; y: number; left: number; drag: boolean } | null>(null);
+  const onOverlayPointerDown = (e: React.PointerEvent) => {
+    const track = marqueeRef.current;
+    if (!track) return;
+    swipe.current = { x: e.clientX, y: e.clientY, left: track.scrollLeft, drag: false };
+  };
+  const onOverlayPointerMove = (e: React.PointerEvent) => {
+    const s = swipe.current;
+    const track = marqueeRef.current;
+    if (!s || !track) return;
+    const dx = e.clientX - s.x;
+    const dy = e.clientY - s.y;
+    if (!s.drag && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) s.drag = true;
+    if (s.drag) {
+      track.scrollLeft = s.left - dx;
+      e.preventDefault();
+    }
+  };
+  // Open the reel/clip when a card is tapped (not dragged) — the mobile
+  // equivalent of "view it", since you can't tap inside a cross-origin iframe
+  // through the swipe overlay.
+  const openSrc = (b: BTS) => {
+    const url =
+      b.type === 'ig' ? `https://www.instagram.com/reel/${b.videoId}/`
+      : b.type === 'gd' ? `https://drive.google.com/file/d/${b.videoId}/view`
+      : b.type === 'vm' ? `https://vimeo.com/${b.videoId}`
+      : `https://www.youtube.com/watch?v=${b.videoId}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+  const onOverlayTap = (b: BTS) => {
+    // Fired on pointerup via onClick; if it was a drag, ignore (the swipe moved
+    // the strip). A clean tap opens the reel.
+    if (swipe.current?.drag) { swipe.current = null; return; }
+    swipe.current = null;
+    openSrc(b);
+  };
 
   const renderCard = (b: BTS, key: string) => {
     const isIg = b.type === 'ig';
@@ -131,6 +165,17 @@ export default function BTSPreview() {
             <div className="bts-placeholder" aria-hidden="true" />
           )}
           <div className="bts-vignette" />
+          {/* Mobile swipe + tap-to-open overlay (hidden on desktop via CSS, so the
+              embed stays directly interactive there). */}
+          <div
+            className="bts-swipe"
+            onPointerDown={onOverlayPointerDown}
+            onPointerMove={onOverlayPointerMove}
+            onClick={() => onOverlayTap(b)}
+            role="button"
+            tabIndex={0}
+            aria-label={`Open ${b.title}`}
+          />
         </div>
         <div className="bts-meta">
           <span className="bts-tag">{b.tag}</span>
