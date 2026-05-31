@@ -1911,32 +1911,33 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   margin-top: 0.5em; letter-spacing: 0.01em;
 }
 /* "cutting edge" with a slanted katana slash: the phrase is layered twice in a
-   relative box. The TOP copy is clipped to everything above a diagonal line; the
-   BOTTOM copy is clipped below it and nudged right + down, so the lower halves of
-   the letters slide off like a sword cut passed through them. */
+   relative box. The TOP copy is clipped above a diagonal line; the BOTTOM copy
+   is clipped below it and nudged sideways so the lower halves of the letters
+   slide off like a sword cut passed through them. The text itself stays STROKED
+   (outline only, no fill) to match the other headline words. */
 .mh .mh-cut {
   position: relative; display: inline-block;
-  vertical-align: baseline; color: var(--accent);
+  vertical-align: baseline;
 }
 .mh .mh-cut-top,
-.mh .mh-cut-bot { display: block; }
-/* The top copy is in normal flow (sets the box width); bottom copy overlays it. */
+.mh .mh-cut-bot {
+  display: block;
+  /* same outline treatment as .manifesto h2 em — transparent fill + cream stroke */
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 0.012em var(--fg);
+}
+/* Top copy is in normal flow (sets the box width); bottom copy overlays it.
+   Cut line slopes up to the right (steeper, like the reference). */
 .mh .mh-cut-top {
-  -webkit-clip-path: polygon(0 0, 100% 0, 100% 38%, 0 62%);
-          clip-path: polygon(0 0, 100% 0, 100% 38%, 0 62%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 30%, 0 70%);
+          clip-path: polygon(0 0, 100% 0, 100% 30%, 0 70%);
 }
 .mh .mh-cut-bot {
   position: absolute; left: 0; top: 0;
-  -webkit-clip-path: polygon(0 62%, 100% 38%, 100% 100%, 0 100%);
-          clip-path: polygon(0 62%, 100% 38%, 100% 100%, 0 100%);
-  transform: translate(0.14em, 0.07em);   /* offset the cut-off lower half */
-}
-/* The thin bright slash line itself, drawn on the same diagonal. */
-.mh .mh-cut::after {
-  content: ""; position: absolute; left: -4%; right: -4%; top: 50%;
-  height: 2px; background: var(--fg);
-  transform: rotate(-9deg); transform-origin: center;
-  pointer-events: none;
+  -webkit-clip-path: polygon(0 70%, 100% 30%, 100% 100%, 0 100%);
+          clip-path: polygon(0 70%, 100% 30%, 100% 100%, 0 100%);
+  transform: translate(0.2em, 0.04em);   /* lower half slides right (the cut) */
 }
 .mh .cam-slot,
 .mh .star-slot {

@@ -1344,15 +1344,20 @@ body.no-grain::before { display: none; }
 }
 .reveal.in { opacity: 1; transform: translateY(0); }
 .hero, .reveal.hero { opacity: 1; transform: none; transition: none; }
-/* Mobile: a big 80px translate over 2.6s means sections are physically sliding
-   while you scroll, which reads as the page "fighting" / springing back. Use a
-   short, small fade-up instead and drop the permanent will-change. */
+/* Mobile: ANY translate on the reveal means sections physically shift as they
+   enter/re-enter, which on a fast scroll reads as the page "fighting" / springing
+   back (a section sits offset by Npx, then snaps to 0 when the observer fires).
+   Kill all movement on touch — opacity only, no transform, no will-change — so
+   scrolling is 1:1 with the finger. Start at 0.35 (not 0) so a lagging observer
+   never leaves a whole section invisible mid-scroll. */
 @media (max-width: 900px) {
   .reveal {
-    transform: translateY(18px);
-    transition: opacity .5s ease, transform .5s ease;
+    opacity: 0.35;
+    transform: none;
+    transition: opacity .35s ease;
     will-change: auto;
   }
+  .reveal.in { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal { transform: none; transition: opacity .3s ease; }
