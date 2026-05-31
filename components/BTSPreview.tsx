@@ -66,20 +66,29 @@ export default function BTSPreview() {
     let raf = 0;
     let pausedUntil = 0;
     let userScrolling = false;
-    const SPEED = 0.4; // px per frame ≈ 24px/s drift
+    // Float accumulator: scrollLeft only stores INTEGERS, so adding 0.4 each
+    // frame would round back to 0 forever and never move. Track the position as
+    // a float here and write the rounded value to scrollLeft.
+    let pos = track.scrollLeft;
+    const SPEED = 0.5; // px per frame ≈ 30px/s drift
     const tick = () => {
       const half = track.scrollWidth / 2;
       if (!userScrolling && performance.now() > pausedUntil && half > 0) {
-        track.scrollLeft += SPEED;
-        if (track.scrollLeft >= half) track.scrollLeft -= half; // seamless loop
+        pos += SPEED;
+        if (pos >= half) pos -= half; // seamless loop (cards are rendered twice)
+        track.scrollLeft = pos;
       }
       raf = requestAnimationFrame(tick);
     };
     // Touch (or any manual scroll) pauses the auto-drift for 2.5s so the user
     // stays in control. Touch listeners simply never fire on non-touch devices.
-    const hold = () => { pausedUntil = performance.now() + 2500; };
+    const hold = () => { pos = track.scrollLeft; pausedUntil = performance.now() + 2500; };
     const onTouchStart = () => { userScrolling = true; };
-    const onTouchEnd = () => { userScrolling = false; hold(); };
+    const onTouchEnd = () => {
+      userScrolling = false;
+      pos = track.scrollLeft; // resync the float to where the user left it
+      pausedUntil = performance.now() + 2500;
+    };
     track.addEventListener('touchstart', onTouchStart, { passive: true });
     track.addEventListener('touchend', onTouchEnd, { passive: true });
     track.addEventListener('touchcancel', onTouchEnd, { passive: true });
