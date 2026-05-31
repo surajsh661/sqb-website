@@ -20,18 +20,26 @@ function FounderPortrait({
 }: { src: string; role: string; name: string }) {
   const [failed, setFailed] = useState(false);
   return (
-    <div className="founder-portrait">
-      {!failed && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          className="fp-photo"
-          src={src}
-          alt={name}
-          onError={() => setFailed(true)}
-        />
-      )}
-      <span className="fp-role">{role}</span>
-      <span className="fp-name">{name}</span>
+    <div className="founder-portrait-wrap">
+      <div className={'founder-portrait' + (failed ? ' no-photo' : '')}>
+        {!failed && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="fp-photo"
+            src={src}
+            alt={name}
+            onError={() => setFailed(true)}
+          />
+        )}
+        {/* Name shows INSIDE the circle only as a fallback when the photo fails. */}
+        {failed && <span className="fp-name-fallback">{name}</span>}
+      </div>
+      {/* Designation as a clean caption BELOW the circle — always readable, never
+          covers the face. */}
+      <div className="fp-caption">
+        <span className="fp-role">{role}</span>
+        <span className="fp-name">{name}</span>
+      </div>
     </div>
   );
 }

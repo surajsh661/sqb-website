@@ -694,18 +694,20 @@ body.no-grain::before { display: none; }
   z-index: 2;
   pointer-events: none;
 }
-.founder-portrait {
+/* Portrait + caption stack: a clean photo circle, with the designation as a
+   readable caption BELOW it (no text over the face). */
+.founder-portrait-wrap {
   pointer-events: auto;
+  display: flex; flex-direction: column; align-items: center;
+}
+.founder-portrait {
   position: relative;
   overflow: hidden;
   width: 280px; height: 280px;
   border: 2px solid var(--accent);
   border-radius: 50%;
   background: var(--ink-2);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: flex-end;
-  text-align: center;
-  padding: 0 24px 36px;
+  display: flex; align-items: center; justify-content: center;
   box-shadow: 0 0 0 1px var(--bg) inset, 0 30px 80px rgba(0,0,0,0.4);
   transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s;
 }
@@ -713,46 +715,33 @@ body.no-grain::before { display: none; }
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 28%;
   z-index: 0;
 }
-.founder-portrait .fp-role,
-.founder-portrait .fp-name {
-  position: relative;
-  z-index: 2;
+/* Fallback name shown inside the circle only when the photo fails to load. */
+.founder-portrait .fp-name-fallback {
+  font-family: 'Anton', sans-serif;
+  font-size: 30px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--fg); text-align: center; padding: 0 20px;
 }
-/* Darken the bottom third of the portrait so the role + name overlay stays
-   readable on top of whatever the photo looks like. Only renders when a
-   photo is actually loaded (i.e. when .fp-photo is in the DOM). */
-.founder-portrait:has(.fp-photo)::after {
-  content: "";
-  position: absolute; left: 0; right: 0; bottom: 0;
-  height: 55%;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.85) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.founder-portrait:has(.fp-photo) .fp-name { color: #fff; }
-.founder-portrait:has(.fp-photo) .fp-role { color: var(--accent); }
-/* Without a photo: keep the original centred layout. */
-.founder-portrait:not(:has(.fp-photo)) {
-  justify-content: center;
-  padding: 0 24px;
-}
-.founder-portrait:hover {
+.founder-portrait-wrap:hover .founder-portrait {
   transform: translateY(-6px);
   box-shadow: 0 0 0 1px var(--bg) inset, 0 40px 100px rgba(245,197,24,0.18);
 }
-.founder-portrait .fp-role {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 8px;
+.fp-caption {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; margin-top: 18px;
 }
-.founder-portrait .fp-name {
+.fp-caption .fp-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.fp-caption .fp-name {
   font-family: 'Anton', sans-serif;
-  font-size: 32px; letter-spacing: 0.04em; text-transform: uppercase;
-  color: var(--fg);
+  font-size: 30px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--fg); line-height: 1;
 }
 
 .founder-bio {
@@ -2122,9 +2111,10 @@ video.frame-video {
   .founder-bio p,
   .founder-bio.left p,
   .founder-bio.right p { text-align: center; }
-  .founder-portrait { width: 190px; height: 190px; padding: 0 10px 16px; }
-  .founder-portrait .fp-name { font-size: 22px; }
-  .founder-portrait .fp-role { margin-bottom: 6px; }
+  .founder-portrait { width: 190px; height: 190px; padding: 0; }
+  .fp-caption { margin-top: 14px; }
+  .fp-caption .fp-name { font-size: 24px; }
+  .fp-caption .fp-role { font-size: 11px; margin-bottom: 5px; }
 
   .engine .heading h2 { font-size: clamp(48px, 12vw, 80px); }
   .engine .footnote p { font-size: 14px; }
@@ -2190,9 +2180,9 @@ video.frame-video {
   /* Manifesto */
   .manifesto h2 { font-size: clamp(32px, 11vw, 60px); }
 
-  /* Engine — portraits sized so both circles sit side by side on a phone. */
-  .founder-portrait { width: clamp(118px, 40vw, 150px); height: clamp(118px, 40vw, 150px); }
-  .founder-portrait .fp-name { font-size: clamp(15px, 4.6vw, 20px); }
+  /* Engine — portrait circle size on small phones (caption sits below it). */
+  .founder-portrait { width: clamp(150px, 52vw, 190px); height: clamp(150px, 52vw, 190px); }
+  .fp-caption .fp-name { font-size: clamp(20px, 6vw, 24px); }
 
   /* Footer — single column */
   .footer-grid { grid-template-columns: 1fr; }

@@ -1,5 +1,5 @@
 'use client';
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Topbar from '@/components/Topbar';
 import Loader from '@/components/Loader';
@@ -20,42 +20,15 @@ import { rich } from '@/lib/rich';
 import { setupReveal, videoSrc } from '@/lib/video-utils';
 import type { Film, Genre } from '@/lib/types';
 
-// Capability-card icons live in code (one per card, in the same order as
-// COPY.work.capabilities). Edit the words in lib/copy.ts.
-const CAP_ICONS: React.ReactNode[] = [
-  <svg key="a" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="10" width="18" height="10" rx="1.5" /><g transform="rotate(-20 4.2 10.4)"><rect x="3" y="6.1" width="18" height="3.8" rx="1" /><path d="M7 6.3 L5.2 9.7 M11 6.3 L9.2 9.7 M15 6.3 L13.2 9.7 M19 6.3 L17.2 9.7" /></g></svg>,
-  <svg key="b" viewBox="0 0 24 24">{(() => {
-    // 8-bit T-Rex (Chrome dino), facing right — drawn large so the head + eye
-    // read clearly. '1' = filled pixel; the gap in the head is the eye.
-    const map = [
-      '0000000001111100',
-      '0000000001111100',
-      '0000000001011100',
-      '0000000001111110',
-      '0000011111111100',
-      '0000111111111000',
-      '0110011111110000',
-      '0111111111100000',
-      '0011111111100000',
-      '0001111111110000',
-      '0001111111100000',
-      '0001100110000000',
-      '0001100110000000',
-      '0011100111000000',
-    ];
-    const P = 1.5, ox = 0.3, oy = 1.4;
-    const rects: React.ReactNode[] = [];
-    map.forEach((row, ri) => {
-      for (let ci = 0; ci < row.length; ci++) {
-        if (row[ci] === '1') rects.push(<rect key={ri + '_' + ci} x={ox + ci * P} y={oy + ri * P} width={P + 0.25} height={P + 0.25} fill="currentColor" />);
-      }
-    });
-    return rects;
-  })()}</svg>,
-  <svg key="c" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2z" /><path d="M19 17l.7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7L19 17z" /></svg>,
-  <svg key="d" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5" /><path d="M11 18h2" /><path d="M10 6h4" /></svg>,
-  <svg key="e" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H5s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v4s3.03-.55 4-2c1.08-1.62 0-5 0-5" /></svg>,
-  <svg key="f" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="4.4" y="8" width="9.6" height="9.8" rx="1.8" /><path d="M4.4 10.7 L0.8 8.2 V17.6 L4.4 15.1 Z" /><circle cx="9.2" cy="12.9" r="2.1" /><rect x="16.1" y="5.4" width="5" height="8.6" rx="2.5" /><path d="M16.8 7.8 h3.6 M16.8 10 h3.6" /><path d="M15 12.6 a3.55 3.55 0 0 0 7.1 0" /><path d="M18.55 14.8 V18.8 M16.3 18.8 H20.8" /></svg>,
+// Capability-card icons — Suraj's gold 3D set, sliced from the provided sheet
+// into /public/cap/*.png. Order matches COPY.work.capabilities.
+const CAP_ICONS: string[] = [
+  '/cap/cap-clapboard.png',  // Ad Films & TVCs
+  '/cap/cap-trex.png',       // CGI / VFX & 3D
+  '/cap/cap-sparkles.png',   // AI Film Production
+  '/cap/cap-phone.png',      // Short-Form Digital
+  '/cap/cap-rocket.png',     // Launch & Explainers
+  '/cap/cap-reelmic.png',    // Documentary & Long-Form
 ];
 
 function WorkInner() {
@@ -73,6 +46,25 @@ function WorkInner() {
   const [activeFilm, setActiveFilm] = useState<Film | null>(null);
   const [caseOpen, setCaseOpen] = useState(false);
   const [vertPick, setVertPick] = useState<Film | null>(null);
+
+  // Lazy-mount the Vertical Cinema ticket videos only when the section nears the
+  // viewport — autoplaying all 15 iframes on first paint would flood the network
+  // (same problem the home page had). Mount once it's approached.
+  const vcRef = useRef<HTMLElement | null>(null);
+  const [vcMounted, setVcMounted] = useState(false);
+  useEffect(() => {
+    const el = vcRef.current;
+    if (!el) return;
+    let done = false;
+    const arm = () => { if (done) return; done = true; setVcMounted(true); io.disconnect(); window.removeEventListener('scroll', onScroll); };
+    const check = () => { if (el.getBoundingClientRect().top < window.innerHeight + 600) arm(); };
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) arm(); }, { rootMargin: '600px 0px' });
+    io.observe(el);
+    const onScroll = check;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    check();
+    return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); };
+  }, []);
 
   const featured = useMemo<string[]>(() => SQB_FEATURED_DEFAULT, []);
 
@@ -162,7 +154,8 @@ function WorkInner() {
         <div className="wc-grid">
           {COPY.work.capabilities.map((cap, i) => (
             <div className="wc-cell" key={i}>
-              <div className="wc-icon">{CAP_ICONS[i]}</div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <div className="wc-icon"><img src={CAP_ICONS[i]} alt={cap.name} loading="lazy" /></div>
               <div className="wc-name">{cap.name}</div>
               <div className="wc-desc">{cap.desc}</div>
             </div>
@@ -260,7 +253,7 @@ function WorkInner() {
         </section>
       )}
 
-      <section className="vc">
+      <section className="vc" ref={vcRef}>
         <div className="vc-inner">
           <div className="vc-head-row">
             <div>
@@ -285,9 +278,22 @@ function WorkInner() {
                 tabIndex={0}
               >
                 <div className="vt-art">
-                  {/* blurred backdrop fills the letterbox behind the contained thumb */}
+                  {/* Autoplay the muted vertical clip (like the home cards). A
+                      poster thumbnail shows until the section is mounted. The
+                      iframe is 9:16 so it fills the portrait card with no crop. */}
                   <HeroThumb film={f} className="vt-blur" />
-                  <HeroThumb film={f} />
+                  {vcMounted ? (
+                    <iframe
+                      className="vt-video"
+                      src={videoSrc({ type: f.type, videoId: f.videoId }, { bg: true })}
+                      title={f.title}
+                      allow="autoplay; encrypted-media"
+                      loading="lazy"
+                      tabIndex={-1}
+                    />
+                  ) : (
+                    <HeroThumb film={f} />
+                  )}
                   <div className="vt-dot top" />
                   <div className="vt-dot bot" />
                 </div>

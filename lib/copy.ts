@@ -166,7 +166,7 @@ export const COPY = {
   // ── Home page · Vertical works strip ──────────────────────────────────────
   verticalsHome: {
     heading: `VERTICAL *CINEMA*`,
-    blurb: `Vertical web shows, made end to end — writing, casting, shoot, edit, grade, BGM and VFX. When a show is AI, we take it from script to final animation.`,
+    blurb: `Full-blown web shows, built for the phone in your hand. We own every frame — script, cast, shoot, edit, grade, sound, VFX. And when it's AI, we go from a blank page to finished animation without ever leaving the studio.`,
   },
 
   // ── "Trusted by global brands" block (shown on Video / AI Lab / Social) ────
