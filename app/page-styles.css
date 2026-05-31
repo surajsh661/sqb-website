@@ -614,62 +614,37 @@
   transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 .sqb-loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
-.sqb-loader-icon { width: 160px; height: 160px; position: relative; }
-.sqb-loader-icon svg { width: 100%; height: 100%; overflow: visible; }
-.sqb-loader-icon .lr-svg {
-  width: 100%; height: 100%;
-  overflow: visible;   /* the camera + stars are spread apart past the viewBox; don't crop them */
+/* Clean evenly-spaced row: clapboard · camera · AI stars. Each icon is its own
+   SVG, vertically centred, so the composition stays balanced at any size. */
+.sqb-loader-icon {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px;
 }
-/* Show BOTH at once, SIDE BY SIDE — the camera (with its blinking REC dot) on the
-   left and a smaller twinkling AI-star cluster on the right — so the loader reads
-   as "filmmaking + AI" immediately, without the two drawings overlapping. */
-.sqb-loader-icon .lr-film {
-  opacity: 1;
-  animation: lrFilmPulse 1.5s ease-in-out infinite;
-  transform-box: view-box;
-  transform-origin: 100px 100px;
-}
-.sqb-loader-icon .lr-stars {
-  opacity: 1;                       /* overrides the inline opacity=0 */
-  animation: lrStarsPulse 1.5s ease-in-out infinite;
-  transform-box: view-box;
-  transform-origin: 100px 100px;
-}
-/* Clapboard — parked to the left of the camera, gentle breathing pulse. */
-.sqb-loader-icon .lr-clap {
-  opacity: 1;
-  animation: lrClapPulse 1.5s ease-in-out infinite;
-  transform-box: view-box;
-  transform-origin: 100px 100px;
-}
-/* The hinged top stick claps with a quick snap + a tiny settle (realistic
-   physics: fast close, small bounce, slow re-open). Hinges at the back-left
-   corner where the stick meets the body. */
+.sqb-loader-icon svg { display: block; overflow: visible; width: auto; }
+/* Size all three by HEIGHT so they read as evenly weighted (sizing the camera
+   by width made it dominate). Uniform ~56px tall each. */
+.sqb-loader-icon .lr-clap  { height: 56px; opacity: 0.92;
+  animation: lrBreathe 1.5s ease-in-out infinite; }
+.sqb-loader-icon .lr-film  { height: 56px;
+  animation: lrBreathe 1.5s ease-in-out infinite; }
+.sqb-loader-icon .lr-stars { height: 56px; }
+/* The hinged top stick claps: fast snap shut, tiny bounce, slow re-open. */
 .sqb-loader-icon .lr-clap-top {
-  transform-box: view-box;
-  transform-origin: 34px 88px;
+  transform-box: fill-box;
+  transform-origin: 0% 100%;   /* back-left corner where stick meets body */
   animation: lrClapSnap 1.5s cubic-bezier(.34,1.56,.64,1) infinite;
 }
-@keyframes lrSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-@keyframes lrFilmPulse {
-  0%, 100% { opacity: 1;    transform: translateX(-2px) scale(0.7); }
-  50%      { opacity: 0.82; transform: translateX(-2px) scale(0.7); }
-}
-@keyframes lrStarsPulse {
-  0%, 100% { opacity: 0.6; transform: translate(78px, 2px) scale(0.32); }
-  50%      { opacity: 1;   transform: translate(78px, 2px) scale(0.36); }
-}
-@keyframes lrClapPulse {
-  0%, 100% { opacity: 0.9; transform: translate(-86px, 6px) scale(0.62); }
-  50%      { opacity: 1;   transform: translate(-86px, 6px) scale(0.65); }
+@keyframes lrBreathe {
+  0%, 100% { opacity: 0.92; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.04); }
 }
 @keyframes lrClapSnap {
-  0%       { transform: rotate(-26deg); }  /* open */
-  18%      { transform: rotate(0deg); }    /* snap shut — the clap */
-  26%      { transform: rotate(-7deg); }   /* small bounce back */
-  34%      { transform: rotate(0deg); }    /* settle closed */
-  70%      { transform: rotate(-26deg); }  /* ease back open */
-  100%     { transform: rotate(-26deg); }
+  0%   { transform: rotate(-26deg); }  /* open */
+  18%  { transform: rotate(0deg); }    /* snap shut — the clap */
+  26%  { transform: rotate(-7deg); }   /* small bounce back */
+  34%  { transform: rotate(0deg); }    /* settle closed */
+  70%  { transform: rotate(-26deg); }  /* ease back open */
+  100% { transform: rotate(-26deg); }
 }
 
 /* === Flying 2D social logos on Social page === */
@@ -1509,7 +1484,7 @@
 .ws-barrel-stage.dragging { cursor: grabbing; }
 
 /* Camera REC dot pulse on loading screen */
-.sqb-loader-icon .lr-film circle[fill="#F5C518"] {
+.sqb-loader-icon .lr-rec {
   animation: recBlink 1s ease-in-out infinite;
 }
 @keyframes recBlink {
@@ -1914,9 +1889,40 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
    the browser doesn't drop "making" / "I" to the next line when the
    icon slot expands. */
 .mh .mh-nowrap { white-space: nowrap; }
-/* Coda line ("And we're at the cutting edge of both.") — 20% smaller so it sits
-   on a single line instead of wrapping. */
-.mh .mh-coda { font-size: 0.8em; display: inline-block; }
+/* Coda line ("And we're at the cutting edge of both") — much smaller so it sits
+   comfortably on ONE line under the big headline. */
+.mh .mh-coda {
+  font-size: 0.5em; display: block; white-space: nowrap;
+  margin-top: 0.5em; letter-spacing: 0.01em;
+}
+/* "cutting edge" with a slanted katana slash: the phrase is layered twice in a
+   relative box. The TOP copy is clipped to everything above a diagonal line; the
+   BOTTOM copy is clipped below it and nudged right + down, so the lower halves of
+   the letters slide off like a sword cut passed through them. */
+.mh .mh-cut {
+  position: relative; display: inline-block;
+  vertical-align: baseline; color: var(--accent);
+}
+.mh .mh-cut-top,
+.mh .mh-cut-bot { display: block; }
+/* The top copy is in normal flow (sets the box width); bottom copy overlays it. */
+.mh .mh-cut-top {
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 38%, 0 62%);
+          clip-path: polygon(0 0, 100% 0, 100% 38%, 0 62%);
+}
+.mh .mh-cut-bot {
+  position: absolute; left: 0; top: 0;
+  -webkit-clip-path: polygon(0 62%, 100% 38%, 100% 100%, 0 100%);
+          clip-path: polygon(0 62%, 100% 38%, 100% 100%, 0 100%);
+  transform: translate(0.14em, 0.07em);   /* offset the cut-off lower half */
+}
+/* The thin bright slash line itself, drawn on the same diagonal. */
+.mh .mh-cut::after {
+  content: ""; position: absolute; left: -4%; right: -4%; top: 50%;
+  height: 2px; background: var(--fg);
+  transform: rotate(-9deg); transform-origin: center;
+  pointer-events: none;
+}
 .mh .cam-slot,
 .mh .star-slot {
   display: inline-block;

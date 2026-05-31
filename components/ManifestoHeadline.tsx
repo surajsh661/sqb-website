@@ -98,8 +98,19 @@ export default function ManifestoHeadline() {
       <span className="mh-nowrap">
         <span className="ai">A</span>{stars}<span className="ai">I</span>
       </span>{' '}
-      second. <br />
-      <span className="mh-coda">And we&apos;re at the <em>cutting edge</em> of both.</span>
+      second <br />
+      {/* Coda on one line, smaller. "cutting edge" gets a slanted katana cut:
+          the phrase is layered twice — the top half clipped above the diagonal,
+          the bottom half clipped below and nudged sideways so it reads as a
+          slash through the words. */}
+      <span className="mh-coda">
+        And we&apos;re at the{' '}
+        <span className="mh-cut" aria-label="cutting edge">
+          <span className="mh-cut-top" aria-hidden="true">cutting edge</span>
+          <span className="mh-cut-bot" aria-hidden="true">cutting edge</span>
+        </span>{' '}
+        of both
+      </span>
     </h2>
   );
 }
