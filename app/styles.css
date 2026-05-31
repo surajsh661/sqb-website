@@ -60,7 +60,7 @@ a, button, [role="button"], .wf-chip, .reach-out-btn, .wv-cta,
    per-element `cursor: pointer` rules (e.g. .vcard) that come later in the file. */
 .vcard, .video-cell, .ai-clip, .vc-ticket, .creator-thumb, .ce-card,
 .cm-card, .case-tap, .vt-art {
-  cursor: url('/cursor-hand.png') 10 2, pointer !important;
+  cursor: url('/cursor-hand.png') 8 2, pointer !important;
 }
 input, textarea, select, [contenteditable] { cursor: text; }
 /* Arrow cursor → Suraj's uploaded 8-bit icon. This rule comes last so it wins
