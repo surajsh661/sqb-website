@@ -54,13 +54,11 @@ export default function Loader() {
           <line x1="74" y1="146" x2="92" y2="146" />
         </svg>
 
-        {/* AI star — an interwoven 5-point star (a single self-crossing {5/2}
-            pentagram, round joins so the arms read as woven tubes, like the
-            reference). Spins continuously — no twinkle. */}
-        <svg className="lr-stars" viewBox="52 52 96 96" fill="none" stroke="#F5C518" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          {/* {5/2} pentagram centred on (100,100): one self-crossing line whose
-              overlaps read as an interwoven star, like the reference. */}
-          <path className="lr-star-main" d="M100 60 L123.5 132.4 L61.9 87.6 L138.1 87.6 L76.5 132.4 Z" />
+        {/* AI stars — centre star carries a yellow fill. */}
+        <svg className="lr-stars" viewBox="20 44 154 146" fill="none" stroke="#F5C518" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path className="lr-star-main" fill="#F5C518" d="M100 60 L104.5 95.5 L140 100 L104.5 104.5 L100 140 L95.5 104.5 L60 100 L95.5 95.5 Z" />
+          <path d="M48 50 L52 70 L72 74 L52 78 L48 98 L44 78 L24 74 L44 70 Z" />
+          <path d="M152 148 L155 162 L169 166 L155 170 L152 184 L149 170 L135 166 L149 162 Z" />
         </svg>
       </div>
     </div>

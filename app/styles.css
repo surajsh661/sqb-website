@@ -1984,21 +1984,37 @@ video.frame-video {
   .case-hero .content { padding: 16px 18px 0; }
   .case-hero .eyebrow { font-size: 10px; margin-bottom: 6px; }
   .case-hero h1 { font-size: clamp(24px, 7.2vw, 40px); line-height: 1.08; }
+  /* Meta strip → a tidy 2-col rows list with a dotted divider under each row,
+     so client/year/runtime/impact read as a clean spec sheet, not a jumble. */
   .case-hero .case-meta {
-    display: flex; flex-wrap: wrap; gap: 6px 16px;
-    margin-top: 12px; font-size: 10.5px;
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 16px; font-size: 11px;
+    border-top: 1px solid var(--rule);
   }
-  .case-hero .case-meta > div { display: flex; gap: 6px; align-items: baseline; }
-  .case-hero .case-meta .label { display: inline; margin: 0; }
-  .case-body { padding: 24px 18px 44px; gap: 22px; }
+  .case-hero .case-meta > div {
+    display: flex; justify-content: space-between; gap: 16px; align-items: baseline;
+    padding: 11px 0; border-bottom: 1px dotted rgba(255,255,255,0.14);
+  }
+  .case-hero .case-meta .label { display: inline; margin: 0; color: var(--accent); }
+  .case-body { padding: 30px 18px 48px; gap: 26px; }
   /* The spec column duplicates the meta strip under the title (client/year/
      runtime/impact) — talent is already in the title, category in the eyebrow —
      so hide it on mobile for a clean YouTube-style title → info → description. */
   .case-body .left { display: none; }
-  .case-body .right p { font-size: 15px; line-height: 1.55; margin-bottom: 15px; }
-  .case-body .right p.lede { font-size: 18px; line-height: 1.45; }
-  /* Credits — were Anton 28px in big padded cells; shrink for mobile. */
-  .credits-grid { margin-top: 26px; grid-template-columns: 1fr 1fr; }
+  /* Description blocks: a hairline divider + generous gap above each paragraph so
+     lede / brief / solution / body / timeline read as distinct, well-spaced sections. */
+  .case-body .right p { font-size: 15px; line-height: 1.62; margin: 0; padding-top: 20px; }
+  .case-body .right p + p { border-top: 1px solid rgba(255,255,255,0.08); }
+  .case-body .right p.lede {
+    font-size: 19px; line-height: 1.5; padding-top: 0;
+    border-top: 0; color: var(--fg);
+  }
+  /* Credits — were Anton 28px in big padded cells; shrink for mobile. Sit them
+     below a full-width divider with clear space. */
+  .credits-grid {
+    margin-top: 32px; padding-top: 4px; grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--rule);
+  }
   .credits-grid .credit { padding: 13px 14px; }
   .credits-grid .credit:nth-child(3n) { border-right: 1px solid var(--rule); }
   .credits-grid .credit:nth-child(2n) { border-right: 0; }

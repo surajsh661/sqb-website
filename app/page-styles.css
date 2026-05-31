@@ -646,10 +646,6 @@
   70%  { transform: rotate(-26deg); }  /* ease back open */
   100% { transform: rotate(-26deg); }
 }
-@keyframes lrStarSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
 
 /* === Flying 2D social logos on Social page === */
 .flying-socials {
@@ -1713,12 +1709,30 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   transform: translateY(-7px) scale(1.06);
   filter: drop-shadow(0 20px 38px rgba(0,0,0,0.55)) drop-shadow(0 0 22px rgba(245,197,24,0.35));
 }
-/* AI loading star — interwoven 5-point star that spins continuously (no twinkle).
-   .lr-stars is the root <svg> (a flex item), so rotate about its OWN centre —
-   transform-origin:center on the element box, NOT the viewBox coords. */
-.sqb-loader-icon .lr-stars {
-  transform-origin: 50% 50%;
-  animation: lrStarSpin 4s linear infinite;
+/* AI loading stars — twinkle pulse (per-star, staggered). */
+.sqb-loader-icon .lr-stars path:nth-child(1) {
+  animation: starTwinkleA 1.2s ease-in-out infinite;
+  transform-box: fill-box; transform-origin: center;
+}
+.sqb-loader-icon .lr-stars path:nth-child(2) {
+  animation: starTwinkleB 0.9s ease-in-out infinite;
+  transform-box: fill-box; transform-origin: center;
+}
+.sqb-loader-icon .lr-stars path:nth-child(3) {
+  animation: starTwinkleC 1.05s ease-in-out infinite;
+  transform-box: fill-box; transform-origin: center;
+}
+@keyframes starTwinkleA {
+  0%, 100% { transform: scale(1.05);  opacity: 1; }
+  50%      { transform: scale(0.78);  opacity: 0.4; }
+}
+@keyframes starTwinkleB {
+  0%, 100% { transform: scale(0.8);  opacity: 0.45; }
+  50%      { transform: scale(1.25); opacity: 1; }
+}
+@keyframes starTwinkleC {
+  0%, 100% { transform: scale(1.15); opacity: 0.95; }
+  50%      { transform: scale(0.82); opacity: 0.5; }
 }
 
 /* Constrain stream — stats sit below, stream stays in upper hero only.
