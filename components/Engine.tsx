@@ -47,18 +47,26 @@ export default function Engine() {
       </div>
 
       <div className="engine-row">
+        {/* Each bio carries its OWN inline portrait (.fp-inline), shown only on
+            mobile (≤900px) so a face always sits directly above the matching
+            bio — no Suraj-photo/Shubham-bio confusion. On desktop the inline
+            portraits are hidden and the centred .founder-pair is shown instead. */}
         <div className="founder-bio left">
+          <div className="fp-inline">
+            <FounderPortrait src={PHOTOS[suraj.id]} role={suraj.role} name={suraj.name} />
+          </div>
           <p>{COPY.engine.surajBio}</p>
         </div>
 
-        {/* The two portraits live in a single absolutely-positioned pair so the
-            bios on either side can fill the full outer half of the row. */}
         <div className="founder-pair">
           <FounderPortrait src={PHOTOS[suraj.id]} role={suraj.role} name={suraj.name} />
           <FounderPortrait src={PHOTOS[shubham.id]} role={shubham.role} name={shubham.name} />
         </div>
 
         <div className="founder-bio right">
+          <div className="fp-inline">
+            <FounderPortrait src={PHOTOS[shubham.id]} role={shubham.role} name={shubham.name} />
+          </div>
           <p>{COPY.engine.shubhamBio}</p>
         </div>
       </div>

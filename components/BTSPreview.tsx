@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import { SQB_BTS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
@@ -15,27 +16,63 @@ const srcFor = (b: BTS) =>
 
 export default function BTSPreview() {
   const items = SQB_BTS;
+  // Don't mount the 10+ BTS embeds until the strip is actually near the viewport.
+  // Mounting them all on first paint loaded 20+ background videos at once, which
+  // saturated the network/decoder (Vimeo oembed calls were timing out) and made
+  // the videos you actually tap lag. They mount once the section approaches.
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    let done = false;
+    const arm = () => {
+      if (done) return;
+      done = true;
+      setActive(true);
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
+    const check = () => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight + 600) arm();
+    };
+    const io = new IntersectionObserver(
+      (entries) => { if (entries.some((e) => e.isIntersecting)) arm(); },
+      { rootMargin: '600px 0px' },
+    );
+    io.observe(el);
+    const onScroll = check;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    check();
+    return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); };
+  }, []);
+
   const renderCard = (b: BTS, key: string) => {
     const isIg = b.type === 'ig';
     return (
       <div className="bts-card" key={key}>
         <div className="bts-frame">
-          <iframe
-            src={srcFor(b)}
-            title={b.title}
-            allow="autoplay; encrypted-media"
-            loading="lazy"
-            /* scrolling="no" stops the embed from scrolling its own content
-               vertically and stealing page-scroll. Deprecated but every browser
-               still honours it. */
-            scrolling="no"
-            /* For Instagram only: a sandbox that allows the embed's scripts +
-               same-origin requests + presentation API (fullscreen video) but
-               explicitly does NOT include allow-top-navigation / allow-popups,
-               so the "View on Instagram" link inside the widget can't kick the
-               whole page over to instagram.com. */
-            sandbox={isIg ? 'allow-scripts allow-same-origin allow-presentation' : undefined}
-          />
+          {active ? (
+            <iframe
+              src={srcFor(b)}
+              title={b.title}
+              allow="autoplay; encrypted-media"
+              loading="lazy"
+              /* scrolling="no" stops the embed from scrolling its own content
+                 vertically and stealing page-scroll. Deprecated but every browser
+                 still honours it. */
+              scrolling="no"
+              /* For Instagram only: a sandbox that allows the embed's scripts +
+                 same-origin requests + presentation API (fullscreen video) but
+                 explicitly does NOT include allow-top-navigation / allow-popups,
+                 so the "View on Instagram" link inside the widget can't kick the
+                 whole page over to instagram.com. */
+              sandbox={isIg ? 'allow-scripts allow-same-origin allow-presentation' : undefined}
+            />
+          ) : (
+            <div className="bts-placeholder" aria-hidden="true" />
+          )}
           <div className="bts-vignette" />
         </div>
         <div className="bts-meta">
@@ -47,7 +84,7 @@ export default function BTSPreview() {
   };
 
   return (
-    <section className="bts" data-screen-label="09 BTS">
+    <section className="bts" data-screen-label="09 BTS" ref={sectionRef}>
       <div className="bts-head">
         <div className="eyebrow"><span className="num">{COPY.bts.eyebrowNumber}</span> <span>{COPY.bts.eyebrowLabel}</span></div>
         <h2>{rich(COPY.bts.heading)}</h2>

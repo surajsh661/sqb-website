@@ -46,6 +46,39 @@ export default function Verticals() {
   const [rotation, setRotation] = useState(0);
   const [active, setActive] = useState<Vertical | null>(null);
 
+  // Don't mount the fan's video iframes until the section nears the viewport.
+  // Mounting all ~14 on first paint flooded the network with background videos
+  // (Vimeo oembed calls timed out) and starved the video users actually tap.
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    let done = false;
+    const arm = () => {
+      if (done) return;
+      done = true;
+      setMounted(true);
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
+    const check = () => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight + 600) arm();
+    };
+    const io = new IntersectionObserver(
+      (entries) => { if (entries.some((e) => e.isIntersecting)) arm(); },
+      { rootMargin: '600px 0px' },
+    );
+    io.observe(el);
+    // Scroll fallback in case IntersectionObserver is throttled. No blind timer:
+    // if the section is never approached, its videos should never load.
+    const onScroll = check;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    check();
+    return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); };
+  }, []);
+
   // Rotate the fan by shifting a numeric offset. The cards themselves stay in a
   // FIXED dom order with stable keys, so their <iframe>s are never unmounted or
   // moved in the DOM (either of which reloads the video). Only each card's slot —
@@ -116,7 +149,7 @@ export default function Verticals() {
   }, [active]);
 
   return (
-    <section className="verticals" data-screen-label="04 Verticals">
+    <section className="verticals" data-screen-label="04 Verticals" ref={sectionRef}>
       <div className="head">
         <h2>{rich(COPY.verticalsHome.heading)}</h2>
       </div>
@@ -159,12 +192,14 @@ export default function Verticals() {
                 role="button"
                 tabIndex={0}
               >
-                <iframe
-                  src={videoSrc({ type: v.type, videoId: v.videoId }, { bg: true })}
-                  title={v.title}
-                  allow="autoplay; encrypted-media"
-                  loading={i === 2 ? 'eager' : 'lazy'}
-                />
+                {mounted && (
+                  <iframe
+                    src={videoSrc({ type: v.type, videoId: v.videoId }, { bg: true })}
+                    title={v.title}
+                    allow="autoplay; encrypted-media"
+                    loading={i === 2 ? 'eager' : 'lazy'}
+                  />
+                )}
                 <div className="vlabel">
                   <span className="tag">{v.tag}</span>
                   <div className="ttl">{v.title}</div>

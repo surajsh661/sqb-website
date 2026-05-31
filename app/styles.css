@@ -33,9 +33,10 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* Native scrolling (predictable for every user). Anchor jumps (REACH OUT,
-   ticket-menu CONTACT, etc.) glide smoothly; explicit behavior:'auto' calls in
-   JS still jump instantly where intended. */
-html { scroll-behavior: smooth; }
+   ticket-menu CONTACT, etc.) pass behavior:'smooth' explicitly in JS, so they
+   still glide. We deliberately do NOT set `scroll-behavior: smooth` on <html>
+   globally — on iOS/Android that hijacks ordinary finger scrolling and makes the
+   page feel like it springs/snaps back when you scroll up. */
 html, body {
   background: var(--bg);
   color: var(--fg);
@@ -46,6 +47,10 @@ html, body {
   transition: background 0.5s ease, color 0.5s ease;
 }
 body { min-height: 100vh; position: relative; }
+/* Pointer devices keep the smooth anchor glide; touch uses native scrolling. */
+@media (hover: hover) and (pointer: fine) {
+  html { scroll-behavior: smooth; }
+}
 
 /* Custom site cursor — 8-bit (pixel-art) yellow pointer with a black outline.
    Default = arrow; video / media thumbnails get an 8-bit pointing hand. Built
@@ -755,6 +760,8 @@ body.no-grain::before { display: none; }
 .founder-bio.left { grid-column: 1; padding-left: 24px; padding-right: 0; }
 .founder-bio.right { grid-column: 2; padding-left: 0; padding-right: 24px; }
 .founder-bio p { margin: 0; text-wrap: pretty; }
+/* Per-bio inline portrait: desktop uses the centred .founder-pair instead. */
+.fp-inline { display: none; }
 /* The float doesn't render anything — it's a phantom shape sized to match
    the founder portrait (with a generous shape-margin) so the bio text
    wraps around the founder circle's curve without ever touching or
@@ -1330,6 +1337,19 @@ body.no-grain::before { display: none; }
 }
 .reveal.in { opacity: 1; transform: translateY(0); }
 .hero, .reveal.hero { opacity: 1; transform: none; transition: none; }
+/* Mobile: a big 80px translate over 2.6s means sections are physically sliding
+   while you scroll, which reads as the page "fighting" / springing back. Use a
+   short, small fade-up instead and drop the permanent will-change. */
+@media (max-width: 900px) {
+  .reveal {
+    transform: translateY(18px);
+    transition: opacity .5s ease, transform .5s ease;
+    will-change: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transform: none; transition: opacity .3s ease; }
+}
 
 .trusted-head {
   max-width: 1400px; margin: 0 auto 30px;
@@ -1361,8 +1381,13 @@ body.no-grain::before { display: none; }
 .client-logo:hover { opacity: 1; }
 .client-logo img {
   height: 100%;
+  /* Explicit max-height too: `height:100%` resolves against the flex parent's
+     height, which can collapse on mobile and let a huge source image (e.g. an
+     8334px PNG) render at full natural size — that blew the page width to
+     ~9700px and caused horizontal scroll. max-height caps it unconditionally. */
+  max-height: 56px;
   width: auto;
-  max-width: 240px;
+  max-width: 200px;
   object-fit: contain;
   transform-origin: center;
   /* Default: flatten to a uniform silhouette (white on dark, black on light). */
@@ -1469,6 +1494,10 @@ body.no-grain::before { display: none; }
   border-radius: 14px; overflow: hidden;
   background: #1a1410;
   border: 1px solid rgba(245,197,24,0.18);
+}
+.bts-placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1a1410 0%, #221a12 100%);
 }
 .bts-frame iframe {
   position: absolute; inset: 0;
@@ -2057,32 +2086,29 @@ video.frame-video {
   .cat { padding: 22px 0; border-bottom: 1px solid var(--rule); border-right: 0; }
   .cat .name { font-size: clamp(28px, 9vw, 52px); }
 
-  /* Engine — stack on tablet/phone. The desktop layout absolutely-centres the
-     two founder circles between two bios; here we put the circles in normal
-     flow side by side, then the two bios below. */
+  /* Engine — stack on tablet/phone as two clean cards, each = the founder's
+     photo directly above THAT founder's bio. The desktop centred .founder-pair
+     is hidden; each bio shows its own inline portrait instead, so there's no
+     ambiguity about which description belongs to whom. */
   .engine-row {
     display: flex; flex-direction: column; align-items: center;
     min-height: 0; max-width: 660px;
-    gap: 28px; padding: 24px 20px 0;
+    gap: 40px; padding: 24px 20px 0;
   }
-  /* The key fix: the pair was still position:absolute (so the circles
-     overlapped). Drop it back into flow. */
-  .founder-pair {
-    position: static; transform: none;
-    flex-direction: row; justify-content: center; gap: 16px;
-    pointer-events: auto; order: 0;
-  }
-  .founder-portrait { width: 200px; height: 200px; padding: 0 10px 16px; }
-  .founder-portrait .fp-name { font-size: 24px; }
-  .founder-portrait .fp-role { margin-bottom: 6px; }
+  .founder-pair { display: none; }
+  .fp-inline { display: flex; justify-content: center; margin-bottom: 18px; }
   .founder-bio {
-    max-width: 600px; text-align: left; font-size: 15px;
+    max-width: 560px; text-align: center; font-size: 15px;
+    display: flex; flex-direction: column; align-items: center;
   }
-  .founder-bio.left { grid-column: auto; padding: 0; order: 1; }
-  .founder-bio.right { grid-column: auto; padding: 0; order: 2; text-align: left; }
+  .founder-bio.left { grid-column: auto; padding: 0; }
+  .founder-bio.right { grid-column: auto; padding: 0; }
   .founder-bio.left p::before,
   .founder-bio.right p::before { display: none; }
-  .founder-bio.right p { text-align: left; }
+  .founder-bio p { text-align: center; }
+  .founder-portrait { width: 190px; height: 190px; padding: 0 10px 16px; }
+  .founder-portrait .fp-name { font-size: 22px; }
+  .founder-portrait .fp-role { margin-bottom: 6px; }
 
   .engine .heading h2 { font-size: clamp(48px, 12vw, 80px); }
   .engine .footnote p { font-size: 14px; }

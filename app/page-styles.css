@@ -1716,10 +1716,14 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   50% { transform: scale(1.25); opacity: 1; }
 }
 
-/* Constrain stream — stats sit below, stream stays in upper hero only */
-.social-hero.clean .sh-inner {
-  grid-template-columns: 1fr 240px;
-  align-items: start;
+/* Constrain stream — stats sit below, stream stays in upper hero only.
+   Desktop-only: on mobile this 2-column grid squeezed the hero text into a
+   ~110px column (one word per line). The ≤900px rule above keeps it 1 column. */
+@media (min-width: 901px) {
+  .social-hero.clean .sh-inner {
+    grid-template-columns: 1fr 240px;
+    align-items: start;
+  }
 }
 .sh-stream {
   height: 360px;

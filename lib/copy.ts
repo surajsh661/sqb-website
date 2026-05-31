@@ -46,7 +46,7 @@ export const COPY = {
     // NOTE: the big animated headline ("We love filmmaking first and AI
     // second…") has moving icons baked in, so it lives in
     // components/ManifestoHeadline.tsx — ask the developer to change that line.
-    paragraph: `S'QB Pictures is a Delhi · Mumbai studio building some of the most ambitious AI-enabled films, ads and shows for the world's biggest brands — with the crew, kit and reach to shoot on location anywhere, from a Mumbai set to a shoot across the globe. Story, performance and craft come first; generative pipelines come along to make the impossible shot possible and the impossible deadline real.`,
+    paragraph: `S'QB Pictures is where storytelling meets the future of filmmaking. From Delhi and Mumbai to locations across the globe, we create films, commercials, and original content for the world's most ambitious brands. With a seasoned crew, world-class production expertise, and AI-powered creative workflows, we deliver work that is bigger, faster, and louder. But technology is never the story. Story comes first. Performance comes first. Craft comes first.`,
   },
 
   // ── Section 03 · Clients ──────────────────────────────────────────────────
@@ -71,8 +71,8 @@ export const COPY = {
     eyebrowLabel: `THE PEOPLE`,
     heading: `THE *ENGINE*`,
     subline: `FOUNDERS · FILMMAKERS FIRST · AI OPERATORS SECOND`,
-    surajBio: `Founder and director. A history grad and storyteller long before he ever picked up a camera. Suraj directs the studio's flagship work — long-running branded series, music films, and a coming-of-age drama that hit 8.3 on IMDb. He's now directing Revolution — Padhai ki Ladai, our long-form docu-drama on India's education industry. He builds for the feeling first and the format second.`,
-    shubhamBio: `Founder and producer. The writer and operator who turns a script into a shoot into a finished cut. Shubham runs the floor — crewing long shoots, holding the timeline, making sure nothing slips between the brief and the delivery. He co-wrote Revolution — Padhai ki Ladai with Suraj. He'll take a tight crew over a big one, and a brief with real stakes over one without.`,
+    surajBio: `Suraj Sharma is the Founder and Director of S'QB Pictures. He spearheads the studio's most ambitious films, commercials, and original content. A director, writer, and editor, he combines storytelling, visual craft, and technical expertise to shape every project from the ground up.`,
+    shubhamBio: `Shubham Shah is the Founder and Producer at S'QB Pictures. He turns ideas into finished films, overseeing every step from script and shoot to final delivery. A writer and producer, he leads the production floor, keeps projects on schedule, and ensures nothing gets lost between the brief and the final cut. He believes in small, talented teams, strong execution, and work that truly matters.`,
     footnote: `Two founders. A tight core of operators, writers, editors and AI supervisors who can hold a camera at 6am and a render queue at midnight.`,
   },
 
