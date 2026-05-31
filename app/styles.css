@@ -224,6 +224,11 @@ body.no-grain::before { display: none; }
   transition: left .35s cubic-bezier(.7,0,.2,1);
   display: flex; align-items: center; justify-content: center;
   font-size: 11px;
+  /* The ☾ / ☀ glyphs can render as a blue-tinted emoji on some devices (notably
+     mobile Safari/Chrome). Force the text (non-emoji) presentation and a dark
+     ink so the moon reads as a clean dark glyph on the yellow knob. */
+  color: #1a1410;
+  font-family: 'JetBrains Mono', monospace;
 }
 [data-theme="light"] .theme-toggle .knob { left: 30px; }
 
@@ -2108,7 +2113,11 @@ video.frame-video {
   .founder-bio.right { grid-column: auto; padding: 0; }
   .founder-bio.left p::before,
   .founder-bio.right p::before { display: none; }
-  .founder-bio p { text-align: center; }
+  /* Match the desktop rule's specificity (.right p) so Shubham's bio centres
+     too — the base '.founder-bio.right p { text-align:right }' was winning. */
+  .founder-bio p,
+  .founder-bio.left p,
+  .founder-bio.right p { text-align: center; }
   .founder-portrait { width: 190px; height: 190px; padding: 0 10px 16px; }
   .founder-portrait .fp-name { font-size: 22px; }
   .founder-portrait .fp-role { margin-bottom: 6px; }

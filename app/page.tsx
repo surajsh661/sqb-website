@@ -113,7 +113,9 @@ export default function HomePage() {
       <Verticals />
 
       <Engine />
-      <Testimonials />
+      {/* "The Receipts" testimonials archived until real client reviews are in.
+          Restore by uncommenting this line (component + copy are untouched). */}
+      {/* <Testimonials /> */}
       <BTSPreview />
       <ContactSection />
       <Footer />

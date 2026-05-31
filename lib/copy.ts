@@ -107,8 +107,8 @@ export const COPY = {
   footer: {
     // The gold dash "—" after TODAY is added automatically.
     cta: `TELL YOUR *STORY*\nTODAY`,
-    studioHeading: `STUDIO`,
-    studioLines: `S'QB PICTURES\nDELHI · MUMBAI`,
+    studioHeading: `OFFICE`,
+    studioLines: `S'QB PICTURES\nAWFIS, MAJESTIC OMNIA, BLOCK A\nSECTOR 4, NOIDA\nUTTAR PRADESH 201301`,
     foundersHeading: `FOUNDERS`,
     contactHeading: `CONTACT`,
     followHeading: `FOLLOW`,
@@ -166,7 +166,7 @@ export const COPY = {
   // ── Home page · Vertical works strip ──────────────────────────────────────
   verticalsHome: {
     heading: `VERTICAL *CINEMA*`,
-    blurb: `We make vertical web shows end to end — from writing and ideation through casting, shooting, directing and editing, to final delivery with grade, BGM and VFX. And when a show is AI, we take it from script all the way to the final AI animation.`,
+    blurb: `Vertical web shows, made end to end — writing, casting, shoot, edit, grade, BGM and VFX. When a show is AI, we take it from script to final animation.`,
   },
 
   // ── "Trusted by global brands" block (shown on Video / AI Lab / Social) ────

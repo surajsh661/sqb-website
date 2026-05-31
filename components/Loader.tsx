@@ -18,6 +18,18 @@ export default function Loader() {
     <div className={'sqb-loader' + (done ? ' done' : '')} id="sqb-loader">
       <div className="sqb-loader-icon">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="lr-svg">
+          {/* Clapboard — stroked, sits left of the camera. Its top stick hinges
+              at the back-left corner and claps shut/open with a quick snap. */}
+          <g className="lr-clap" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect className="lr-clap-body" x="34" y="92" width="60" height="44" rx="5" />
+            <g className="lr-clap-top">
+              <rect x="32" y="74" width="64" height="15" rx="3" />
+              <line x1="40" y1="74" x2="46" y2="89" />
+              <line x1="54" y1="74" x2="60" y2="89" />
+              <line x1="68" y1="74" x2="74" y2="89" />
+              <line x1="82" y1="74" x2="88" y2="89" />
+            </g>
+          </g>
           <g className="lr-film" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ transformOrigin: '100px 100px' }}>
             <rect x="30" y="68" width="100" height="58" rx="8" />
             <circle cx="62" cy="56" r="14" />
@@ -38,7 +50,7 @@ export default function Loader() {
             <line x1="74" y1="146" x2="92" y2="146" />
           </g>
           <g className="lr-stars" fill="none" stroke="#F5C518" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="0" style={{ transformOrigin: '100px 100px' }}>
-            <path d="M100 60 L104.5 95.5 L140 100 L104.5 104.5 L100 140 L95.5 104.5 L60 100 L95.5 95.5 Z" />
+            <path className="lr-star-main" fill="#F5C518" d="M100 60 L104.5 95.5 L140 100 L104.5 104.5 L100 140 L95.5 104.5 L60 100 L95.5 95.5 Z" />
             <path d="M48 50 L52 70 L72 74 L52 78 L48 98 L44 78 L24 74 L44 70 Z" />
             <path d="M152 148 L155 162 L169 166 L155 170 L152 184 L149 170 L135 166 L149 162 Z" />
           </g>

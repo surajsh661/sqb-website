@@ -90,7 +90,9 @@ export default function Topbar({
           aria-label="Toggle theme"
           title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
         >
-          <span className="knob">{theme === 'dark' ? '☾' : '☀'}</span>
+          {/* ︎ = text-presentation selector → forces a non-emoji glyph so the
+              moon never renders as a blue emoji on mobile. */}
+          <span className="knob">{theme === 'dark' ? '☾︎' : '☀︎'}</span>
         </button>
         <button className="menu-trigger" onClick={onOpenMenu} aria-label="Open menu">
           <span className="lines"><span /><span /><span /></span>
