@@ -21,6 +21,7 @@ export default function BTSPreview() {
   // saturated the network/decoder (Vimeo oembed calls were timing out) and made
   // the videos you actually tap lag. They mount once the section approaches.
   const sectionRef = useRef<HTMLElement | null>(null);
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState(false);
   useEffect(() => {
     const el = sectionRef.current;
@@ -47,6 +48,44 @@ export default function BTSPreview() {
     check();
     return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); };
   }, []);
+
+  // Mobile: the strip is a NATIVE horizontal scroller (CSS marquee can't be
+  // grabbed by a finger, and the IG iframes eat the touch). We auto-advance
+  // scrollLeft so it keeps drifting, but the moment the user touches it we pause,
+  // then resume shortly after they let go. Loops seamlessly because the cards
+  // are rendered twice — when we pass the half-way point we jump back by half.
+  useEffect(() => {
+    if (!active) return;
+    const track = marqueeRef.current;
+    if (!track) return;
+    const isTouch =
+      'ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0;
+    if (!isTouch) return; // desktop keeps the CSS marquee
+
+    let raf = 0;
+    let pausedUntil = 0;
+    const SPEED = 0.4; // px per frame ≈ 24px/s drift
+    const tick = () => {
+      const half = track.scrollWidth / 2;
+      if (performance.now() > pausedUntil && half > 0) {
+        track.scrollLeft += SPEED;
+        if (track.scrollLeft >= half) track.scrollLeft -= half; // seamless loop
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    // Any touch / manual scroll pauses the drift for 2.5s so the user stays in control.
+    const hold = () => { pausedUntil = performance.now() + 2500; };
+    track.addEventListener('touchstart', hold, { passive: true });
+    track.addEventListener('touchmove', hold, { passive: true });
+    track.addEventListener('scroll', hold, { passive: true });
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      track.removeEventListener('touchstart', hold);
+      track.removeEventListener('touchmove', hold);
+      track.removeEventListener('scroll', hold);
+    };
+  }, [active]);
 
   const renderCard = (b: BTS, key: string) => {
     const isIg = b.type === 'ig';
@@ -90,7 +129,7 @@ export default function BTSPreview() {
         <h2>{rich(COPY.bts.heading)}</h2>
         <p className="bts-blurb">{COPY.bts.blurb}</p>
       </div>
-      <div className="bts-marquee">
+      <div className="bts-marquee" ref={marqueeRef}>
         <div className="bts-marquee-track">
           {items.map((b, i) => renderCard(b, 'a' + i))}
           {items.map((b, i) => renderCard(b, 'b' + i))}

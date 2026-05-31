@@ -2144,6 +2144,23 @@ video.frame-video {
   /* BTS — smaller cards */
   .bts-card { width: clamp(180px, 60vw, 250px); }
   .bts-marquee-track { gap: 16px; padding: 0 16px; }
+  /* Mobile: native horizontal scroll so the strip is SWIPEABLE. The JS in
+     BTSPreview auto-advances scrollLeft (and pauses on touch); the CSS marquee
+     animation is turned off here so they don't fight. */
+  .bts-marquee {
+    overflow-x: auto; overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;            /* hide the scrollbar (Firefox) */
+  }
+  .bts-marquee::-webkit-scrollbar { display: none; }  /* hide (WebKit) */
+  .bts-marquee-track {
+    animation: none !important;       /* JS drives the scroll instead */
+    width: max-content;
+  }
+  /* IG/video embeds eat touch events — let swipes pass through to the scroller.
+     The whole card is still tappable to open (the card's own click handler, not
+     the iframe, drives that). */
+  .bts-frame iframe { pointer-events: none; }
 
   /* Contact — stack columns */
   .contact-inner { grid-template-columns: 1fr; gap: 32px; padding: 0 20px; }
