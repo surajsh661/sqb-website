@@ -2157,9 +2157,11 @@ video.frame-video {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; padding-top: 40px; }
   .footer-bottom { flex-direction: column; gap: 8px; align-items: flex-start; padding-top: 24px; font-size: 10px; }
 
-  /* Client logo marquee — smaller logos on mobile */
+  /* Client logo marquee — smaller logos + tighter spacing on mobile (the 80px
+     desktop gap left big voids between logos on a phone). */
   .logo-marquee { padding: 18px 0; }
-  .client-logo { height: 52px !important; padding: 0 14px; }
+  .logo-track { gap: 34px; padding: 0 17px; }
+  .client-logo { height: 52px !important; padding: 0 6px; }
   .client-logo img { max-width: 150px; }
 
   /* Manifesto */
