@@ -14,15 +14,19 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const playerRef = useRef<any>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  // Audio ON by default — the user's click on the hero counts as a fresh
-  // gesture, so browsers normally allow programmatic unmute through this path.
-  const [audioOn, setAudioOn] = useState(true);
+  // Touch devices block UNMUTED autoplay — trying to auto-unmute makes the video
+  // refuse to play and sit loading. So on mobile we start MUTED (autoplay always
+  // allowed) and let the user tap to unmute; on desktop we can unmute up front.
+  const isTouch =
+    typeof window !== 'undefined' &&
+    ('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0);
+  const [audioOn, setAudioOn] = useState(!isTouch);
   const [paused, setPaused] = useState(false);
 
   // Reset audio + scroll-to-top when opening / switching films
   useEffect(() => {
     if (!open || !film) return;
-    setAudioOn(true);
+    setAudioOn(!isTouch);
     setPaused(false);
     requestAnimationFrame(() => {
       if (rootRef.current) rootRef.current.scrollTop = 0;
@@ -45,13 +49,14 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
         try {
           const player = new w.Vimeo.Player(f);
           playerRef.current = player;
-          player.setMuted(false)
-            .then(() => player.play())
-            .catch(() => {
-              // Browser blocked unmute — reflect that in the UI so the icon
-              // matches reality and the user can tap to enable.
-              setAudioOn(false);
-            });
+          if (isTouch) {
+            // Mobile: guarantee playback by staying muted; the user taps to unmute.
+            player.setMuted(true).then(() => player.play()).catch(() => {});
+          } else {
+            player.setMuted(false)
+              .then(() => player.play())
+              .catch(() => setAudioOn(false));
+          }
         } catch {
           setAudioOn(false);
         }
@@ -64,10 +69,14 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
         const f = iframeRef.current;
         if (!f || !f.contentWindow) { setAudioOn(false); return; }
         try {
-          f.contentWindow.postMessage(
-            JSON.stringify({ event: 'command', func: 'unMute', args: [] }),
-            '*',
-          );
+          // Always (re)issue play. Only unmute on desktop — unmuting on mobile
+          // makes the player refuse to autoplay and hang on the loading spinner.
+          if (!isTouch) {
+            f.contentWindow.postMessage(
+              JSON.stringify({ event: 'command', func: 'unMute', args: [] }),
+              '*',
+            );
+          }
           f.contentWindow.postMessage(
             JSON.stringify({ event: 'command', func: 'playVideo', args: [] }),
             '*',

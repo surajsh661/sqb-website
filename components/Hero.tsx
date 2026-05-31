@@ -92,6 +92,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   const cursorRaw = useRef(0.5); // raw cursor x, low-pass filtered into cursorX
   const insideZone = useRef(false);
   const manualTarget = useRef<number | null>(null);
+  const swipedAt = useRef(0); // timestamp of last swipe — suppresses the trailing click
   const manualUntil = useRef(0);
   const cellWRef = useRef(0);
   const lastTime = useRef(0);
@@ -393,6 +394,8 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   }, [playCenter, mounted, N]);
 
   const onCellClick = (i: number) => {
+    // Ignore the click that browsers synthesise at the end of a swipe.
+    if (performance.now() - swipedAt.current < 400) return;
     const wrapped = wrapDelta(i - snapFloat.current, N);
     if (Math.abs(wrapped) < 0.5) {
       onPick(films[i]);
@@ -409,6 +412,31 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   const nudge = (dir: number) => {
     manualTarget.current = Math.round(snapFloat.current) + dir;
     manualUntil.current = performance.now() + 1100;
+  };
+
+  // Tinder-style horizontal swipe on touch (mobile). A left swipe advances to the
+  // next film, a right swipe goes back. We only treat it as a swipe when the
+  // horizontal travel clearly beats the vertical (so normal vertical page scroll
+  // is never hijacked). A quick flick also counts even if short.
+  const touch = useRef<{ x: number; y: number; t: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const p = e.touches[0];
+    touch.current = { x: p.clientX, y: p.clientY, t: performance.now() };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touch.current;
+    touch.current = null;
+    if (!start) return;
+    const p = e.changedTouches[0];
+    const dx = p.clientX - start.x;
+    const dy = p.clientY - start.y;
+    const dt = performance.now() - start.t;
+    // Horizontal intent: |dx| dominates |dy|, and either a long drag (>45px) or a
+    // fast flick (>22px in <300ms).
+    if (Math.abs(dx) > Math.abs(dy) * 1.4 && (Math.abs(dx) > 45 || (Math.abs(dx) > 22 && dt < 300))) {
+      nudge(dx < 0 ? 1 : -1); // swipe left → next, swipe right → previous
+      swipedAt.current = performance.now();
+    }
   };
 
   const centerFilm = films[activeIdx];
@@ -432,7 +460,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
       <div className="hero-glass-l" />
       <div className="hero-glass-r" />
 
-      <div className="hero-zone" ref={zoneRef}>
+      <div className="hero-zone" ref={zoneRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className="video-track" ref={trackRef}>
           {films.map((film, i) => (
             <div
