@@ -47,8 +47,11 @@ html, body {
   transition: background 0.5s ease, color 0.5s ease;
 }
 body { min-height: 100vh; position: relative; }
-/* Pointer devices keep the smooth anchor glide; touch uses native scrolling. */
-@media (hover: hover) and (pointer: fine) {
+/* Pointer devices on a real-sized screen keep the smooth anchor glide; touch /
+   small screens use native scrolling. The width floor is a safety net for
+   devices that misreport pointer/hover (so phones never get smooth-scroll,
+   which caused the spring-back-on-scroll-up bug). */
+@media (hover: hover) and (pointer: fine) and (min-width: 901px) {
   html { scroll-behavior: smooth; }
 }
 
