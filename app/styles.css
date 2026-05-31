@@ -2486,3 +2486,102 @@ video.frame-video {
      pull it up toward the video to kill the dead gap between them. */
   .hero-title-wrap { left: 20px; right: 20px; bottom: 96px; }
 }
+
+/* ============================================================
+   GET-A-QUOTE MODAL (Reach Out)
+   ============================================================ */
+.qf-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(8,7,6,0.82); backdrop-filter: blur(8px);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 40px 16px; overflow-y: auto;
+  animation: qfFade .25s ease;
+}
+@keyframes qfFade { from { opacity: 0; } to { opacity: 1; } }
+.qf-modal {
+  position: relative; width: min(560px, 100%);
+  background: #141210; border: 1px solid rgba(245,197,24,0.18);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  animation: qfRise .3s cubic-bezier(.22,1,.36,1);
+}
+@keyframes qfRise { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+.qf-close {
+  position: absolute; top: 14px; right: 14px; z-index: 4;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.35);
+  color: #fff; font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.qf-close:hover { background: var(--accent); color: #1a1410; border-color: var(--accent); }
+/* Banner */
+.qf-banner {
+  padding: 30px 28px 24px;
+  background:
+    radial-gradient(ellipse at 80% -20%, rgba(245,197,24,0.18), transparent 60%),
+    linear-gradient(180deg, #1d1813, #141210);
+  border-bottom: 1px solid rgba(245,197,24,0.16);
+}
+.qf-banner-kicker {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: 0.28em; color: var(--accent); margin-bottom: 10px;
+}
+.qf-banner-title {
+  font-family: 'Anton', sans-serif; font-size: clamp(34px, 7vw, 52px);
+  line-height: 0.95; color: var(--fg); margin: 0;
+}
+.qf-banner-sub { margin: 10px 0 0; color: var(--fg-dim); font-size: 14px; }
+/* Form */
+.qf-form { padding: 24px 28px 30px; display: flex; flex-direction: column; gap: 18px; }
+.qf-field { display: flex; flex-direction: column; gap: 8px; }
+.qf-field > span {
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px;
+  letter-spacing: 0.02em; color: var(--fg);
+}
+.qf-field > span i { color: var(--accent); font-style: normal; }
+.qf-field input,
+.qf-field textarea {
+  width: 100%; background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+  padding: 12px 14px; color: var(--fg); font-size: 15px;
+  font-family: 'Inter', sans-serif; transition: border-color .2s, background .2s;
+}
+.qf-field input::placeholder, .qf-field textarea::placeholder { color: rgba(255,255,255,0.32); }
+.qf-field input:focus, .qf-field textarea:focus {
+  outline: none; border-color: var(--accent); background: rgba(255,255,255,0.06);
+}
+.qf-field textarea { resize: vertical; min-height: 96px; }
+.qf-checks { display: flex; flex-direction: column; gap: 12px; margin-top: 2px; }
+.qf-check { display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 15px; color: var(--fg); }
+.qf-check input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; flex: 0 0 auto; }
+.qf-other {
+  margin-top: 4px; width: 100%; background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+  padding: 10px 12px; color: var(--fg); font-size: 14px;
+}
+.qf-other:focus { outline: none; border-color: var(--accent); }
+.qf-submit {
+  align-self: flex-start; margin-top: 4px;
+  background: #ff7a1a; color: #1a1410; border: none; border-radius: 999px;
+  padding: 13px 32px; font-family: 'Inter', sans-serif; font-style: italic;
+  font-weight: 900; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase;
+  cursor: pointer; transition: background .2s, transform .15s;
+}
+.qf-submit:hover { background: #ff9d3d; transform: translateY(-1px); }
+.qf-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+.qf-err { color: #ff6b6b; font-size: 13px; margin: 0; }
+/* Success state */
+.qf-success { padding: 40px 30px 36px; text-align: center; }
+.qf-success-mark {
+  width: 56px; height: 56px; margin: 0 auto 18px; border-radius: 50%;
+  background: var(--accent); color: #1a1410; font-size: 28px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+.qf-success h3 { font-family: 'Anton', sans-serif; font-size: 28px; margin: 0 0 10px; color: var(--fg); }
+.qf-success p { color: var(--fg-dim); font-size: 15px; margin: 0 0 22px; line-height: 1.5; }
+@media (max-width: 600px) {
+  .qf-overlay { padding: 0; }
+  .qf-modal { width: 100%; min-height: 100%; border-radius: 0; border: 0; }
+  .qf-banner { padding: 26px 20px 20px; }
+  .qf-form { padding: 22px 20px 30px; }
+}

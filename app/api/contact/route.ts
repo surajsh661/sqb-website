@@ -8,6 +8,10 @@ interface Body {
   email?: string;
   org?: string;
   brief?: string;
+  // Get-a-Quote extras (all optional so the simple contact form still works).
+  phone?: string;
+  website?: string;
+  services?: string[];
 }
 
 const escapeHtml = (s: string) =>
@@ -24,6 +28,11 @@ export async function POST(req: Request) {
   const email = (payload.email || '').trim();
   const org = (payload.org || '').trim();
   const brief = (payload.brief || '').trim();
+  const phone = (payload.phone || '').trim();
+  const website = (payload.website || '').trim();
+  const services = Array.isArray(payload.services)
+    ? payload.services.map((s) => String(s).trim()).filter(Boolean)
+    : [];
   if (!name || !email || !brief) {
     return NextResponse.json({ error: 'missing fields' }, { status: 400 });
   }
@@ -43,8 +52,11 @@ export async function POST(req: Request) {
     <h2>New brief from sqbpictures.com</h2>
     <p><strong>Name:</strong> ${escapeHtml(name)}</p>
     <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-    <p><strong>Brand / Org:</strong> ${escapeHtml(org || '—')}</p>
-    <p><strong>Brief:</strong></p>
+    ${phone ? `<p><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : ''}
+    <p><strong>Company / Org:</strong> ${escapeHtml(org || '—')}</p>
+    ${website ? `<p><strong>Website:</strong> ${escapeHtml(website)}</p>` : ''}
+    ${services.length ? `<p><strong>Service type:</strong> ${escapeHtml(services.join(', '))}</p>` : ''}
+    <p><strong>Project:</strong></p>
     <p style="white-space:pre-wrap">${escapeHtml(brief)}</p>
   `;
 

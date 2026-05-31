@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import Topbar from '@/components/Topbar';
 import Loader from '@/components/Loader';
 import TicketMenu from '@/components/TicketMenu';
+import QuoteForm from '@/components/QuoteForm';
 import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
@@ -86,6 +87,7 @@ function AISection({
 export default function AILabPage() {
   const [hover, setHover] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [quoteOpen, setQuoteOpen] = useState(false);
   // The reel currently open in the watch-lightbox (null = closed).
   const [reel, setReel] = useState<{ item: AILabItem; section: string } | null>(null);
 
@@ -114,7 +116,7 @@ export default function AILabPage() {
   return (
     <div className="page-shell">
       <Loader />
-      <Topbar active="ai-lab" variant="nav" onOpenMenu={() => setMenuOpen(true)} />
+      <Topbar active="ai-lab" variant="nav" onOpenMenu={() => setMenuOpen(true)} onReachOut={() => setQuoteOpen(true)} />
 
       <section className="ailab-hero">
         <div className="ai-eyebrow">{COPY.aiLab.heroEyebrow}</div>
@@ -186,7 +188,8 @@ export default function AILabPage() {
       <ContactSection compact />
       <Footer />
 
-      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} onReachOut={() => setQuoteOpen(true)} />
+      <QuoteForm open={quoteOpen} onClose={() => setQuoteOpen(false)} />
 
       {/* Watch-lightbox — fits the clip to the viewport (no cropping) and adapts
           to the clip's orientation. Portalled to <body> so no ancestor scroll

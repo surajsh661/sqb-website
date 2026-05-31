@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { COPY } from '@/lib/copy';
 
-interface Props { open: boolean; onClose: () => void }
+interface Props { open: boolean; onClose: () => void; onReachOut?: () => void }
 
 // Mobile menu — the four nav destinations, social links, then Reach Out.
 const NAV: [string, string][] = [
@@ -12,9 +12,10 @@ const NAV: [string, string][] = [
   ['SOCIAL', '/social'],
 ];
 
-export default function TicketMenu({ open, onClose }: Props) {
+export default function TicketMenu({ open, onClose, onReachOut }: Props) {
   const reachOut = () => {
     onClose();
+    if (onReachOut) { setTimeout(onReachOut, 180); return; }
     setTimeout(() => {
       document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 120);

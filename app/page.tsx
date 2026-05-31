@@ -10,6 +10,7 @@ import BTSPreview from '@/components/BTSPreview';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import TicketMenu from '@/components/TicketMenu';
+import QuoteForm from '@/components/QuoteForm';
 import CaseStudy from '@/components/CaseStudy';
 import ClientLogos from '@/components/ClientLogos';
 import CountUp from '@/components/CountUp';
@@ -24,6 +25,7 @@ import type { Film } from '@/lib/types';
 
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [quoteOpen, setQuoteOpen] = useState(false);
   const [activeFilm, setActiveFilm] = useState<Film | null>(null);
   const [caseOpen, setCaseOpen] = useState(false);
 
@@ -65,7 +67,7 @@ export default function HomePage() {
     <>
       <Loader />
       <HeroIntro />
-      <Topbar active="home" onOpenMenu={() => setMenuOpen(true)} />
+      <Topbar active="home" onOpenMenu={() => setMenuOpen(true)} onReachOut={() => setQuoteOpen(true)} />
 
       <Hero films={SQB_HERO_FILMS} onPick={openCase} showCursorHint />
 
@@ -120,7 +122,8 @@ export default function HomePage() {
       <ContactSection />
       <Footer />
 
-      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} onReachOut={() => setQuoteOpen(true)} />
+      <QuoteForm open={quoteOpen} onClose={() => setQuoteOpen(false)} />
       <CaseStudy
         film={activeFilm}
         films={SQB_FILMS}

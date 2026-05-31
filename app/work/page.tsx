@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Topbar from '@/components/Topbar';
 import Loader from '@/components/Loader';
 import TicketMenu from '@/components/TicketMenu';
+import QuoteForm from '@/components/QuoteForm';
 import CaseStudy from '@/components/CaseStudy';
 import FilmCard from '@/components/FilmCard';
 import HeroThumb from '@/components/HeroThumb';
@@ -43,6 +44,7 @@ function WorkInner() {
   const [filter, setFilter] = useState<Genre>(initialFilter);
   const [showAll, setShowAll] = useState(initialFilter !== 'all');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [quoteOpen, setQuoteOpen] = useState(false);
   const [activeFilm, setActiveFilm] = useState<Film | null>(null);
   const [caseOpen, setCaseOpen] = useState(false);
   const [vertPick, setVertPick] = useState<Film | null>(null);
@@ -130,7 +132,7 @@ function WorkInner() {
 
   return (
     <div className="page-shell">
-      <Topbar active="work" variant="nav" onOpenMenu={() => setMenuOpen(true)} />
+      <Topbar active="work" variant="nav" onOpenMenu={() => setMenuOpen(true)} onReachOut={() => setQuoteOpen(true)} />
 
       <section className="work-vision">
         <div className="wv-inner">
@@ -324,7 +326,8 @@ function WorkInner() {
       <Footer />
 
       <CaseStudy film={activeFilm} films={SQB_FILMS} open={caseOpen} onClose={closeCase} onPick={switchCase} />
-      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} onReachOut={() => setQuoteOpen(true)} />
+      <QuoteForm open={quoteOpen} onClose={() => setQuoteOpen(false)} />
 
       {vertPick && (
         <div

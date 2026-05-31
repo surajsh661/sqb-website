@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Topbar from '@/components/Topbar';
 import Loader from '@/components/Loader';
 import TicketMenu from '@/components/TicketMenu';
+import QuoteForm from '@/components/QuoteForm';
 import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
@@ -55,12 +56,13 @@ function CreatorBlock({ c }: { c: Creator }) {
 
 export default function SocialPage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [quoteOpen, setQuoteOpen] = useState(false);
   useEffect(() => { setupReveal(); }, []);
 
   return (
     <div className="page-shell">
       <Loader />
-      <Topbar active="social" variant="nav" onOpenMenu={() => setMenuOpen(true)} />
+      <Topbar active="social" variant="nav" onOpenMenu={() => setMenuOpen(true)} onReachOut={() => setQuoteOpen(true)} />
 
       <section className="social-hero clean">
         <div className="sh-inner">
@@ -115,7 +117,8 @@ export default function SocialPage() {
       <ContactSection compact />
       <Footer />
 
-      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <TicketMenu open={menuOpen} onClose={() => setMenuOpen(false)} onReachOut={() => setQuoteOpen(true)} />
+      <QuoteForm open={quoteOpen} onClose={() => setQuoteOpen(false)} />
     </div>
   );
 }
