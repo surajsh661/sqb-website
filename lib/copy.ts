@@ -108,7 +108,9 @@ export const COPY = {
     // The gold dash "—" after TODAY is added automatically.
     cta: `TELL YOUR *STORY*\nTODAY`,
     studioHeading: `OFFICE`,
-    studioLines: `S'QB PICTURES\nAWFIS, MAJESTIC OMNIA, BLOCK A\nSECTOR 4, NOIDA\nUTTAR PRADESH 201301`,
+    // We link out to the map pin instead of printing the street address.
+    hqLabel: `HEADQUARTERS`,
+    hqUrl: `https://www.google.com/maps/search/?api=1&query=AWFIS+Majestic+Omnia+Block+A+Sector+4+Noida+Uttar+Pradesh+201301`,
     foundersHeading: `FOUNDERS`,
     contactHeading: `CONTACT`,
     followHeading: `FOLLOW`,
@@ -227,8 +229,8 @@ export const COPY = {
   aiLab: {
     heroEyebrow: `S'QB AI LABS`,
     heroTitle: `AI BUILT TO *SCALE*`,
-    // Capability tags shown under the AI Lab headline.
-    heroTags: [`AI Creatives`, `AI Influencers`, `AI Films`, `2D Animation`, `3D Animation`, `VFX`, `AI IP Creation`],
+    // Capabilities shown under the AI Lab headline as a quiet, boxless index line.
+    heroTags: [`AI Creatives`, `AI Influencers`, `AI Films`, `2D & 3D Animation`, `VFX`, `AI IP Creation`],
     heroBlurb: `We build AI shows, films, and animation series for OTT platforms, theatrical, and broadcast — alongside original YouTube IPs like Sunheri Soch S4: docu-films directed and generated entirely with our AI pipeline. Story first. Generative second. Always cinema-grade.`,
 
     // The 3 hover panels at the top of the page (short descriptions).

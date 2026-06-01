@@ -27,6 +27,26 @@ export default function Topbar({
     else document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  // A bold arrow drawn as an SVG (so the weight is real, not a stroked glyph).
+  const Arrow = ({ cls }: { cls: string }) => (
+    <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3.3} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 12h13" />
+      <path d="M12 6l6 6-6 6" />
+    </svg>
+  );
+  // Reach Out button contents: label + a clipped arrow slot holding two arrows.
+  // On hover the resting arrow slides out the right while a second arrow slides
+  // in from behind the label to take its place — both clipped inside the pill.
+  const roInner = (
+    <>
+      <span className="ro-label">{COPY.nav.reachOut}</span>
+      <span className="ro-arrow" aria-hidden="true">
+        <Arrow cls="ro-a ro-a1" />
+        <Arrow cls="ro-a ro-a2" />
+      </span>
+    </>
+  );
+
   if (variant === 'nav') {
     return (
       <nav className="sqb-nav">
@@ -42,7 +62,7 @@ export default function Topbar({
         </div>
         <div className="right">
           <a className="reach-out-btn" href="#contact" onClick={reachOut}>
-            {COPY.nav.reachOut} <span className="ro-arrow">→</span>
+            {roInner}
           </a>
           <button className="menu-trigger" onClick={onOpenMenu} aria-label="Open menu">
             <span className="lines"><span /><span /><span /></span>
@@ -71,7 +91,7 @@ export default function Topbar({
       </nav>
       <div className="top-right">
         <a className="reach-out-btn" href="#contact" onClick={reachOut}>
-          {COPY.nav.reachOut} <span className="ro-arrow">→</span>
+          {roInner}
         </a>
         <button className="menu-trigger" onClick={onOpenMenu} aria-label="Open menu">
           <span className="lines"><span /><span /><span /></span>

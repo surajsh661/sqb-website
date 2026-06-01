@@ -362,17 +362,22 @@
   font-size: 17px; line-height: 1.55;
   color: var(--fg-dim);
 }
-.ai-tags {
-  display: flex; flex-wrap: wrap; gap: 9px 10px;
-  margin: 20px 0 22px;
-}
-.ai-tag {
+/* Capability index — a quiet, boxless line (no pill buttons). Reads as an
+   editorial "what we make" index: monospace, muted ink, hairline gold dots. */
+.ai-caps {
+  margin: 18px 0 22px; max-width: 720px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-  padding: 7px 13px; border-radius: 999px;
-  color: var(--accent);
-  border: 1px solid rgba(245,197,24,0.32);
-  background: rgba(245,197,24,0.06);
+  font-size: 12.5px; letter-spacing: 0.06em; line-height: 1.95;
+  color: var(--fg-dim);
+}
+.ai-caps span { white-space: nowrap; }
+.ai-caps span + span::before {
+  content: "·"; color: var(--accent); opacity: 0.7;
+  margin: 0 12px; font-weight: 700;
+}
+@media (max-width: 600px) {
+  .ai-caps { font-size: 12px; letter-spacing: 0.04em; line-height: 1.85; }
+  .ai-caps span + span::before { margin: 0 9px; }
 }
 
 .ai-picker {
@@ -770,22 +775,42 @@
   background: rgba(0,0,0,0.6); padding: 3px 7px; border-radius: 3px;
 }
 
-/* === Reach Out button → orange === */
+/* === Reach Out button → orange, white label === */
 .reach-out-btn, .sqb-nav .reach-out-btn {
   background: #ff7a1a !important;
   border-color: #ff7a1a !important;
-  color: #1a1410 !important;
-  -webkit-text-stroke: 0.4px #1a1410;   /* ~10% less heavy than before (was 0.7) */
+  color: #fff !important;
+  /* dark halo so white reads cleanly on the vivid orange */
+  text-shadow: 0 1px 2px rgba(20,12,4,0.55);
   position: relative;
-  overflow: hidden;                     /* clip the shine sweep to the pill */
+  overflow: hidden;                     /* clip the shine sweep + arrow swap to the pill */
 }
 .reach-out-btn:hover, .sqb-nav .reach-out-btn:hover {
   background: #ff9d3d !important;
   border-color: #ff9d3d !important;
 }
-/* Bolder arrow — the thin unicode glyph gets a stroke so it reads as heavy. */
+.reach-out-btn .ro-label, .sqb-nav .reach-out-btn .ro-label { position: relative; z-index: 2; }
+/* Arrow pass-through: a clipped slot holds two bold arrows. At rest, arrow 1
+   sits in place and arrow 2 waits off to the left (behind the label). On hover
+   arrow 1 slides out the right edge while arrow 2 slides in to take its place —
+   both stay clipped inside the pill, so nothing leaves the button. */
 .reach-out-btn .ro-arrow, .sqb-nav .reach-out-btn .ro-arrow {
-  -webkit-text-stroke: 0.9px currentColor; font-weight: 900;
+  position: relative; z-index: 2;
+  display: inline-block; width: 1.15em; height: 1em;
+  overflow: hidden; vertical-align: -0.12em;
+}
+.reach-out-btn .ro-a, .sqb-nav .reach-out-btn .ro-a {
+  position: absolute; top: 50%; left: 0;
+  width: 1em; height: auto;
+  transform: translate(0, -50%);
+  transition: transform .46s cubic-bezier(.7,0,.2,1), opacity .46s ease;
+  filter: drop-shadow(0 1px 1.5px rgba(20,12,4,0.5));
+}
+.reach-out-btn .ro-a2, .sqb-nav .reach-out-btn .ro-a2 { transform: translate(-150%, -50%); opacity: 0; }
+.reach-out-btn:hover .ro-a1, .sqb-nav .reach-out-btn:hover .ro-a1 { transform: translate(165%, -50%); opacity: 0; }
+.reach-out-btn:hover .ro-a2, .sqb-nav .reach-out-btn:hover .ro-a2 { transform: translate(0, -50%); opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .reach-out-btn .ro-a, .sqb-nav .reach-out-btn .ro-a { transition: none; }
 }
 /* A bold white streak sweeps across once, then waits — repeats every 10s. */
 .reach-out-btn::after, .sqb-nav .reach-out-btn::after,

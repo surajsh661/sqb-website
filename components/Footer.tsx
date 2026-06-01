@@ -25,9 +25,9 @@ export default function Footer() {
       <div className="footer-grid">
         <div>
           <h4>{COPY.footer.studioHeading}</h4>
-          {COPY.footer.studioLines.split('\n').map((line, i) => (
-            <p key={i}>{line}</p>
-          ))}
+          <a href={COPY.footer.hqUrl} target="_blank" rel="noopener noreferrer">
+            {COPY.footer.hqLabel} ↗
+          </a>
         </div>
         <div>
           <h4>{COPY.footer.foundersHeading}</h4>
