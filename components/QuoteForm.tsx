@@ -1,10 +1,15 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
+
+// Calendly inline embed — dark theme + S'QB yellow so it matches the modal.
+// hide_gdpr_banner + hide_event_type_details keeps it compact inside the form.
+const CAL_URL =
+  'https://calendly.com/sqbpictures/30min?hide_gdpr_banner=1&background_color=141210&text_color=f4ecdb&primary_color=f5c518';
 
 const SERVICES = [
   'Film & Video Production',
@@ -29,6 +34,33 @@ export default function QuoteForm({ open, onClose }: Props) {
   const [services, setServices] = useState<string[]>([]);
   const [other, setOther] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [tab, setTab] = useState<'brief' | 'call'>('brief');
+  const calRef = useRef<HTMLDivElement | null>(null);
+
+  // Load the Calendly inline-widget script once and (re)initialise the embed
+  // whenever the "Book a call" tab is shown. Everything stays inside the modal —
+  // the user never leaves the page.
+  useEffect(() => {
+    if (!open || tab !== 'call') return;
+    const ID = 'calendly-widget-js';
+    const init = () => {
+      const Cal = (window as any).Calendly;
+      const el = calRef.current;
+      if (!Cal || !el) return;
+      el.innerHTML = '';
+      Cal.initInlineWidget({ url: CAL_URL, parentElement: el });
+    };
+    if (!document.getElementById(ID)) {
+      const s = document.createElement('script');
+      s.id = ID;
+      s.src = 'https://assets.calendly.com/assets/external/widget.js';
+      s.async = true;
+      s.onload = init;
+      document.body.appendChild(s);
+    } else {
+      init();
+    }
+  }, [open, tab]);
 
   // Lock body scroll + close on Escape while open.
   useEffect(() => {
@@ -89,14 +121,33 @@ export default function QuoteForm({ open, onClose }: Props) {
       <div className="qf-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Get a quote">
         <button className="qf-close" onClick={onClose} aria-label="Close">✕</button>
 
-        {/* Banner */}
+        {/* Banner with logo */}
         <div className="qf-banner">
-          <div className="qf-banner-kicker">S'QB PICTURES</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="qf-banner-logo" src="/logo-dark.png" alt="S'QB Pictures" />
           <h2 className="qf-banner-title">GET A QUOTE</h2>
           <p className="qf-banner-sub">Tell us about your project — we reply within 24 hours.</p>
         </div>
 
-        {status === 'sent' ? (
+        {/* Tabs: write a brief, or book a call right here. */}
+        <div className="qf-tabs" role="tablist">
+          <button
+            className={'qf-tab' + (tab === 'brief' ? ' active' : '')}
+            onClick={() => setTab('brief')}
+            role="tab" aria-selected={tab === 'brief'}
+          >Send a brief</button>
+          <button
+            className={'qf-tab' + (tab === 'call' ? ' active' : '')}
+            onClick={() => setTab('call')}
+            role="tab" aria-selected={tab === 'call'}
+          >Book a call</button>
+        </div>
+
+        {tab === 'call' ? (
+          <div className="qf-cal">
+            <div className="qf-cal-embed" ref={calRef} />
+          </div>
+        ) : status === 'sent' ? (
           <div className="qf-success">
             <div className="qf-success-mark">✓</div>
             <h3>Thanks — your brief is in.</h3>
