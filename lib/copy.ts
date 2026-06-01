@@ -110,7 +110,7 @@ export const COPY = {
     studioHeading: `OFFICE`,
     // We link out to the map pin instead of printing the street address.
     hqLabel: `HEADQUARTERS`,
-    hqUrl: `https://www.google.com/maps/search/?api=1&query=AWFIS+Majestic+Omnia+Block+A+Sector+4+Noida+Uttar+Pradesh+201301`,
+    hqUrl: `https://maps.app.goo.gl/UMu6pMeGdJUDYo4Y6`,
     foundersHeading: `FOUNDERS`,
     contactHeading: `CONTACT`,
     followHeading: `FOLLOW`,
