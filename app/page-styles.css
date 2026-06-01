@@ -775,13 +775,11 @@
   background: rgba(0,0,0,0.6); padding: 3px 7px; border-radius: 3px;
 }
 
-/* === Reach Out button → orange, white label === */
+/* === Reach Out button → orange, dark label === */
 .reach-out-btn, .sqb-nav .reach-out-btn {
   background: #ff7a1a !important;
   border-color: #ff7a1a !important;
-  color: #fff !important;
-  /* dark halo so white reads cleanly on the vivid orange */
-  text-shadow: 0 1px 2px rgba(20,12,4,0.55);
+  color: #1a1410 !important;
   position: relative;
   overflow: hidden;                     /* clip the shine sweep + arrow swap to the pill */
 }
@@ -804,7 +802,6 @@
   width: 1em; height: auto;
   transform: translate(0, -50%);
   transition: transform .46s cubic-bezier(.7,0,.2,1), opacity .46s ease;
-  filter: drop-shadow(0 1px 1.5px rgba(20,12,4,0.5));
 }
 .reach-out-btn .ro-a2, .sqb-nav .reach-out-btn .ro-a2 { transform: translate(-150%, -50%); opacity: 0; }
 .reach-out-btn:hover .ro-a1, .sqb-nav .reach-out-btn:hover .ro-a1 { transform: translate(165%, -50%); opacity: 0; }

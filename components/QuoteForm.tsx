@@ -60,18 +60,16 @@ export default function QuoteForm({ open, onClose }: Props) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [showCal, setShowCal] = useState(false);
   const calRef = useRef<HTMLDivElement | null>(null);
+  const lastSig = useRef('');
 
-  // On desktop the scheduler sits in its own column, always visible. On mobile
-  // it stays collapsed behind a tap so the form + CTA fit the screen first.
-  useEffect(() => {
-    if (!open) { setShowCal(false); return; }
-    if (window.matchMedia('(min-width: 900px)').matches) setShowCal(true);
-  }, [open]);
+  // Signature of the details we'd prefill — lets us re-init Cal only when the
+  // visitor has actually changed something, never mid-booking.
+  const prefillSig = () =>
+    JSON.stringify({ n: form.name, e: form.email, c: form.company, p: form.phone, s: services, o: other, b: form.note });
 
-  // Mount the Cal.com inline widget once the scheduler is meant to be visible.
-  // Prefills whatever the visitor has already typed so they don't retype it.
-  useEffect(() => {
-    if (!open || !showCal) return;
+  // Mount/refresh the Cal.com inline widget with the visitor's typed details so
+  // they never re-enter name/email on the calendar — one confirmation, on Cal.
+  const initCal = () => {
     const el = calRef.current;
     if (!el) return;
     ensureCalLoaded();
@@ -92,10 +90,28 @@ export default function QuoteForm({ open, onClose }: Props) {
     w.Cal('ui', {
       theme: 'dark',
       cssVarsPerTheme: { dark: { 'cal-brand': BRAND } },
-      hideEventTypeDetails: false,
+      hideEventTypeDetails: true, // our own header covers it; keeps the calendar high up
       layout: 'month_view',
     });
-    // form values intentionally read at reveal time, not on every keystroke
+    lastSig.current = prefillSig();
+  };
+
+  // When the visitor moves onto the calendar, refresh the prefill if their
+  // details changed since the last mount (so the booking step is pre-filled).
+  const refreshCalPrefill = () => {
+    if (showCal && prefillSig() !== lastSig.current) initCal();
+  };
+
+  // On desktop the scheduler sits in its own column, always visible. On mobile
+  // it stays collapsed behind a tap so the form + CTA fit the screen first.
+  useEffect(() => {
+    if (!open) { setShowCal(false); return; }
+    if (window.matchMedia('(min-width: 900px)').matches) setShowCal(true);
+  }, [open]);
+
+  // First mount of the embed when the scheduler becomes visible.
+  useEffect(() => {
+    if (open && showCal) initCal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, showCal]);
 
@@ -150,6 +166,10 @@ export default function QuoteForm({ open, onClose }: Props) {
         <div className="qf-grid">
           {/* ── Left: tell us about it ─────────────────────────────────── */}
           <div className="qf-left">
+            {/* living yellow glow + faint brand watermark behind the form */}
+            <span className="qf-glow" aria-hidden="true" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="qf-watermark" src="/logo-dark.png" alt="" aria-hidden="true" />
             <div className="qf-head">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img className="qf-logo" src="/logo-dark.png" alt="S'QB Pictures" />
@@ -224,7 +244,7 @@ export default function QuoteForm({ open, onClose }: Props) {
                 )}
 
                 <button className="qf-submit" type="submit" disabled={status === 'sending'}>
-                  {status === 'sending' ? 'Sending…' : 'Request a meeting'}
+                  <span>{status === 'sending' ? 'Sending…' : 'Submit'}</span>
                 </button>
 
                 {/* On mobile the calendar is collapsed; this reveals it inline. */}
@@ -239,7 +259,11 @@ export default function QuoteForm({ open, onClose }: Props) {
           </div>
 
           {/* ── Right: pick a time (Cal.com inline) ────────────────────── */}
-          <div className={'qf-right' + (showCal ? ' show' : '')}>
+          <div
+            className={'qf-right' + (showCal ? ' show' : '')}
+            onPointerEnter={refreshCalPrefill}
+            onFocusCapture={refreshCalPrefill}
+          >
             <div className="qf-right-head">
               <span className="qf-right-k">Pick a time</span>
               <span className="qf-right-sub">20-minute intro call</span>
