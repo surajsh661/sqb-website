@@ -190,7 +190,6 @@ export default function BTSPreview() {
       <div className="bts-head">
         <div className="eyebrow"><span className="num">{COPY.bts.eyebrowNumber}</span> <span>{COPY.bts.eyebrowLabel}</span></div>
         <h2>{rich(COPY.bts.heading)}</h2>
-        <p className="bts-blurb">{COPY.bts.blurb}</p>
       </div>
       <div className="bts-marquee" ref={marqueeRef}>
         <div className="bts-marquee-track">

@@ -20,7 +20,7 @@
   display: flex; align-items: center; gap: 14px;
   text-decoration: none; color: var(--fg);
 }
-.sqb-nav .lm img { width: 60px; height: 60px; object-fit: contain; } /* match home topbar logo size (+8%) */
+.sqb-nav .lm img { width: 120px; height: 120px; object-fit: contain; } /* desktop logo 2x */
 .sqb-nav .lm .stack { display: flex; flex-direction: column; gap: 2px; }
 .sqb-nav .lm .tg {
   font-family: 'JetBrains Mono', monospace; font-size: 9px;
@@ -1941,133 +1941,33 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 /* Keep the word + inline-block icon + word as one unbreakable unit so
    the browser doesn't drop "making" / "I" to the next line when the
    icon slot expands. */
-.mh .mh-nowrap { white-space: nowrap; }
-/* Coda line ("And we're at the cutting edge of both") — much smaller so it sits
-   comfortably on ONE line under the big headline. */
-.mh .mh-coda {
-  font-size: 0.5em; display: block; white-space: nowrap;
-  margin-top: 0.5em; letter-spacing: 0.01em;
+/* CINEMA + handshake + AI, centred on one line (wraps gracefully on small
+   screens). The handshake is cream and gives a slight, looping clasp. */
+.mh.mh-shake {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 0.06em 0.28em;
 }
-/* "cutting edge" with a slanted katana slash: the phrase is layered twice in a
-   relative box. The TOP copy is clipped above a diagonal line; the BOTTOM copy
-   is clipped below it and nudged sideways so the lower halves of the letters
-   slide off like a sword cut passed through them. The text itself stays STROKED
-   (outline only, no fill) to match the other headline words. */
-.mh .mh-cut {
-  position: relative; display: inline-block;
-  vertical-align: baseline;
+.mh .mh-word { display: inline-block; }
+.mh .mh-word-ai { color: var(--accent); }
+.mh .mh-hands {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 0.92em; height: 0.92em; flex: 0 0 auto;
+  color: var(--fg);
+  transform-origin: center;
+  animation: mhClasp 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(245,197,24,0.18));
 }
-.mh .mh-cut-top,
-.mh .mh-cut-bot {
-  display: block;
-  /* same outline treatment as .manifesto h2 em — transparent fill + cream stroke */
-  font-style: normal;
-  color: transparent;
-  -webkit-text-stroke: 0.012em var(--fg);
+.mh .mh-hands svg { width: 100%; height: 100%; display: block; }
+/* a small, friendly clasp — scale + tiny tilt, then settle */
+@keyframes mhClasp {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  44%      { transform: scale(1.06) rotate(-3deg); }
+  60%      { transform: scale(1.06) rotate(-3deg); }
 }
-/* Top copy is in normal flow (sets the box width); bottom copy overlays it.
-   Cut line slopes up to the right (steeper, like the reference). */
-.mh .mh-cut-top {
-  -webkit-clip-path: polygon(0 0, 100% 0, 100% 30%, 0 70%);
-          clip-path: polygon(0 0, 100% 0, 100% 30%, 0 70%);
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
-.mh .mh-cut-bot {
-  position: absolute; left: 0; top: 0;
-  -webkit-clip-path: polygon(0 70%, 100% 30%, 100% 100%, 0 100%);
-          clip-path: polygon(0 70%, 100% 30%, 100% 100%, 0 100%);
-  transform: translate(0.08em, 0.02em);   /* lower half nudged right — small, still readable */
-}
-.mh .cam-slot,
-.mh .star-slot {
-  display: inline-block;
-  position: relative;
-  width: 0;
-  height: 1em;
-  vertical-align: -0.18em;
-  overflow: visible;
-  will-change: width;
-}
-.mh .cam-slot svg,
-.mh .star-slot svg {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-.mh .cam-slot svg { width: 1.55em; height: 1.55em; }
-.mh .star-slot svg { width: 1.32em; height: 1.32em; }
-
-/* the recording dot + lens rays + star twinkle sit dormant until .play */
-.mh .cam-rec { opacity: 0; }
-.mh .cam-flash { opacity: 0; }
-
-/* ---- play state ---- */
-.mh.play .cam-slot      { animation: mhCamGap 3.4s cubic-bezier(.22,1,.36,1) both; }
-.mh.play .cam-slot svg  { animation: mhCamPop 3.4s cubic-bezier(.34,1.56,.64,1) both; }
-.mh.play .star-slot     { animation: mhStarGap 3.4s cubic-bezier(.22,1,.36,1) both; }
-.mh.play .star-slot svg { animation: mhStarPop 3.4s cubic-bezier(.34,1.56,.64,1) both; }
-
-.mh.play .cam-rec   { animation: mhRecBlink 0.7s steps(1, end) infinite; }
-.mh.play .cam-flash { animation: mhLensFlash 0.85s ease-in-out infinite; transform-box: fill-box; transform-origin: left center; }
-
-.mh.play .star-tw { transform-box: fill-box; transform-origin: center; }
-.mh.play .star-tw.s1 { animation: mhTwinkle 1.15s ease-in-out infinite; }
-.mh.play .star-tw.s2 { animation: mhTwinkle 0.9s ease-in-out 0.15s infinite; }
-.mh.play .star-tw.s3 { animation: mhTwinkle 1.05s ease-in-out 0.3s infinite; }
-
-/* slot opens, holds, then closes — words slide apart and back */
-@keyframes mhCamGap {
-  0%   { width: 0; }
-  14%  { width: 1.85em; }
-  74%  { width: 1.85em; }
-  100% { width: 0; }
-}
-@keyframes mhStarGap {
-  0%   { width: 0; }
-  16%  { width: 1.35em; }
-  74%  { width: 1.35em; }
-  100% { width: 0; }
-}
-/* camera pops in with overshoot, holds, scales down into the gap */
-@keyframes mhCamPop {
-  0%   { transform: translate(-50%, -50%) scale(0) rotate(-16deg); opacity: 0; }
-  11%  { transform: translate(-50%, -50%) scale(1.06) rotate(5deg); opacity: 1; }
-  18%  { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
-  74%  { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(0) rotate(12deg); opacity: 0; }
-}
-@keyframes mhStarPop {
-  0%   { transform: translate(-50%, -50%) scale(0) rotate(20deg); opacity: 0; }
-  12%  { transform: translate(-50%, -50%) scale(1.08) rotate(-6deg); opacity: 1; }
-  19%  { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
-  74%  { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(0) rotate(-14deg); opacity: 0; }
-}
-/* blinking red record light */
-@keyframes mhRecBlink {
-  0%, 49%   { opacity: 1; }
-  50%, 100% { opacity: 0.12; }
-}
-/* lens rays flashing out — "capturing something" */
-@keyframes mhLensFlash {
-  0%, 100% { opacity: 0; transform: translateX(0) scaleX(0.7); }
-  50%      { opacity: 1; transform: translateX(2px) scaleX(1.15); }
-}
-/* yellow stars twinkle */
-@keyframes mhTwinkle {
-  0%, 100% { opacity: 0.45; transform: scale(0.82); }
-  50%      { opacity: 1; transform: scale(1.12); }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .mh.play .cam-slot,
-  .mh.play .cam-slot svg,
-  .mh.play .star-slot,
-  .mh.play .star-slot svg,
-  .mh.play .cam-rec,
-  .mh.play .cam-flash,
-  .mh.play .star-tw { animation: none !important; }
+  .mh .mh-hands { animation: none; }
 }

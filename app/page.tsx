@@ -72,7 +72,6 @@ export default function HomePage() {
       <Hero films={SQB_HERO_FILMS} onPick={openCase} showCursorHint />
 
       <section className="section manifesto" data-screen-label="02 Manifesto">
-        <div className="eyebrow"><span className="num">{COPY.manifesto.eyebrowNumber}</span> <span>{COPY.manifesto.eyebrowLabel}</span></div>
         <ManifestoHeadline />
         <p>{COPY.manifesto.paragraph}</p>
       </section>
@@ -87,7 +86,6 @@ export default function HomePage() {
       <section className="section stats-map-section" data-screen-label="04 Numbers + Reach">
         <div className="sm-grid">
           <div className="sm-grid-stats">
-            <div className="eyebrow"><span className="num">{COPY.stats.eyebrowNumber}</span> <span>{COPY.stats.eyebrowLabel}</span></div>
             <div className="stats stacked">
               <div className="stat">
                 <div className="num"><CountUp end={100} suffix="+" /></div>

@@ -12,6 +12,20 @@ interface Props {
 const CAL_LINK = 's-qb-pictures-8a3afa/20min';
 const BRAND = '#F5C518';
 
+// Country dial codes for the phone field (India default, then common markets).
+const DIAL_CODES = [
+  { iso: 'IN', code: '+91' }, { iso: 'US', code: '+1' }, { iso: 'GB', code: '+44' },
+  { iso: 'AE', code: '+971' }, { iso: 'SA', code: '+966' }, { iso: 'SG', code: '+65' },
+  { iso: 'AU', code: '+61' }, { iso: 'CA', code: '+1' }, { iso: 'DE', code: '+49' },
+  { iso: 'FR', code: '+33' }, { iso: 'NL', code: '+31' }, { iso: 'CH', code: '+41' },
+  { iso: 'IT', code: '+39' }, { iso: 'ES', code: '+34' }, { iso: 'IE', code: '+353' },
+  { iso: 'QA', code: '+974' }, { iso: 'KW', code: '+965' }, { iso: 'BH', code: '+973' },
+  { iso: 'OM', code: '+968' }, { iso: 'HK', code: '+852' }, { iso: 'JP', code: '+81' },
+  { iso: 'MY', code: '+60' }, { iso: 'ID', code: '+62' }, { iso: 'NZ', code: '+64' },
+  { iso: 'ZA', code: '+27' }, { iso: 'NG', code: '+234' }, { iso: 'BR', code: '+55' },
+  { iso: 'LK', code: '+94' }, { iso: 'NP', code: '+977' }, { iso: 'BD', code: '+880' },
+];
+
 // Short, scannable service labels — rendered as circular multi-select chips.
 const SERVICES = [
   'Film & Video',
@@ -62,6 +76,7 @@ export default function QuoteForm({ open, onClose }: Props) {
   const [step, setStep] = useState<'form' | 'cal'>('form');
   const [svcError, setSvcError] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [dialCode, setDialCode] = useState('+91'); // India default
   const [hp, setHp] = useState(''); // honeypot — stays empty for humans
   const calRef = useRef<HTMLDivElement | null>(null);
   const openedAt = useRef(0);
@@ -144,7 +159,8 @@ export default function QuoteForm({ open, onClose }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: form.name, email: form.email, phone: form.phone,
+          name: form.name, email: form.email,
+          phone: form.phone.trim() ? `${dialCode} ${form.phone.trim()}` : '',
           org: form.company, services: svc, brief: form.note,
           hp, t: Date.now() - openedAt.current,
         }),
@@ -189,7 +205,14 @@ export default function QuoteForm({ open, onClose }: Props) {
                   </label>
                   <label className="qf-field">
                     <span>Phone</span>
-                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Optional" />
+                    <div className="qf-phone">
+                      <select className="qf-dial" value={dialCode} onChange={(e) => setDialCode(e.target.value)} aria-label="Country code">
+                        {DIAL_CODES.map((c) => (
+                          <option key={c.iso + c.code} value={c.code}>{c.iso} {c.code}</option>
+                        ))}
+                      </select>
+                      <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Optional" />
+                    </div>
                   </label>
                 </div>
                 {emailError && <p className="qf-err">{emailError}</p>}

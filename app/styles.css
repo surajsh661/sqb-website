@@ -175,7 +175,7 @@ body.no-grain::before { display: none; }
   cursor: pointer; user-select: none;
 }
 .logo-mark img {
-  width: 60px; height: 60px; display: block;
+  width: 120px; height: 120px; display: block;
   object-fit: contain;
 }
 .logo-mark .stack {
@@ -2576,6 +2576,21 @@ video.frame-video {
   outline: none; border-color: var(--accent); background: rgba(255,255,255,0.06);
 }
 .qf-field textarea { resize: vertical; min-height: 56px; line-height: 1.45; }
+/* phone field with country dial-code select */
+.qf-phone { display: flex; gap: 6px; }
+.qf-phone input { flex: 1 1 auto; min-width: 0; }
+.qf-dial {
+  flex: 0 0 auto; width: 84px; cursor: pointer;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 9px; color: var(--fg); font-size: 13.5px; font-family: 'Inter', sans-serif;
+  padding: 11px 22px 11px 11px;
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23f4ecdb' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 9px center;
+  transition: border-color .18s;
+}
+.qf-dial:focus { outline: none; border-color: var(--accent); }
+.qf-dial option { background: #1b1610; color: var(--fg); }
 
 /* circular multi-select chips (replaces the checkbox column) */
 .qf-chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -2671,7 +2686,9 @@ video.frame-video {
 @media (min-width: 900px) {
   .qf-modal { max-height: 94vh; }
   .qf-grid { grid-template-columns: 420px 1fr; align-items: stretch; }
-  .qf-left { padding: 38px 34px 34px; }
+  /* contain (not cover) so the wide embossed logo never gets its edges cropped
+     on the taller calendar step; the dark fill blends the letterbox. */
+  .qf-left { padding: 38px 34px 34px; background-color: #16110c; background-size: cover, contain; }
   .qf-right { border-left: 1px solid rgba(255,255,255,0.07); }
   .qf-cal-embed { height: min(660px, 78vh); min-height: 0; }
 }

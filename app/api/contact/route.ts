@@ -79,11 +79,17 @@ export async function POST(req: Request) {
   const to = toRaw.split(',').map((s) => s.trim()).filter(Boolean);
   const from = process.env.CONTACT_FROM || "S'QB Site <onboarding@resend.dev>";
 
-  // ── Branded HTML email ──────────────────────────────────────────────
+  // ── Branded HTML email (dark-mode only, site fonts) ─────────────────
+  // Web fonts load in clients that allow them (Apple Mail, iOS); others fall
+  // back to close web-safe stacks. Anton = the site's display face.
+  const F_DISPLAY = "'Anton','Arial Narrow',Impact,sans-serif";
+  const F_MONO = "'JetBrains Mono','Courier New',monospace";
+  const F_BODY = "'Inter',Arial,Helvetica,sans-serif";
+
   const row = (label: string, value: string) => `
     <tr>
-      <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.07);vertical-align:top;width:120px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#f5c518;">${label}</td>
-      <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#f4ecdb;">${value}</td>
+      <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.07);vertical-align:top;width:120px;font-family:${F_MONO};font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#f5c518;">${label}</td>
+      <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-family:${F_BODY};font-size:15px;color:#f4ecdb;">${value}</td>
     </tr>`;
   const rows = [
     row('Email', `<a href="mailto:${escapeHtml(email)}" style="color:#f4ecdb;text-decoration:underline;">${escapeHtml(email)}</a>`),
@@ -93,31 +99,46 @@ export async function POST(req: Request) {
     services.length ? row('Services', escapeHtml(services.join(' · '))) : '',
   ].join('');
 
-  const html = `
+  const html = `<!DOCTYPE html>
+<html lang="en" style="color-scheme:dark;supported-color-schemes:dark;">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap');
+  :root { color-scheme: dark; supported-color-schemes: dark; }
+  body { margin:0; padding:0; background:#0e0c0b; }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#0e0c0b;">
   <div style="margin:0;padding:24px 12px;background:#0e0c0b;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#0e0c0b"><tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" bgcolor="#161310" style="width:600px;max-width:600px;background:#161310;border:1px solid rgba(245,197,24,0.18);border-radius:14px;overflow:hidden;">
-        <tr><td bgcolor="#1b1610" style="background:#1b1610;padding:20px 28px;border-bottom:1px solid rgba(245,197,24,0.16);">
-          <img src="${LOGO_URL}" alt="S'QB Pictures" height="34" style="height:34px;display:block;border:0;outline:none;text-decoration:none;" />
+        <tr><td bgcolor="#1b1610" align="center" style="background:#1b1610;padding:26px 28px;border-bottom:1px solid rgba(245,197,24,0.16);">
+          <img src="${LOGO_URL}" alt="S'QB Pictures" height="100" style="height:100px;width:auto;display:block;border:0;outline:none;text-decoration:none;margin:0 auto;" />
         </td></tr>
-        <tr><td style="padding:26px 28px 4px;">
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#f5c518;">New brief · sqbpictures.com</div>
-          <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;color:#f4ecdb;margin-top:8px;font-weight:bold;">${escapeHtml(name)}</div>
+        <tr><td bgcolor="#161310" style="padding:28px 28px 4px;">
+          <div style="font-family:${F_MONO};font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#f5c518;">New brief · sqbpictures.com</div>
+          <div style="font-family:${F_DISPLAY};font-size:30px;letter-spacing:0.01em;color:#f4ecdb;margin-top:10px;">${escapeHtml(name)}</div>
         </td></tr>
-        <tr><td style="padding:12px 28px 6px;">
+        <tr><td bgcolor="#161310" style="padding:12px 28px 6px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>
         </td></tr>
-        ${brief ? `<tr><td style="padding:8px 28px 24px;">
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#f5c518;margin-bottom:8px;">The project</div>
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#e7dfd0;white-space:pre-wrap;background:#1d1813;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px;">${escapeHtml(brief)}</div>
+        ${brief ? `<tr><td bgcolor="#161310" style="padding:8px 28px 24px;">
+          <div style="font-family:${F_MONO};font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#f5c518;margin-bottom:8px;">The project</div>
+          <div style="font-family:${F_BODY};font-size:15px;line-height:1.55;color:#e7dfd0;white-space:pre-wrap;background:#1d1813;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px 16px;">${escapeHtml(brief)}</div>
         </td></tr>` : ''}
-        <tr><td bgcolor="#120f0d" style="padding:16px 28px;background:#120f0d;border-top:1px solid rgba(255,255,255,0.06);font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#8a8278;">
+        <tr><td bgcolor="#120f0d" style="padding:16px 28px;background:#120f0d;border-top:1px solid rgba(255,255,255,0.06);font-family:${F_BODY};font-size:12px;color:#8a8278;">
           Reply to this email to reach ${escapeHtml(name)} at <a href="mailto:${escapeHtml(email)}" style="color:#f5c518;text-decoration:none;">${escapeHtml(email)}</a>.
         </td></tr>
       </table>
-      <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#5c574e;margin-top:14px;">S'QB Pictures · Delhi NCR &amp; Mumbai</div>
+      <div style="font-family:${F_MONO};font-size:11px;letter-spacing:1px;color:#5c574e;margin-top:14px;">S'QB PICTURES · DELHI NCR &amp; MUMBAI</div>
     </td></tr></table>
-  </div>`;
+  </div>
+</body>
+</html>`;
 
   // Plain-text fallback (helps deliverability / non-HTML clients).
   const text = [

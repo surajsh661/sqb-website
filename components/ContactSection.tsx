@@ -46,19 +46,18 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
               <a className="v" href="mailto:shubham.shah@sqbpictures.com">SHUBHAM.SHAH@SQBPICTURES.COM</a>
             </div>
             <div className="contact-row">
-              <span className="k">DELHI</span>
+              <span className="k">CONTACT</span>
               <a className="v" href="https://wa.me/919013082883" target="_blank" rel="noopener noreferrer">
                 +91 90130 82883 · WHATSAPP
               </a>
             </div>
             <div className="contact-row">
-              <span className="k">MUMBAI</span>
+              <span className="k">CONTACT</span>
               <a className="v" href="https://wa.me/917217817383" target="_blank" rel="noopener noreferrer">
                 +91 72178 17383 · WHATSAPP
               </a>
             </div>
             <div className="contact-row"><span className="k">STUDIOS</span><span className="v">{COPY.contact.studiosValue}</span></div>
-            <div className="contact-row"><span className="k">FOR</span><span className="v">{COPY.contact.forValue}</span></div>
           </div>
         </div>
         <form className="contact-form" onSubmit={onSubmit}>
