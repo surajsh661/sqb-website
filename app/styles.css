@@ -2512,34 +2512,39 @@ video.frame-video {
   transition: background .18s, color .18s, border-color .18s;
 }
 .qf-close:hover { background: var(--accent); color: #1a1410; border-color: var(--accent); }
+/* slight film grain over the whole modal (matches the embossed panel's texture) */
+.qf-modal::after {
+  content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+  opacity: 0.07; mix-blend-mode: overlay;
+}
 
 /* layout: single column (mobile) -> two columns (desktop) */
 .qf-grid { display: grid; grid-template-columns: 1fr; }
 
-/* ── left: tell us about it ──────────────────────────────────── */
-.qf-left { position: relative; overflow: hidden; padding: 30px 26px 28px; min-width: 0; }
-/* living ORANGE glow — breathes (drifts + scales) behind the heading */
+/* ── left: brand panel — the embossed-logo photo as the surface, with a
+   top scrim so the heading stays legible over it ──────────────────── */
+.qf-left {
+  position: relative; overflow: hidden; padding: 30px 26px 28px; min-width: 0;
+  background-image:
+    linear-gradient(180deg, rgba(14,12,11,0.72) 0%, rgba(14,12,11,0.28) 42%, rgba(14,12,11,0.18) 100%),
+    url('/sqb-embossed.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
+/* living ORANGE glow — breathes (drifts + scales) over the top-left */
 .qf-glow {
   position: absolute; z-index: 0; left: -16%; top: -22%;
-  width: 560px; height: 560px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,116,22,0.42), rgba(255,116,22,0.13) 44%, transparent 70%);
-  filter: blur(34px); pointer-events: none;
+  width: 540px; height: 540px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,116,22,0.34), rgba(255,116,22,0.10) 44%, transparent 70%);
+  filter: blur(36px); pointer-events: none; mix-blend-mode: screen;
   animation: qfBreathe 6.5s ease-in-out infinite;
 }
 @keyframes qfBreathe {
-  0%, 100% { transform: translateY(-10px) scale(1);    opacity: 0.72; }
+  0%, 100% { transform: translateY(-10px) scale(1);    opacity: 0.7; }
   50%      { transform: translateY(26px)  scale(1.2);  opacity: 1; }
-}
-/* embossed brand mark, up top — pressed into the dark surface */
-.qf-watermark {
-  position: absolute; z-index: 0; top: 5%; left: 50%;
-  width: 118%; max-width: 580px; height: auto;
-  transform: translateX(-50%);
-  filter:
-    grayscale(1) brightness(0.34)
-    drop-shadow(0 2px 0 rgba(0,0,0,0.72))
-    drop-shadow(0 -1px 0 rgba(255,255,255,0.18));
-  pointer-events: none;
 }
 .qf-head, .qf-form, .qf-cal-step { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) { .qf-glow { animation: none; } }
@@ -2679,7 +2684,6 @@ video.frame-video {
   .qf-right { border-top: 1px solid rgba(255,255,255,0.08); }
   .qf-form { padding: 22px 20px 28px; }
   .qf-cal-embed { min-height: 620px; overflow: visible; height: auto; }
-  /* the large embossed mark is a desktop flourish; on the short mobile brand
-     panel it clips awkwardly, so the orange glow + small logo carry it here */
-  .qf-watermark { display: none; }
+  /* keep the embossed logo in view on the short mobile brand panel */
+  .qf-left { min-height: 180px; background-position: center, center 38%; }
 }

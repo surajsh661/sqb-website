@@ -146,14 +146,10 @@ export default function QuoteForm({ open, onClose }: Props) {
         <button className="qf-close" onClick={onClose} aria-label="Close">✕</button>
 
         <div className="qf-grid">
-          {/* ── Left: brand panel (orange glow + embossed logo up top) ──── */}
+          {/* ── Left: brand panel — embossed-logo image bg + orange glow ── */}
           <div className="qf-left">
             <span className="qf-glow" aria-hidden="true" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="qf-watermark" src="/logo-dark.png" alt="" aria-hidden="true" />
             <div className="qf-head">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="qf-logo" src="/logo-dark.png" alt="S'QB Pictures" />
               <h2 className="qf-title">WHAT&apos;S YOUR STORY?</h2>
               <p className="qf-sub">Tell us what you&apos;re making. We&apos;ll line up a call and come back within 24 hours.</p>
             </div>

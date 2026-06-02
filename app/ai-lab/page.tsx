@@ -70,12 +70,25 @@ function AISection({
             role="button"
             tabIndex={0}
           >
-            <iframe
-              src={bgSrc(it)}
-              title={it.title}
-              allow="autoplay; encrypted-media"
-              loading="lazy"
-            />
+            {it.vertical ? (
+              // Google Drive's /preview pillarboxes portrait video, so the card
+              // shows the clean 9:16 poster (fills exactly) and plays in the
+              // lightbox on click.
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className="ai-clip-poster" src={thumbSources(it)[1] || thumbSources(it)[0]} alt={it.title} referrerPolicy="no-referrer" loading="lazy" />
+                <span className="ai-clip-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
+                </span>
+              </>
+            ) : (
+              <iframe
+                src={bgSrc(it)}
+                title={it.title}
+                allow="autoplay; encrypted-media"
+                loading="lazy"
+              />
+            )}
             <span className="ac-label">{it.title}</span>
           </div>
         ))}
