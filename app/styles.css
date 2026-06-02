@@ -2624,16 +2624,16 @@ video.frame-video {
 .qf-cal-step { display: flex; flex-direction: column; }
 .qf-submit:hover { background: #ff9d3d; transform: translateY(-1px); }
 .qf-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
-/* white streak sweeps across, then waits ~2.5s before the next pass */
+/* white streak sweeps across, then waits ~6s before the next pass */
 .qf-submit::after {
   content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 55%; z-index: 1;
   background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.5) 40%, rgba(255,255,255,0.92) 50%, rgba(255,255,255,0.5) 60%, transparent 100%);
   transform: translateX(-220%) skewX(-18deg);
-  animation: qfStreak 3s ease-in-out infinite; pointer-events: none;
+  animation: qfStreak 6.6s ease-in-out infinite; pointer-events: none;
 }
 @keyframes qfStreak {
   0%   { transform: translateX(-220%) skewX(-18deg); }
-  20%  { transform: translateX(330%)  skewX(-18deg); }
+  9%   { transform: translateX(330%)  skewX(-18deg); }
   100% { transform: translateX(330%)  skewX(-18deg); }
 }
 @media (prefers-reduced-motion: reduce) { .qf-submit::after { animation: none; opacity: 0; } }

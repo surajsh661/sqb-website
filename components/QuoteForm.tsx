@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { isDisposableEmail } from '@/lib/spam';
 
 interface Props {
   open: boolean;
@@ -60,7 +61,10 @@ export default function QuoteForm({ open, onClose }: Props) {
   const [other, setOther] = useState('');
   const [step, setStep] = useState<'form' | 'cal'>('form');
   const [svcError, setSvcError] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [hp, setHp] = useState(''); // honeypot — stays empty for humans
   const calRef = useRef<HTMLDivElement | null>(null);
+  const openedAt = useRef(0);
   const notified = useRef(false);
 
   // Mount the Cal.com inline widget, prefilled with the typed details so the
@@ -93,7 +97,10 @@ export default function QuoteForm({ open, onClose }: Props) {
 
   // Reset to step one whenever the modal (re)opens.
   useEffect(() => {
-    if (open) { setStep('form'); setSvcError(false); notified.current = false; }
+    if (open) {
+      setStep('form'); setSvcError(false); setEmailError(''); setHp('');
+      notified.current = false; openedAt.current = Date.now();
+    }
   }, [open]);
 
   // Mount the calendar when we advance to the scheduling step.
@@ -123,6 +130,11 @@ export default function QuoteForm({ open, onClose }: Props) {
   // the calendar (already prefilled with everything above).
   const goToCalendar = (e: React.FormEvent) => {
     e.preventDefault();
+    // Block temporary / throwaway inboxes before going any further.
+    if (isDisposableEmail(form.email.trim())) {
+      setEmailError('Please use a permanent email — temporary inboxes aren’t accepted.');
+      return;
+    }
     if (services.length === 0) { setSvcError(true); return; }
     if (!notified.current) {
       notified.current = true;
@@ -134,6 +146,7 @@ export default function QuoteForm({ open, onClose }: Props) {
         body: JSON.stringify({
           name: form.name, email: form.email, phone: form.phone,
           org: form.company, services: svc, brief: form.note,
+          hp, t: Date.now() - openedAt.current,
         }),
       }).catch(() => { /* non-blocking */ });
     }
@@ -159,6 +172,12 @@ export default function QuoteForm({ open, onClose }: Props) {
           <div className="qf-right">
             {step === 'form' ? (
               <form className="qf-form" onSubmit={goToCalendar}>
+                {/* honeypot — hidden from people, irresistible to bots */}
+                <input
+                  type="text" name="company_url" tabIndex={-1} autoComplete="off"
+                  aria-hidden="true" value={hp} onChange={(e) => setHp(e.target.value)}
+                  style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+                />
                 <label className="qf-field">
                   <span>Your name <i>*</i></span>
                   <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="First and last" />
@@ -166,13 +185,14 @@ export default function QuoteForm({ open, onClose }: Props) {
                 <div className="qf-row">
                   <label className="qf-field">
                     <span>Email <i>*</i></span>
-                    <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@brand.com" />
+                    <input required type="email" value={form.email} onChange={(e) => { setEmailError(''); setForm({ ...form, email: e.target.value }); }} placeholder="you@brand.com" />
                   </label>
                   <label className="qf-field">
                     <span>Phone</span>
                     <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Optional" />
                   </label>
                 </div>
+                {emailError && <p className="qf-err">{emailError}</p>}
                 <label className="qf-field">
                   <span>Company</span>
                   <input value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder="Optional" />

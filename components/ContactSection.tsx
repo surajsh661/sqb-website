@@ -8,6 +8,8 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
 export default function ContactSection({ compact = false }: { compact?: boolean }) {
   const [form, setForm] = useState({ name: '', email: '', org: '', brief: '' });
   const [status, setStatus] = useState<Status>('idle');
+  const [hp, setHp] = useState(''); // honeypot — stays empty for humans
+  const [openedAt] = useState(() => Date.now());
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, hp, t: Date.now() - openedAt }),
       });
       if (!res.ok) throw new Error('send failed');
       setStatus('sent');
@@ -60,6 +62,12 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
           </div>
         </div>
         <form className="contact-form" onSubmit={onSubmit}>
+          {/* honeypot — hidden from people, bait for bots */}
+          <input
+            type="text" name="company_url" tabIndex={-1} autoComplete="off"
+            aria-hidden="true" value={hp} onChange={(e) => setHp(e.target.value)}
+            style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+          />
           <div className="cf-row">
             <label>
               <span>{COPY.contact.form.nameLabel}</span>
