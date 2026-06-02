@@ -2518,25 +2518,30 @@ video.frame-video {
 
 /* ── left: tell us about it ──────────────────────────────────── */
 .qf-left { position: relative; overflow: hidden; padding: 30px 26px 28px; min-width: 0; }
-/* living yellow glow — breathes (drifts + scales) behind the heading */
+/* living ORANGE glow — breathes (drifts + scales) behind the heading */
 .qf-glow {
-  position: absolute; z-index: 0; left: -16%; top: -18%;
-  width: 520px; height: 520px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(245,197,24,0.42), rgba(245,197,24,0.12) 44%, transparent 70%);
-  filter: blur(30px); pointer-events: none;
+  position: absolute; z-index: 0; left: -16%; top: -22%;
+  width: 560px; height: 560px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,116,22,0.42), rgba(255,116,22,0.13) 44%, transparent 70%);
+  filter: blur(34px); pointer-events: none;
   animation: qfBreathe 6.5s ease-in-out infinite;
 }
 @keyframes qfBreathe {
-  0%, 100% { transform: translateY(-10px) scale(1);    opacity: 0.7; }
+  0%, 100% { transform: translateY(-10px) scale(1);    opacity: 0.72; }
   50%      { transform: translateY(26px)  scale(1.2);  opacity: 1; }
 }
-/* faint brand mark embedded behind the form */
+/* embossed brand mark, up top — pressed into the dark surface */
 .qf-watermark {
-  position: absolute; z-index: 0; right: -48px; bottom: 5%;
-  width: 400px; height: auto; opacity: 0.08; pointer-events: none;
-  filter: grayscale(1) brightness(2.6);
+  position: absolute; z-index: 0; top: 5%; left: 50%;
+  width: 118%; max-width: 580px; height: auto;
+  transform: translateX(-50%);
+  filter:
+    grayscale(1) brightness(0.34)
+    drop-shadow(0 2px 0 rgba(0,0,0,0.72))
+    drop-shadow(0 -1px 0 rgba(255,255,255,0.18));
+  pointer-events: none;
 }
-.qf-head, .qf-form, .qf-success { position: relative; z-index: 1; }
+.qf-head, .qf-form, .qf-cal-step { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) { .qf-glow { animation: none; } }
 .qf-head { margin-bottom: 20px; }
 .qf-logo { height: 36px; width: auto; display: block; margin-bottom: 16px; }
@@ -2546,7 +2551,7 @@ video.frame-video {
 }
 .qf-sub { margin: 10px 0 0; color: var(--fg-dim); font-size: 14px; line-height: 1.5; max-width: 44ch; }
 
-.qf-form { display: flex; flex-direction: column; gap: 14px; }
+.qf-form { display: flex; flex-direction: column; gap: 14px; padding: 30px 28px 32px; }
 .qf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .qf-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .qf-field > span {
@@ -2593,13 +2598,25 @@ video.frame-video {
 
 .qf-submit {
   position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 9px;
   align-self: flex-start; margin-top: 4px;
   background: #ff7a1a; color: #1a1410; border: none; border-radius: 999px;
-  padding: 13px 30px; font-family: 'Inter', sans-serif; font-style: italic;
+  padding: 13px 28px; font-family: 'Inter', sans-serif; font-style: italic;
   font-weight: 900; font-size: 14px; letter-spacing: 0.03em; text-transform: uppercase;
   cursor: pointer; transition: background .2s, transform .15s;
 }
 .qf-submit > span { position: relative; z-index: 2; }
+.qf-submit-arrow { position: relative; z-index: 2; width: 18px; height: 18px; flex: 0 0 auto; }
+/* Back link on the scheduling step */
+.qf-back {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: none; border: 0; cursor: pointer; padding: 0; margin-bottom: 12px;
+  color: var(--fg-dim); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12.5px;
+  transition: color .15s;
+}
+.qf-back:hover { color: var(--fg); }
+.qf-back svg { width: 15px; height: 15px; }
+.qf-cal-step { display: flex; flex-direction: column; }
 .qf-submit:hover { background: #ff9d3d; transform: translateY(-1px); }
 .qf-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
 /* white streak sweeps across, then waits ~2.5s before the next pass */
@@ -2625,13 +2642,12 @@ video.frame-video {
 }
 .qf-cal-toggle svg { width: 16px; height: 16px; }
 
-/* right: Cal.com inline scheduler */
-.qf-right { display: none; flex-direction: column; background: #100e0d; min-width: 0; }
-.qf-right.show { display: flex; }
-.qf-right-head { padding: 18px 20px 8px; }
+/* right column: step one (the brief) then step two (Cal.com scheduler) */
+.qf-right { display: flex; flex-direction: column; background: #100e0d; min-width: 0; }
+.qf-right-head { padding: 24px 22px 10px; position: relative; }
 .qf-right-k { display: block; font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.02em; color: var(--fg); }
 .qf-right-sub { display: block; margin-top: 3px; color: var(--fg-dim); font-size: 12.5px; }
-.qf-cal-embed { flex: 1; width: 100%; min-height: 560px; padding: 0 8px 12px; overflow-y: auto; overflow-x: hidden; }
+.qf-cal-embed { width: 100%; min-height: 560px; padding: 0 10px 14px; overflow-y: auto; overflow-x: hidden; }
 .qf-cal-embed iframe { border: 0; width: 100% !important; }
 
 /* success */
@@ -2644,27 +2660,26 @@ video.frame-video {
 .qf-success h3 { font-family: 'Anton', sans-serif; font-size: 26px; margin: 0 0 8px; color: var(--fg); }
 .qf-success p { color: var(--fg-dim); font-size: 14px; margin: 0 0 20px; line-height: 1.55; }
 
-/* ── desktop: two columns, calendar always present ───────────────
-   The right column has a fixed height, so the (very tall) Cal iframe scrolls
-   inside its own panel — you never scroll the whole page to reach Confirm. ── */
+/* ── desktop: brand panel (left) + active step (right) ───────────
+   On the scheduling step the Cal iframe is tall, so the embed has a fixed
+   height and scrolls inside its own panel — never the whole page. ── */
 @media (min-width: 900px) {
   .qf-modal { max-height: 94vh; }
-  .qf-grid { grid-template-columns: 424px 1fr; align-items: stretch; }
-  .qf-left { padding: 36px 32px 34px; }
-  .qf-right {
-    display: flex; flex-direction: column; min-height: 0;
-    height: min(840px, 88vh);
-    border-left: 1px solid rgba(255,255,255,0.07);
-  }
-  .qf-cal-embed { flex: 1; min-height: 0; }
-  .qf-cal-toggle { display: none; }
+  .qf-grid { grid-template-columns: 420px 1fr; align-items: stretch; }
+  .qf-left { padding: 38px 34px 34px; }
+  .qf-right { border-left: 1px solid rgba(255,255,255,0.07); }
+  .qf-cal-embed { height: min(660px, 78vh); min-height: 0; }
 }
 
-/* ── mobile: full-screen sheet (calendar flows; the sheet scrolls) ── */
+/* ── mobile: full-screen sheet (brand panel on top, step below) ── */
 @media (max-width: 600px) {
   .qf-overlay { padding: 0; }
   .qf-modal { width: 100%; min-height: 100%; border-radius: 0; border: 0; }
-  .qf-left { padding: 24px 20px 26px; }
+  .qf-left { padding: 24px 20px 22px; }
   .qf-right { border-top: 1px solid rgba(255,255,255,0.08); }
-  .qf-cal-embed { min-height: 620px; overflow: visible; }
+  .qf-form { padding: 22px 20px 28px; }
+  .qf-cal-embed { min-height: 620px; overflow: visible; height: auto; }
+  /* the large embossed mark is a desktop flourish; on the short mobile brand
+     panel it clips awkwardly, so the orange glow + small logo carry it here */
+  .qf-watermark { display: none; }
 }

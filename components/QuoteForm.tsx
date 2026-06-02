@@ -49,26 +49,22 @@ function ensureCalLoaded() {
 }
 
 /**
- * "What's Your Story?" — the Reach Out modal. One flow: the visitor leaves their
- * details and arranges a meeting. Cal.com is embedded inline as part of the same
- * surface (a time-picker), not a separate mode. No tabs, no page leave.
+ * "What's Your Story?" — the Reach Out modal. A two-step flow: fill the brief,
+ * then pick a time. There is exactly ONE confirming button — Cal.com's Confirm
+ * on the scheduling step. The form just advances to the calendar (prefilled with
+ * what you typed) and fires a lead notification in the background.
  */
 export default function QuoteForm({ open, onClose }: Props) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', note: '' });
   const [services, setServices] = useState<string[]>([]);
   const [other, setOther] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-  const [showCal, setShowCal] = useState(false);
+  const [step, setStep] = useState<'form' | 'cal'>('form');
+  const [svcError, setSvcError] = useState(false);
   const calRef = useRef<HTMLDivElement | null>(null);
-  const lastSig = useRef('');
+  const notified = useRef(false);
 
-  // Signature of the details we'd prefill — lets us re-init Cal only when the
-  // visitor has actually changed something, never mid-booking.
-  const prefillSig = () =>
-    JSON.stringify({ n: form.name, e: form.email, c: form.company, p: form.phone, s: services, o: other, b: form.note });
-
-  // Mount/refresh the Cal.com inline widget with the visitor's typed details so
-  // they never re-enter name/email on the calendar — one confirmation, on Cal.
+  // Mount the Cal.com inline widget, prefilled with the typed details so the
+  // booking step needs no re-entry — Confirm there is the single confirmation.
   const initCal = () => {
     const el = calRef.current;
     if (!el) return;
@@ -93,27 +89,18 @@ export default function QuoteForm({ open, onClose }: Props) {
       hideEventTypeDetails: true, // our own header covers it; keeps the calendar high up
       layout: 'month_view',
     });
-    lastSig.current = prefillSig();
   };
 
-  // When the visitor moves onto the calendar, refresh the prefill if their
-  // details changed since the last mount (so the booking step is pre-filled).
-  const refreshCalPrefill = () => {
-    if (showCal && prefillSig() !== lastSig.current) initCal();
-  };
-
-  // On desktop the scheduler sits in its own column, always visible. On mobile
-  // it stays collapsed behind a tap so the form + CTA fit the screen first.
+  // Reset to step one whenever the modal (re)opens.
   useEffect(() => {
-    if (!open) { setShowCal(false); return; }
-    if (window.matchMedia('(min-width: 900px)').matches) setShowCal(true);
+    if (open) { setStep('form'); setSvcError(false); notified.current = false; }
   }, [open]);
 
-  // First mount of the embed when the scheduler becomes visible.
+  // Mount the calendar when we advance to the scheduling step.
   useEffect(() => {
-    if (open && showCal) initCal();
+    if (open && step === 'cal') initCal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, showCal]);
+  }, [open, step]);
 
   // Lock body scroll + close on Escape while open.
   useEffect(() => {
@@ -124,49 +111,43 @@ export default function QuoteForm({ open, onClose }: Props) {
     return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey); };
   }, [open, onClose]);
 
-  useEffect(() => { if (open) setStatus('idle'); }, [open]);
-
   if (!open) return null;
 
-  const toggleService = (s: string) =>
+  const toggleService = (s: string) => {
+    setSvcError(false);
     setServices((cur) => (cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s]));
+  };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  // Step one → step two. Native validation covers name/email; we check that at
+  // least one service is picked, send a background lead notification, then show
+  // the calendar (already prefilled with everything above).
+  const goToCalendar = (e: React.FormEvent) => {
     e.preventDefault();
-    if (status === 'sending') return;
-    setStatus('sending');
-    const svc = services.map((s) => (s === 'Other' && other.trim() ? `Other: ${other.trim()}` : s));
-    try {
-      const res = await fetch('/api/contact', {
+    if (services.length === 0) { setSvcError(true); return; }
+    if (!notified.current) {
+      notified.current = true;
+      const svc = services.map((s) => (s === 'Other' && other.trim() ? `Other: ${other.trim()}` : s));
+      // fire-and-forget: capture the lead even if they don't finish booking
+      fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          org: form.company,
-          services: svc,
-          brief: form.note,
+          name: form.name, email: form.email, phone: form.phone,
+          org: form.company, services: svc, brief: form.note,
         }),
-      });
-      if (!res.ok) throw new Error('failed');
-      setStatus('sent');
-      setForm({ name: '', email: '', phone: '', company: '', note: '' });
-      setServices([]); setOther('');
-    } catch {
-      setStatus('error');
+      }).catch(() => { /* non-blocking */ });
     }
+    setStep('cal');
   };
 
   return (
     <div className="qf-overlay" onClick={onClose}>
-      <div className="qf-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="What's your story">
+      <div className={'qf-modal step-' + step} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="What's your story">
         <button className="qf-close" onClick={onClose} aria-label="Close">✕</button>
 
         <div className="qf-grid">
-          {/* ── Left: tell us about it ─────────────────────────────────── */}
+          {/* ── Left: brand panel (orange glow + embossed logo up top) ──── */}
           <div className="qf-left">
-            {/* living yellow glow + faint brand watermark behind the form */}
             <span className="qf-glow" aria-hidden="true" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="qf-watermark" src="/logo-dark.png" alt="" aria-hidden="true" />
@@ -176,16 +157,12 @@ export default function QuoteForm({ open, onClose }: Props) {
               <h2 className="qf-title">WHAT&apos;S YOUR STORY?</h2>
               <p className="qf-sub">Tell us what you&apos;re making. We&apos;ll line up a call and come back within 24 hours.</p>
             </div>
+          </div>
 
-            {status === 'sent' ? (
-              <div className="qf-success">
-                <div className="qf-success-mark">✓</div>
-                <h3>Got it.</h3>
-                <p>We&apos;ll be in touch within 24 hours. For anything urgent, WhatsApp +91 90130 82883.</p>
-                <button className="qf-submit" onClick={onClose}>Done</button>
-              </div>
-            ) : (
-              <form className="qf-form" onSubmit={onSubmit}>
+          {/* ── Right: step one (the brief) ── then step two (the calendar) ── */}
+          <div className="qf-right">
+            {step === 'form' ? (
+              <form className="qf-form" onSubmit={goToCalendar}>
                 <label className="qf-field">
                   <span>Your name <i>*</i></span>
                   <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="First and last" />
@@ -232,6 +209,7 @@ export default function QuoteForm({ open, onClose }: Props) {
                       placeholder="Tell us more"
                     />
                   )}
+                  {svcError && <p className="qf-err">Pick at least one option.</p>}
                 </div>
 
                 <label className="qf-field">
@@ -239,36 +217,24 @@ export default function QuoteForm({ open, onClose }: Props) {
                   <textarea rows={2} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="What you're making, the deadline, the vibe." />
                 </label>
 
-                {status === 'error' && (
-                  <p className="qf-err">Could not send. Email surajsharma@sqbpictures.com or WhatsApp +91 90130 82883.</p>
-                )}
-
-                <button className="qf-submit" type="submit" disabled={status === 'sending'}>
-                  <span>{status === 'sending' ? 'Sending…' : 'Submit'}</span>
+                <button className="qf-submit" type="submit">
+                  <span>Continue</span>
+                  <svg className="qf-submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h13" /><path d="M12 6l6 6-6 6" /></svg>
                 </button>
-
-                {/* On mobile the calendar is collapsed; this reveals it inline. */}
-                {!showCal && (
-                  <button type="button" className="qf-cal-toggle" onClick={() => setShowCal(true)}>
-                    Or pick a time now
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
-                  </button>
-                )}
               </form>
+            ) : (
+              <div className="qf-cal-step">
+                <div className="qf-right-head">
+                  <button type="button" className="qf-back" onClick={() => setStep('form')} aria-label="Back to the brief">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4" /><path d="M12 6l-6 6 6 6" /></svg>
+                    Back
+                  </button>
+                  <span className="qf-right-k">Pick a time</span>
+                  <span className="qf-right-sub">20-minute intro call · then hit Confirm</span>
+                </div>
+                <div className="qf-cal-embed" ref={calRef} />
+              </div>
             )}
-          </div>
-
-          {/* ── Right: pick a time (Cal.com inline) ────────────────────── */}
-          <div
-            className={'qf-right' + (showCal ? ' show' : '')}
-            onPointerEnter={refreshCalPrefill}
-            onFocusCapture={refreshCalPrefill}
-          >
-            <div className="qf-right-head">
-              <span className="qf-right-k">Pick a time</span>
-              <span className="qf-right-sub">20-minute intro call</span>
-            </div>
-            <div className="qf-cal-embed" ref={calRef} />
           </div>
         </div>
       </div>
