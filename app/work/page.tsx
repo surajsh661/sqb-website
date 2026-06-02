@@ -103,7 +103,9 @@ function WorkInner() {
     const url = new URL(window.location.href);
     if (filter === 'all') url.searchParams.delete('filter');
     else url.searchParams.set('filter', filter);
-    window.history.replaceState({}, '', url.toString());
+    // Preserve Next's internal history state (passing {} clobbers it and breaks
+    // the browser Back button). Only update the visible URL.
+    window.history.replaceState(window.history.state, '', url.toString());
     setShowAll(filter !== 'all');
     setupReveal();
   }, [filter]);

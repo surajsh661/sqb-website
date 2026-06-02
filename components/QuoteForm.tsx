@@ -26,6 +26,11 @@ const DIAL_CODES = [
   { iso: 'LK', code: '+94' }, { iso: 'NP', code: '+977' }, { iso: 'BD', code: '+880' },
 ];
 
+// ISO country code -> flag emoji (regional indicator pair). Renders as a real
+// flag on Mac/iOS/Android; falls back to the 2-letter code on Windows.
+const flag = (iso: string) =>
+  iso.toUpperCase().replace(/./g, (ch) => String.fromCodePoint(127397 + ch.charCodeAt(0)));
+
 // Short, scannable service labels — rendered as circular multi-select chips.
 const SERVICES = [
   'Film & Video',
@@ -208,7 +213,7 @@ export default function QuoteForm({ open, onClose }: Props) {
                     <div className="qf-phone">
                       <select className="qf-dial" value={dialCode} onChange={(e) => setDialCode(e.target.value)} aria-label="Country code">
                         {DIAL_CODES.map((c) => (
-                          <option key={c.iso + c.code} value={c.code}>{c.iso} {c.code}</option>
+                          <option key={c.iso + c.code} value={c.code}>{flag(c.iso)} {c.code}</option>
                         ))}
                       </select>
                       <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Optional" />
