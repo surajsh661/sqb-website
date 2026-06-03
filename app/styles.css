@@ -583,7 +583,11 @@ body.no-grain::before { display: none; }
   position: absolute; top: 0; right: 0; bottom: 0;
   width: 56%; z-index: 0; pointer-events: none;
 }
-.mf-cam { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* contain (not cover) so the whole camera + neon burst is always in frame —
+   the film is wider than the panel, so cover was clipping the right lens. The
+   dead space around it is transparent → shows the dark section, and the wrap's
+   gradient veils any edges, so the letterbox reads as part of the panel. */
+.mf-cam { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
 /* Two stacked gradients: horizontal veils the video's LEFT edge into the dark
    panel (no sharp seam against the copy); vertical softens top/bottom so it
    doesn't clip hard against the section rule. var(--bg)→transparent stays
@@ -2577,16 +2581,30 @@ video.frame-video {
 .qf-left {
   position: relative; overflow: hidden; padding: 30px 26px 28px; min-width: 0;
   background-color: #16110c;
-  /* 3 layers (top→bottom): darkening scrim · the embossed logo (contain, so it
-     never crops) · a grain tile cut from the same artwork that fills the space
-     around the logo, so there's no flat blank letterbox. */
+  /* Default (the brief step): the embossed-logo photo fills the panel edge to
+     edge — COVER, no letterbox, so no grain fill is needed here. The dialog is
+     a fixed size on this step, so the photo never gapped to begin with. */
   background-image:
+    linear-gradient(180deg, rgba(14,12,11,0.66) 0%, rgba(14,12,11,0.22) 42%, rgba(14,12,11,0.14) 100%),
+    url('/sqb-embossed.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
+/* Scheduling step ONLY: the dialog grows tall for the calendar, so the photo is
+   shown CONTAIN (never crops the logo). The space that opens up top & bottom is
+   filled with the matching grain, and a panel-colour feather at the very top and
+   bottom melts the photo's edges into that grain — so it's a soft blend, not a
+   sharp seam. */
+.qf-modal.step-cal .qf-left {
+  background-image:
+    linear-gradient(180deg, #16110c 0%, rgba(22,17,12,0) 22%, rgba(22,17,12,0) 78%, #16110c 100%),
     linear-gradient(180deg, rgba(14,12,11,0.66) 0%, rgba(14,12,11,0.22) 42%, rgba(14,12,11,0.14) 100%),
     url('/sqb-embossed.jpg'),
     url('/sqb-grain.jpg');
-  background-size: cover, contain, 300px 320px;
-  background-position: center, center, center;
-  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: cover, cover, contain, 300px 320px;
+  background-position: center, center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
 }
 /* living ORANGE glow — breathes (drifts + scales) over the top-left */
 .qf-glow {
