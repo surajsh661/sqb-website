@@ -654,12 +654,12 @@ body.no-grain::before { display: none; }
 /* THE ENGINE — founder section. Tightened vertically: smaller display
    headline, smaller top/bottom padding, less air above the row. */
 .engine {
-  position: relative; padding: 90px 0 90px;
+  position: relative; padding: 72px 0 56px;
   border-top: 1px solid var(--rule);
   overflow: hidden;
 }
 .engine .heading {
-  text-align: center; margin-bottom: 32px;
+  text-align: center; margin-bottom: 22px;
 }
 .engine .heading h2 {
   font-family: 'Anton', sans-serif;
@@ -682,8 +682,8 @@ body.no-grain::before { display: none; }
   align-items: center;
   max-width: 1500px;
   margin: 0 auto;
-  padding: 20px 40px 30px;
-  min-height: 360px;
+  padding: 12px 40px 16px;
+  min-height: 300px;
 }
 .founder-pair {
   position: absolute;
@@ -1457,14 +1457,14 @@ body.no-grain::before { display: none; }
   content: ""; position: absolute; inset: 0; z-index: 0;
   background: radial-gradient(ellipse at center, rgba(245,197,24,0.04) 0%, transparent 60%);
 }
-.section, .verticals, .engine, .bts, .testimonials, .contact {
+.section, .verticals, .bts, .testimonials, .contact {
   padding-top: calc(140px + var(--text-shift, 0px));
 }
 .manifesto h2 .ai { font-style: italic; color: var(--accent); }
 .testimonials .testi-head { margin-top: 28px; }
 
 /* Fix overlap: ensure h2/eyebrow combos have breathing room */
-.engine .heading h2 { margin-top: 22px; margin-bottom: 6px; }
+.engine .heading h2 { margin-top: 8px; margin-bottom: 6px; }
 .bts-head h2 { margin-top: 22px; margin-bottom: 18px; }
 .verticals .head h2 { margin-bottom: 14px; }
 
