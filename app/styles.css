@@ -574,6 +574,13 @@ body.no-grain::before { display: none; }
   display: flex;
   align-items: center;
   min-height: clamp(540px, 66vh, 780px);
+  /* The section's own background IS the film's background colour (#00040C, the
+     dark blue-black sampled from the video) through the middle band — so the
+     camera has nothing to contrast against and fully camouflages, no dark patch.
+     It fades to the site grey (#0E0E0E) at the very top/bottom so there's no
+     seam with the neighbouring sections. */
+  background: linear-gradient(180deg,
+    #0E0E0E 0%, #00040C 13%, #00040C 87%, #0E0E0E 100%);
 }
 .mf-content {
   position: relative; z-index: 2;
@@ -582,14 +589,10 @@ body.no-grain::before { display: none; }
 .mf-cam-wrap {
   position: absolute; top: 0; right: 0; bottom: 0;
   width: 58%; z-index: 0; pointer-events: none;
-  /* Radial "spotlight" tinted to the film's OWN background colour (rgb 0,4,12 —
-     a dark blue-black, sampled from the video), so the camera's rectangular
-     frame CAMOUFLAGES into the pool (no edge), then the pool dissolves to
-     transparent toward the panel edges → the #0E0E0E section shows through with
-     no hard rectangle. It's the background (behind the video), so the camera is
-     never dimmed. Centred on the camera (right-anchored at ~56%). */
-  background: radial-gradient(ellipse 76% 64% at 56% 50%,
-    rgb(0,4,12) 0%, rgb(0,4,12) 66%, rgba(0,4,12,0.5) 82%, transparent 100%);
+  /* No background of its own — the section's middle band is already #00040C
+     (the film's bg colour), so the camera sits on a matching backdrop and its
+     frame is invisible. The video's edge mask softens any residual boundary. */
+  background: transparent;
 }
 /* The camera is anchored to the RIGHT. width + auto height keeps the film at
    its native aspect — whole camera in frame, no crop, no squash. It sits on top
@@ -2253,7 +2256,9 @@ video.frame-video {
   /* Manifesto — stack: copy on top, camera film as a full-width band below it,
      blended with a top fade so it reads as one panel (no side-by-side at phone
      widths where the video would be too narrow). */
-  .section.manifesto { display: block; min-height: 0; }
+  /* mobile stacks (no side-by-side), and the film is a contained card, so the
+     desktop camouflage gradient isn't needed — keep the plain site grey. */
+  .section.manifesto { display: block; min-height: 0; background: none; }
   .mf-content { width: 100%; max-width: 100%; }
   .manifesto h2 { font-size: clamp(50px, 13vw, 100px); margin-top: 0; }
   .manifesto p { margin-top: 24px; font-size: 16px; text-align: left; max-width: 100%; }
