@@ -2527,12 +2527,17 @@ video.frame-video {
    top scrim so the heading stays legible over it ──────────────────── */
 .qf-left {
   position: relative; overflow: hidden; padding: 30px 26px 28px; min-width: 0;
+  background-color: #16110c;
+  /* 3 layers (top→bottom): darkening scrim · the embossed logo (contain, so it
+     never crops) · a grain tile cut from the same artwork that fills the space
+     around the logo, so there's no flat blank letterbox. */
   background-image:
-    linear-gradient(180deg, rgba(14,12,11,0.72) 0%, rgba(14,12,11,0.28) 42%, rgba(14,12,11,0.18) 100%),
-    url('/sqb-embossed.jpg');
-  background-size: cover, cover;
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
+    linear-gradient(180deg, rgba(14,12,11,0.66) 0%, rgba(14,12,11,0.22) 42%, rgba(14,12,11,0.14) 100%),
+    url('/sqb-embossed.jpg'),
+    url('/sqb-grain.jpg');
+  background-size: cover, contain, 300px 320px;
+  background-position: center, center, center;
+  background-repeat: no-repeat, no-repeat, repeat;
 }
 /* living ORANGE glow — breathes (drifts + scales) over the top-left */
 .qf-glow {
@@ -2686,9 +2691,7 @@ video.frame-video {
 @media (min-width: 900px) {
   .qf-modal { max-height: 94vh; }
   .qf-grid { grid-template-columns: 420px 1fr; align-items: stretch; }
-  /* contain (not cover) so the wide embossed logo never gets its edges cropped
-     on the taller calendar step; the dark fill blends the letterbox. */
-  .qf-left { padding: 38px 34px 34px; background-color: #16110c; background-size: cover, contain; }
+  .qf-left { padding: 38px 34px 34px; }
   .qf-right { border-left: 1px solid rgba(255,255,255,0.07); }
   .qf-cal-embed { height: min(660px, 78vh); min-height: 0; }
 }
@@ -2701,6 +2704,5 @@ video.frame-video {
   .qf-right { border-top: 1px solid rgba(255,255,255,0.08); }
   .qf-form { padding: 22px 20px 28px; }
   .qf-cal-embed { min-height: 620px; overflow: visible; height: auto; }
-  /* keep the embossed logo in view on the short mobile brand panel */
-  .qf-left { min-height: 180px; background-position: center, center 38%; }
+  .qf-left { min-height: 200px; }
 }

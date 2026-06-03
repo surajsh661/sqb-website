@@ -79,10 +79,6 @@ export default function Engine() {
         </div>
       </div>
 
-      <div className="footnote">
-        <div className="rule" />
-        <p>{COPY.engine.footnote}</p>
-      </div>
     </section>
   );
 }

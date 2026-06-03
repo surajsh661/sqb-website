@@ -27,13 +27,11 @@ export default function ContactSection({ compact = false }: { compact?: boolean 
     }
   };
 
-  const eyebrowNum = compact ? '★' : '06';
-
   return (
     <section className="contact" id="contact" data-screen-label="11 Contact">
       <div className="contact-inner">
         <div className="contact-left">
-          <div className="eyebrow"><span className="num">{eyebrowNum}</span> <span>{COPY.contact.eyebrowLabel}</span></div>
+          <div className="eyebrow"><span>{COPY.contact.eyebrowLabel}</span></div>
           <h2 className="contact-h">{rich(COPY.contact.heading)}</h2>
           <p className="contact-blurb">{rich(COPY.contact.blurb)}</p>
           <div className="contact-rows">

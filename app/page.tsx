@@ -74,6 +74,8 @@ export default function HomePage() {
       <section className="section manifesto" data-screen-label="02 Manifesto">
         <ManifestoHeadline />
         <p>{COPY.manifesto.paragraph}</p>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video className="mf-cam" src="/camera-website-lite.mp4" autoPlay muted loop playsInline aria-hidden="true" />
       </section>
 
       <section className="section" data-screen-label="03 Clients" style={{ paddingTop: 100, paddingBottom: 0 }}>
@@ -94,13 +96,6 @@ export default function HomePage() {
               <div className="stat">
                 <div className="num"><CountUp end={10000} suffix="+" /></div>
                 <div className="label">{COPY.stats.filmsLabel}</div>
-              </div>
-              <div className="stat">
-                <div className="num">
-                  2<span style={{ color: 'var(--fg-dim)' }}>–</span>
-                  <CountUp end={10} suffix="×" />
-                </div>
-                <div className="label">{COPY.stats.roasLabel}</div>
               </div>
             </div>
           </div>

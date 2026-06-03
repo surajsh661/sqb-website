@@ -188,7 +188,7 @@ export default function BTSPreview() {
   return (
     <section className="bts" data-screen-label="09 BTS" ref={sectionRef}>
       <div className="bts-head">
-        <div className="eyebrow"><span className="num">{COPY.bts.eyebrowNumber}</span> <span>{COPY.bts.eyebrowLabel}</span></div>
+        <div className="eyebrow"><span>{COPY.bts.eyebrowLabel}</span></div>
         <h2>{rich(COPY.bts.heading)}</h2>
       </div>
       <div className="bts-marquee" ref={marqueeRef}>
