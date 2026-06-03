@@ -9,8 +9,16 @@ export default function Loader() {
     // kept the dark overlay up while the hero sat hidden and the videos couldn't
     // even start painting. Revealing the hero quickly lets the iframes decode
     // their first frame sooner, so the videos appear faster, not slower.
-    const t = setTimeout(() => setDone(true), 500);
-    return () => clearTimeout(t);
+    // 300ms (down from 500ms) — long enough to register the clap, short enough
+    // that the page feels instant on both mobile and desktop. If the first paint
+    // somehow isn't ready yet, two rAFs guarantee we don't reveal a blank frame.
+    let raf1 = 0, raf2 = 0;
+    const t = setTimeout(() => {
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => setDone(true));
+      });
+    }, 300);
+    return () => { clearTimeout(t); cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); };
   }, []);
 
   return (

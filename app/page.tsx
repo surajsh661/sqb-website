@@ -72,8 +72,24 @@ export default function HomePage() {
       <Hero films={SQB_HERO_FILMS} onPick={openCase} showCursorHint />
 
       <section className="section manifesto" data-screen-label="02 Manifesto">
-        <ManifestoHeadline />
-        <p>{COPY.manifesto.paragraph}</p>
+        <div className="mf-content">
+          <ManifestoHeadline />
+          <p>{COPY.manifesto.paragraph}</p>
+        </div>
+        {/* Camera film plays large on the right, full section height. A gradient
+            veils its left edge so it melts into the dark panel behind the copy
+            instead of showing a hard rectangle edge. Decorative → aria-hidden. */}
+        <div className="mf-cam-wrap" aria-hidden="true">
+          <video
+            className="mf-cam"
+            src="/camera-website-lite.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
+        </div>
       </section>
 
       <section className="section" data-screen-label="03 Clients" style={{ paddingTop: 100, paddingBottom: 0 }}>

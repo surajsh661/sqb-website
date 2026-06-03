@@ -638,7 +638,8 @@
   position: fixed; inset: 0; z-index: 99999;
   background: #0a0807;
   display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
+  /* Snappier fade-out (0.4s, was 0.6s) so the reveal feels immediate. */
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 .sqb-loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
 /* Clean evenly-spaced row: clapboard · camera · AI stars. Each icon is its own
@@ -651,15 +652,32 @@
 /* Size all three by HEIGHT so they read as evenly weighted (sizing the camera
    by width made it dominate). Uniform ~56px tall each. */
 .sqb-loader-icon .lr-clap  { height: 56px; opacity: 0.92;
-  animation: lrBreathe 1.5s ease-in-out infinite; }
+  animation: lrBreathe 1.1s ease-in-out infinite; }
 .sqb-loader-icon .lr-film  { height: 56px;
-  animation: lrBreathe 1.5s ease-in-out infinite; }
+  animation: lrBreathe 1.1s ease-in-out infinite; }
 .sqb-loader-icon .lr-stars { height: 56px; }
-/* The hinged top stick claps: fast snap shut, tiny bounce, slow re-open. */
+/* The hinged top stick claps: fast snap shut, tiny bounce, slow re-open.
+   1.1s (was 1.5s) so the clap snap lands inside the shorter loader window. */
 .sqb-loader-icon .lr-clap-top {
   transform-box: fill-box;
   transform-origin: 0% 100%;   /* back-left corner where stick meets body */
-  animation: lrClapSnap 1.5s cubic-bezier(.34,1.56,.64,1) infinite;
+  animation: lrClapSnap 1.1s cubic-bezier(.34,1.56,.64,1) infinite;
+}
+/* Mobile: tighter row + slightly smaller icons so the trio sits balanced
+   on a narrow screen. */
+@media (max-width: 600px) {
+  .sqb-loader-icon { gap: 10px; }
+  .sqb-loader-icon .lr-clap,
+  .sqb-loader-icon .lr-film,
+  .sqb-loader-icon .lr-stars { height: 48px; }
+}
+/* Respect reduced-motion: hold the icons still (no breathe/clap) and cut the
+   fade — the loader just blinks away cleanly. */
+@media (prefers-reduced-motion: reduce) {
+  .sqb-loader { transition: opacity 0.2s ease, visibility 0.2s ease; }
+  .sqb-loader-icon .lr-clap,
+  .sqb-loader-icon .lr-film,
+  .sqb-loader-icon .lr-clap-top { animation: none; }
 }
 @keyframes lrBreathe {
   0%, 100% { opacity: 0.92; transform: scale(1); }
@@ -1948,7 +1966,7 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 /* CINEMA × AI, centred on one line (wraps gracefully on small screens).
    CINEMA splits in the middle for a cinema camera; AI splits for sparks. */
 .mh.mh-shake {
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: flex-start;
   flex-wrap: wrap; gap: 0.06em 0.3em;
 }
 .mh .mh-word { color: var(--fg); }
