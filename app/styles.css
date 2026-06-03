@@ -582,22 +582,33 @@ body.no-grain::before { display: none; }
 .mf-cam-wrap {
   position: absolute; top: 0; right: 0; bottom: 0;
   width: 58%; z-index: 0; pointer-events: none;
-  /* Radial "spotlight": solid black where the camera sits (so the film's own
-     black frame blends in seamlessly), dissolving to transparent toward the
-     panel edges — so the section's #0E0E0E grey shows through and there is NO
-     hard black rectangle. It's the BACKGROUND (behind the video), so it never
-     dims the camera itself. Centred on the camera (right-anchored at ~56%). */
-  background: radial-gradient(ellipse 72% 60% at 56% 50%,
-    #000 0%, #000 60%, rgba(0,0,0,0.45) 80%, transparent 100%);
+  /* Radial "spotlight" tinted to the film's OWN background colour (rgb 0,4,12 —
+     a dark blue-black, sampled from the video), so the camera's rectangular
+     frame CAMOUFLAGES into the pool (no edge), then the pool dissolves to
+     transparent toward the panel edges → the #0E0E0E section shows through with
+     no hard rectangle. It's the background (behind the video), so the camera is
+     never dimmed. Centred on the camera (right-anchored at ~56%). */
+  background: radial-gradient(ellipse 76% 64% at 56% 50%,
+    rgb(0,4,12) 0%, rgb(0,4,12) 66%, rgba(0,4,12,0.5) 82%, transparent 100%);
 }
 /* The camera is anchored to the RIGHT. width + auto height keeps the film at
    its native aspect — whole camera in frame, no crop, no squash. It sits on top
-   of the radial black pool, so it's fully bright (never veiled). */
+   of the radial pool (fully bright, never veiled), and its own edges are
+   feathered to transparent so the frame rectangle melts away even where the
+   film's bg colour drifts slightly. */
 .mf-cam {
   position: absolute; right: 0; top: 50%;
   transform: translateY(-50%);
   width: 90%; height: auto; max-height: 100%;
   display: block;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 5%, #000 96%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 5%, #000 96%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-composite: intersect;
 }
 /* Kept (no desktop veil) so the mobile override below has a base to attach its
    top-fade to; the radial background does all the desktop blending. */
@@ -2250,9 +2261,10 @@ video.frame-video {
     position: relative; top: auto; right: auto; bottom: auto;
     width: 100%; height: clamp(200px, 46vw, 320px);
     margin-top: 30px; border-radius: 14px; overflow: hidden;
-    /* mobile is a contained rounded card, not a full-height panel — solid black
-       (override the desktop radial spotlight). */
-    background: #000;
+    /* mobile is a contained rounded card, not a full-height panel — fill with
+       the film's own bg colour (override the desktop radial spotlight) so the
+       camera melts into the card. */
+    background: rgb(0,4,12);
   }
   /* centre the film in the full-width mobile band (override the desktop
      right-anchor) and let it span the band width at native aspect */
