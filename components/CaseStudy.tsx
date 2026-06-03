@@ -162,7 +162,7 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
         <span className="cb-arrow">←</span> BACK
       </button>
 
-      <section className={'case-hero' + (isVertical ? ' vertical' : '')}>
+      <section className={'case-hero' + (isVertical ? ' vertical' : '') + (film.type === 'gd' ? ' gd' : '')}>
         <div className="bg">
           <iframe
             ref={iframeRef}

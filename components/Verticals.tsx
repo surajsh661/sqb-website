@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { SQB_VERTICALS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
-import { videoSrc } from '@/lib/video-utils';
+import { videoSrc, thumbSources } from '@/lib/video-utils';
 import type { Vertical } from '@/lib/types';
 
 // Fan geometry — a 5-card window (centre = slot 2) drawn from however many
@@ -253,12 +253,24 @@ export default function Verticals() {
                 tabIndex={0}
               >
                 {mounted && (
-                  <iframe
-                    src={videoSrc({ type: v.type, videoId: v.videoId }, { bg: true })}
-                    title={v.title}
-                    allow="autoplay; encrypted-media"
-                    loading={i === 2 ? 'eager' : 'lazy'}
-                  />
+                  v.type === 'gd' ? (
+                    // Drive can't autoplay in the card (and pillarboxes), so show
+                    // the clean 9:16 poster; click opens the case study to play.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={thumbSources({ type: v.type, videoId: v.videoId })[1] || thumbSources({ type: v.type, videoId: v.videoId })[0]}
+                      alt={v.title}
+                      referrerPolicy="no-referrer"
+                      loading={i === 2 ? 'eager' : 'lazy'}
+                    />
+                  ) : (
+                    <iframe
+                      src={videoSrc({ type: v.type, videoId: v.videoId }, { bg: true })}
+                      title={v.title}
+                      allow="autoplay; encrypted-media"
+                      loading={i === 2 ? 'eager' : 'lazy'}
+                    />
+                  )
                 )}
                 <div className="vlabel">
                   <span className="tag">{v.tag}</span>
