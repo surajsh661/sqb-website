@@ -582,38 +582,35 @@ body.no-grain::before { display: none; }
 .mf-cam-wrap {
   position: absolute; top: 0; right: 0; bottom: 0;
   width: 58%; z-index: 0; pointer-events: none;
-  /* Pure black to MATCH the film's own black background — so the empty space
-     around the camera is black-on-black with no sharp rectangle edge. The
-     ::after gradient melts this black panel into the section's #0E0E0E grey. */
-  background: #000;
+  /* Radial "spotlight": solid black where the camera sits (so the film's own
+     black frame blends in seamlessly), dissolving to transparent toward the
+     panel edges — so the section's #0E0E0E grey shows through and there is NO
+     hard black rectangle. It's the BACKGROUND (behind the video), so it never
+     dims the camera itself. Centred on the camera (right-anchored at ~56%). */
+  background: radial-gradient(ellipse 72% 60% at 56% 50%,
+    #000 0%, #000 60%, rgba(0,0,0,0.45) 80%, transparent 100%);
 }
-/* The camera is anchored to the RIGHT with a small empty black margin on its
-   left. That margin (not the camera) is where the blend gradient lives, so the
-   gradient never falls across the camera and dims it. width + auto height keeps
-   the film at its native aspect — whole camera in frame, no crop, no squash. */
+/* The camera is anchored to the RIGHT. width + auto height keeps the film at
+   its native aspect — whole camera in frame, no crop, no squash. It sits on top
+   of the radial black pool, so it's fully bright (never veiled). */
 .mf-cam {
   position: absolute; right: 0; top: 50%;
   transform: translateY(-50%);
   width: 90%; height: auto; max-height: 100%;
   display: block;
 }
-/* Horizontal: blends ONLY the left ~9% (the empty black margin) into the
-   section — it stops well before the camera, so the camera's left side is never
-   faded. Vertical: softens the panel's top/bottom edges against the section
-   rule. var(--bg) to transparent stays near-black, so no grey halo. */
+/* Kept (no desktop veil) so the mobile override below has a base to attach its
+   top-fade to; the radial background does all the desktop blending. */
 .mf-cam-wrap::after {
-  content: ""; position: absolute; inset: 0;
-  background:
-    linear-gradient(90deg, var(--bg) 0%, var(--bg) 1%, transparent 9%),
-    linear-gradient(180deg, var(--bg) 0%, transparent 12%, transparent 88%, var(--bg) 100%);
+  content: ""; position: absolute; inset: 0; pointer-events: none;
 }
 
 .manifesto h2 {
   font-family: 'Anton', sans-serif;
-  /* Sized so the FULLY-OPEN headline (camera + spark slots expanded) still fits
-     on one line inside the left column at every desktop width — no wrapping.
-     (Verified: open width ~650px in a ~716px column at 1440.) */
-  font-size: clamp(42px, 4.8vw, 100px);
+  /* Bigger than before, but the slot expansion was trimmed to match so the
+     FULLY-OPEN headline still fits one line in the left column at every desktop
+     width — no wrapping. (Verified open width vs column in the preview.) */
+  font-size: clamp(50px, 6vw, 120px);
   line-height: 0.92; letter-spacing: -0.01em;
   text-transform: uppercase; margin-top: 0;
   margin-bottom: 24px;
@@ -635,7 +632,7 @@ body.no-grain::before { display: none; }
   margin-top: 28px;
   margin-left: 0; margin-right: 0;
   max-width: 46ch;
-  font-size: 20px; line-height: 1.6;
+  font-size: 17px; line-height: 1.62;
   color: var(--fg);
   font-weight: 400;
   text-align: left;
@@ -2253,6 +2250,9 @@ video.frame-video {
     position: relative; top: auto; right: auto; bottom: auto;
     width: 100%; height: clamp(200px, 46vw, 320px);
     margin-top: 30px; border-radius: 14px; overflow: hidden;
+    /* mobile is a contained rounded card, not a full-height panel — solid black
+       (override the desktop radial spotlight). */
+    background: #000;
   }
   /* centre the film in the full-width mobile band (override the desktop
      right-anchor) and let it span the band width at native aspect */
