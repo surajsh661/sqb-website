@@ -1967,8 +1967,12 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
    CINEMA splits in the middle for a cinema camera; AI splits for sparks. */
 .mh.mh-shake {
   display: flex; align-items: center; justify-content: flex-start;
-  flex-wrap: wrap; gap: 0.06em 0.3em;
+  /* nowrap: CINEMA × AI must stay on ONE line even when the camera/spark slots
+     open during the animation — it must never break "AI" down to a second row. */
+  flex-wrap: nowrap; gap: 0.06em 0.3em;
 }
+/* the words and the × never compress — only the icon slots flex open/closed */
+.mh .mh-word, .mh .mh-x { flex-shrink: 0; }
 .mh .mh-word { color: var(--fg); }
 .mh .mh-word-ai { color: var(--accent); }
 .mh .mh-x {
@@ -1993,8 +1997,8 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   transform: translate(-50%, -50%) scale(0); opacity: 0;
   pointer-events: none; will-change: transform, opacity;
 }
-.mh .cam-slot svg { width: 1.55em; height: 1.55em; }
-.mh .star-slot svg { width: 1.32em; height: 1.32em; }
+.mh .cam-slot svg { width: 1.3em; height: 1.3em; }
+.mh .star-slot svg { width: 1.12em; height: 1.12em; }
 .mh .cam-rec, .mh .cam-flash { opacity: 0; }
 
 /* ---- play state (added on scroll-in) ---- */
@@ -2009,8 +2013,8 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 .mh.play .star-tw.s2 { animation: mhTwinkle 0.9s ease-in-out 0.15s infinite; }
 .mh.play .star-tw.s3 { animation: mhTwinkle 1.05s ease-in-out 0.3s infinite; }
 
-@keyframes mhCamGap  { 0% { width: 0; } 14% { width: 1.9em; } 74% { width: 1.9em; } 100% { width: 0; } }
-@keyframes mhStarGap { 0% { width: 0; } 16% { width: 1.35em; } 74% { width: 1.35em; } 100% { width: 0; } }
+@keyframes mhCamGap  { 0% { width: 0; } 14% { width: 1.55em; } 74% { width: 1.55em; } 100% { width: 0; } }
+@keyframes mhStarGap { 0% { width: 0; } 16% { width: 1.15em; } 74% { width: 1.15em; } 100% { width: 0; } }
 @keyframes mhCamPop {
   0%   { transform: translate(-50%, -50%) scale(0) rotate(-16deg); opacity: 0; }
   11%  { transform: translate(-50%, -50%) scale(1.06) rotate(5deg); opacity: 1; }

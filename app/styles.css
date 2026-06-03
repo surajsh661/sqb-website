@@ -582,6 +582,11 @@ body.no-grain::before { display: none; }
 .mf-cam-wrap {
   position: absolute; top: 0; right: 0; bottom: 0;
   width: 56%; z-index: 0; pointer-events: none;
+  /* Pure black to MATCH the film's own black background — so the contain
+     letterbox (the space above/below the camera) is black-on-black, with no
+     sharp rectangle edge. The ::after gradient then melts this black panel into
+     the section's #0E0E0E grey at the left/top/bottom edges. */
+  background: #000;
 }
 /* contain (not cover) so the whole camera + neon burst is always in frame —
    the film is wider than the panel, so cover was clipping the right lens. The
@@ -601,7 +606,10 @@ body.no-grain::before { display: none; }
 
 .manifesto h2 {
   font-family: 'Anton', sans-serif;
-  font-size: clamp(50px, 6.2vw, 124px);
+  /* Sized so the FULLY-OPEN headline (camera + spark slots expanded) still fits
+     on one line inside the left column at every desktop width — no wrapping.
+     (Verified: open width ~650px in a ~716px column at 1440.) */
+  font-size: clamp(42px, 4.8vw, 100px);
   line-height: 0.92; letter-spacing: -0.01em;
   text-transform: uppercase; margin-top: 0;
   margin-bottom: 24px;
