@@ -2,20 +2,24 @@
 .sqb-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 32px;
-  /* Same glass treatment as the home-page topbar. */
+  padding: 11px 32px;
+  background: transparent;
+}
+/* Glass band as its own layer so we can fade its BOTTOM edge to a soft
+   gradient — the blur dissolves into the page instead of a hard cut line
+   slicing across the content below. */
+.sqb-nav::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: rgba(14, 14, 14, 0.55);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
           backdrop-filter: blur(18px) saturate(160%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  -webkit-mask-image: linear-gradient(to bottom, #000 46%, rgba(0,0,0,0.55) 74%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 46%, rgba(0,0,0,0.55) 74%, transparent 100%);
 }
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .sqb-nav { background: rgba(14, 14, 14, 0.88); }
+  .sqb-nav::before { background: rgba(14, 14, 14, 0.9); }
 }
-[data-theme="light"] .sqb-nav {
-  background: rgba(246, 241, 229, 0.6);
-  border-bottom-color: rgba(0, 0, 0, 0.06);
-}
+[data-theme="light"] .sqb-nav::before { background: rgba(246, 241, 229, 0.6); }
 .sqb-nav .lm {
   display: flex; align-items: center; gap: 14px;
   text-decoration: none; color: var(--fg);
