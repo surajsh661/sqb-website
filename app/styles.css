@@ -2799,13 +2799,40 @@ video.frame-video {
   .qf-cal-embed { height: min(660px, 78vh); min-height: 0; }
 }
 
+/* ── tablet/phone (single column): clean brand header ──────────────
+   On one column the title + description used to sit ON TOP of the busy
+   embossed logo (cover), which read as a messy overlap. Instead: a strong
+   dark scrim across the TEXT area at the top, and the embossed logo placed
+   cleanly at the BOTTOM-centre of the panel as a brand mark — text and logo
+   no longer collide. Applied to BOTH steps (override the desktop cal bg). */
+@media (max-width: 899px) {
+  .qf-left,
+  .qf-modal.step-cal .qf-left {
+    min-height: 320px;
+    padding: 30px 22px 22px;
+    background-color: #0c0a09;
+    /* embossed logo FILLS the panel (like desktop) — no small rectangle patch.
+       A strong scrim across the TOP keeps the title + description on a clean
+       dark surface, then clears just below the copy so the SQB mark reads in the
+       lower half — text and logo no longer collide. */
+    background-image:
+      linear-gradient(180deg, #0c0a09 0%, #0c0a09 22%, rgba(12,10,9,0.55) 40%, rgba(12,10,9,0.05) 70%, transparent 100%),
+      url('/sqb-embossed.jpg');
+    background-size: auto, cover;
+    background-position: center, center 42%;
+    background-repeat: no-repeat, no-repeat;
+  }
+  .qf-head { margin-bottom: 0; }
+  .qf-sub { max-width: 38ch; }
+}
+
 /* ── mobile: full-screen sheet (brand panel on top, step below) ── */
 @media (max-width: 600px) {
   .qf-overlay { padding: 0; }
   .qf-modal { width: 100%; min-height: 100%; border-radius: 0; border: 0; }
-  .qf-left { padding: 24px 20px 22px; }
   .qf-right { border-top: 1px solid rgba(255,255,255,0.08); }
   .qf-form { padding: 22px 20px 28px; }
   .qf-cal-embed { min-height: 620px; overflow: visible; height: auto; }
-  .qf-left { min-height: 200px; }
+  .qf-left,
+  .qf-modal.step-cal .qf-left { min-height: 270px; padding: 26px 20px 0; }
 }

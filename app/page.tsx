@@ -15,6 +15,7 @@ import CaseStudy from '@/components/CaseStudy';
 import ClientLogos from '@/components/ClientLogos';
 import CountUp from '@/components/CountUp';
 import ManifestoHeadline from '@/components/ManifestoHeadline';
+import CameraFilm from '@/components/CameraFilm';
 import ServiceMap from '@/components/ServiceMap';
 import HeroIntro from '@/components/HeroIntro';
 import { SQB_FILMS, SQB_HERO_FILMS } from '@/lib/data';
@@ -80,15 +81,7 @@ export default function HomePage() {
             veils its left edge so it melts into the dark panel behind the copy
             instead of showing a hard rectangle edge. Decorative → aria-hidden. */}
         <div className="mf-cam-wrap" aria-hidden="true">
-          <video
-            className="mf-cam"
-            src="/camera-website-lite.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
+          <CameraFilm />
         </div>
       </section>
 
