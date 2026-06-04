@@ -187,6 +187,10 @@ export default function QuoteForm({ open, onClose }: Props) {
               <h2 className="qf-title">WHAT&apos;S YOUR STORY?</h2>
               <p className="qf-sub">Tell us what you&apos;re making. We&apos;ll line up a call and come back within 24 hours.</p>
             </div>
+            {/* Mobile-only brand mark on the right (desktop keeps the embossed
+                panel background instead). Hidden ≥900px via CSS. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="qf-brand-logo" src="/logo-dark.png" alt="S'QB Pictures" aria-hidden="true" />
           </div>
 
           {/* ── Right: step one (the brief) ── then step two (the calendar) ── */}

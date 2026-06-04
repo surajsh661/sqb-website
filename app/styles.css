@@ -2655,6 +2655,8 @@ video.frame-video {
   50%      { transform: translateY(26px)  scale(1.2);  opacity: 1; }
 }
 .qf-head, .qf-form, .qf-cal-step { position: relative; z-index: 1; }
+/* Brand mark — only used on the mobile sheet (desktop uses the embossed panel). */
+.qf-brand-logo { display: none; }
 @media (prefers-reduced-motion: reduce) { .qf-glow { animation: none; } }
 .qf-head { margin-bottom: 20px; }
 .qf-logo { height: 36px; width: auto; display: block; margin-bottom: 16px; }
@@ -2806,24 +2808,30 @@ video.frame-video {
    cleanly at the BOTTOM-centre of the panel as a brand mark — text and logo
    no longer collide. Applied to BOTH steps (override the desktop cal bg). */
 @media (max-width: 899px) {
+  /* Clean mobile brand header: NO embossed picture, NO orange glow — just the
+     copy on the LEFT and the S'QB logo on the RIGHT, with the logo dropped below
+     the close (✕) button so they never overlap. */
   .qf-left,
   .qf-modal.step-cal .qf-left {
-    min-height: 320px;
-    padding: 30px 22px 22px;
-    background-color: #0c0a09;
-    /* embossed logo FILLS the panel (like desktop) — no small rectangle patch.
-       A strong scrim across the TOP keeps the title + description on a clean
-       dark surface, then clears just below the copy so the SQB mark reads in the
-       lower half — text and logo no longer collide. */
-    background-image:
-      linear-gradient(180deg, #0c0a09 0%, #0c0a09 22%, rgba(12,10,9,0.55) 40%, rgba(12,10,9,0.05) 70%, transparent 100%),
-      url('/sqb-embossed.jpg');
-    background-size: auto, cover;
-    background-position: center, center 42%;
-    background-repeat: no-repeat, no-repeat;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    min-height: 0;
+    padding: 26px 20px 26px;
+    background: #14100c;
+    background-image: none;
   }
-  .qf-head { margin-bottom: 0; }
-  .qf-sub { max-width: 38ch; }
+  .qf-left .qf-glow { display: none; }            /* remove the orange gradient */
+  .qf-head { flex: 1 1 auto; min-width: 0; margin-bottom: 0; }
+  .qf-sub { max-width: 34ch; }
+  .qf-brand-logo {
+    display: block;
+    flex: 0 0 auto;
+    width: clamp(96px, 30vw, 132px);
+    height: auto;
+    margin-top: 42px;        /* clear gap below the top-right close button */
+    align-self: flex-start;
+  }
 }
 
 /* ── mobile: full-screen sheet (brand panel on top, step below) ── */
@@ -2833,6 +2841,8 @@ video.frame-video {
   .qf-right { border-top: 1px solid rgba(255,255,255,0.08); }
   .qf-form { padding: 22px 20px 28px; }
   .qf-cal-embed { min-height: 620px; overflow: visible; height: auto; }
+  /* keep the flex brand header compact on phones */
   .qf-left,
-  .qf-modal.step-cal .qf-left { min-height: 270px; padding: 26px 20px 0; }
+  .qf-modal.step-cal .qf-left { padding: 24px 18px 24px; }
+  .qf-brand-logo { width: clamp(92px, 28vw, 120px); margin-top: 40px; }
 }
