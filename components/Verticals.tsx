@@ -112,36 +112,46 @@ export default function Verticals() {
   // a horizontal drag (scroll) from a tap (open the clip).
   const vrowRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (!mounted) return;
     const row = vrowRef.current;
     if (!row) return;
-    if (getComputedStyle(row).overflowX === 'visible') return; // desktop fan — skip
+    // Only the MOBILE layout is a horizontal scroller (overflow-x:auto). The
+    // desktop fan is overflow:visible, so it's skipped. Re-checked on resize so
+    // the drift starts/stops when crossing the breakpoint. NOT gated on the
+    // iframe lazy-mount — the cards are sized by CSS before their media loads,
+    // so the constant drift runs as soon as the page is up.
+    const isScroller = () => getComputedStyle(row).overflowX === 'auto';
+    let mobile = isScroller();
     let raf = 0;
     let pausedUntil = 0;
     let pos = row.scrollLeft;
-    const SPEED = 0.5;
+    const SPEED = 0.8; // px/frame ≈ 48px/s — a clearly-visible constant drift
     const tick = () => {
-      const half = row.scrollWidth / 2;
-      if (half > 0) {
-        if (!activeRef.current && performance.now() > pausedUntil) {
-          pos += SPEED; row.scrollLeft = pos;
-        } else { pos = row.scrollLeft; }
-        if (row.scrollLeft >= half) { row.scrollLeft -= half; pos = row.scrollLeft; }
+      if (mobile) {
+        const half = row.scrollWidth / 2;
+        if (half > 0) {
+          if (!activeRef.current && performance.now() > pausedUntil) {
+            pos += SPEED; row.scrollLeft = pos;
+          } else { pos = row.scrollLeft; }
+          if (row.scrollLeft >= half) { row.scrollLeft -= half; pos = row.scrollLeft; }
+        }
       }
       raf = requestAnimationFrame(tick);
     };
     const hold = () => { pausedUntil = performance.now() + 2000; };
+    const onResize = () => { mobile = isScroller(); pos = row.scrollLeft; };
+    window.addEventListener('resize', onResize);
     row.addEventListener('pointerdown', hold);
     row.addEventListener('touchmove', hold, { passive: true });
     row.addEventListener('scroll', hold, { passive: true });
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener('resize', onResize);
       row.removeEventListener('pointerdown', hold);
       row.removeEventListener('touchmove', hold);
       row.removeEventListener('scroll', hold);
     };
-  }, [mounted]);
+  }, []);
 
   // Drag vs tap detection so swiping the row doesn't fire a card's open-modal click.
   const vSwipe = useRef<{ x: number; y: number; left: number; drag: boolean } | null>(null);

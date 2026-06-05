@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { SQB_BTS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
@@ -23,6 +24,9 @@ export default function BTSPreview() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const marqueeRef = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState(false);
+  // Tapping a card opens an in-page lightbox that plays the clip ON the site
+  // (instead of navigating away to instagram.com).
+  const [modal, setModal] = useState<BTS | null>(null);
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -57,35 +61,42 @@ export default function BTSPreview() {
   // — the swipe is handled per-card by .bts-swipe overlays (see renderCard),
   // which only intercept a horizontal DRAG and pass clean taps to the iframe.
   useEffect(() => {
-    if (!active) return;
     const track = marqueeRef.current;
     if (!track) return;
-    const isScroller = getComputedStyle(track).overflowX !== 'visible';
-    if (!isScroller) return;
-
+    // Only the MOBILE strip is a horizontal scroller (overflow-x:auto). Desktop
+    // is overflow:hidden + a CSS marquee, so checking specifically for 'auto'
+    // (not just "!= visible") correctly skips desktop and never fights the CSS
+    // animation. Re-checked on resize. NOT gated on the iframe lazy-mount — the
+    // cards are sized by CSS, so the constant drift runs as soon as the page is up.
+    const isScroller = () => getComputedStyle(track).overflowX === 'auto';
+    let mobile = isScroller();
     let raf = 0;
     let pausedUntil = 0;
     let pos = track.scrollLeft;
-    const SPEED = 0.5; // px per frame ≈ 30px/s drift
+    const SPEED = 0.8; // px/frame ≈ 48px/s — a clearly-visible constant drift
     const tick = () => {
-      const half = track.scrollWidth / 2;
-      if (half > 0) {
-        if (performance.now() > pausedUntil) {
-          pos += SPEED;
-          track.scrollLeft = pos; // (scrollLeft truncates to int; pos is the float)
-        } else {
-          pos = track.scrollLeft; // while paused / user-driven, follow the real pos
+      if (mobile) {
+        const half = track.scrollWidth / 2;
+        if (half > 0) {
+          if (performance.now() > pausedUntil) {
+            pos += SPEED;
+            track.scrollLeft = pos; // (scrollLeft truncates to int; pos is the float)
+          } else {
+            pos = track.scrollLeft; // while paused / user-driven, follow the real pos
+          }
+          // Seamless loop anchored to the REAL position so swiping never resets:
+          // if we've passed the half-way duplicate point, rebase by one half.
+          if (track.scrollLeft >= half) { track.scrollLeft -= half; pos = track.scrollLeft; }
+          else if (track.scrollLeft <= 0 && pos < 0) { track.scrollLeft += half; pos = track.scrollLeft; }
         }
-        // Seamless loop anchored to the REAL position so swiping never resets:
-        // if we've passed the half-way duplicate point, rebase by one half.
-        if (track.scrollLeft >= half) { track.scrollLeft -= half; pos = track.scrollLeft; }
-        else if (track.scrollLeft <= 0 && pos < 0) { track.scrollLeft += half; pos = track.scrollLeft; }
       }
       raf = requestAnimationFrame(tick);
     };
     // Pause the drift for 2s after any user interaction, then it resumes from the
     // current spot (pos is re-read from scrollLeft above, so no jump).
     const hold = () => { pausedUntil = performance.now() + 2000; };
+    const onResize = () => { mobile = isScroller(); pos = track.scrollLeft; };
+    window.addEventListener('resize', onResize);
     track.addEventListener('pointerdown', hold);
     track.addEventListener('touchmove', hold, { passive: true });
     track.addEventListener('scroll', hold, { passive: true });
@@ -93,12 +104,13 @@ export default function BTSPreview() {
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener('resize', onResize);
       track.removeEventListener('pointerdown', hold);
       track.removeEventListener('touchmove', hold);
       track.removeEventListener('scroll', hold);
       track.removeEventListener('wheel', hold);
     };
-  }, [active]);
+  }, []);
 
   // Per-card swipe overlay: catches a horizontal DRAG and scrolls the strip, but
   // lets a clean TAP fall through to the iframe (so embeds open/play like desktop).
@@ -120,24 +132,40 @@ export default function BTSPreview() {
       e.preventDefault();
     }
   };
-  // Open the reel/clip when a card is tapped (not dragged) — the mobile
-  // equivalent of "view it", since you can't tap inside a cross-origin iframe
-  // through the swipe overlay.
-  const openSrc = (b: BTS) => {
-    const url =
-      b.type === 'ig' ? `https://www.instagram.com/reel/${b.videoId}/`
-      : b.type === 'gd' ? `https://drive.google.com/file/d/${b.videoId}/view`
-      : b.type === 'vm' ? `https://vimeo.com/${b.videoId}`
-      : `https://www.youtube.com/watch?v=${b.videoId}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
   const onOverlayTap = (b: BTS) => {
     // Fired on pointerup via onClick; if it was a drag, ignore (the swipe moved
-    // the strip). A clean tap opens the reel.
+    // the strip). A clean tap opens the clip in an on-site lightbox.
     if (swipe.current?.drag) { swipe.current = null; return; }
     swipe.current = null;
-    openSrc(b);
+    setModal(b);
   };
+
+  // Playable src for the lightbox (autoplay where the platform allows it).
+  const modalSrc = (b: BTS) =>
+    b.type === 'vm'
+      ? `https://player.vimeo.com/video/${b.videoId}?autoplay=1&loop=1&muted=0&controls=1&dnt=1&playsinline=1`
+      : b.type === 'gd'
+      ? `https://drive.google.com/file/d/${b.videoId}/preview`
+      : b.type === 'ig'
+      ? `https://www.instagram.com/reel/${b.videoId}/embed/`
+      : `https://www.youtube.com/embed/${b.videoId}?autoplay=1&mute=0&loop=1&playlist=${b.videoId}&controls=1&playsinline=1`;
+  const externalUrl = (b: BTS) =>
+    b.type === 'ig' ? `https://www.instagram.com/reel/${b.videoId}/`
+    : b.type === 'gd' ? `https://drive.google.com/file/d/${b.videoId}/view`
+    : b.type === 'vm' ? `https://vimeo.com/${b.videoId}`
+    : `https://www.youtube.com/watch?v=${b.videoId}`;
+
+  // Esc to close + lock page scroll while the lightbox is open.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModal(null); };
+    if (modal) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', onKey);
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [modal]);
 
   const renderCard = (b: BTS, key: string) => {
     const isIg = b.type === 'ig';
@@ -197,6 +225,29 @@ export default function BTSPreview() {
           {items.map((b, i) => renderCard(b, 'b' + i))}
         </div>
       </div>
+
+      {/* On-site lightbox — plays the clip here instead of navigating to
+          instagram.com. Portalled to <body> so it isn't clipped by the strip. */}
+      {modal && typeof document !== 'undefined' &&
+        createPortal(
+          <div className="bts-modal" onClick={() => setModal(null)}>
+            <div className="bts-modal-card" onClick={(e) => e.stopPropagation()}>
+              <iframe
+                key={modal.videoId}
+                src={modalSrc(modal)}
+                title={modal.title}
+                allow="autoplay; encrypted-media; fullscreen"
+                allowFullScreen
+                scrolling="no"
+              />
+              <button className="bts-modal-close" aria-label="Close" onClick={() => setModal(null)}>×</button>
+              <a className="bts-modal-ext" href={externalUrl(modal)} target="_blank" rel="noopener noreferrer">
+                Watch on {modal.type === 'ig' ? 'Instagram' : modal.type === 'gd' ? 'Drive' : modal.type === 'vm' ? 'Vimeo' : 'YouTube'} ↗
+              </a>
+            </div>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
