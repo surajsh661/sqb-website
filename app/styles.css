@@ -2883,3 +2883,46 @@ video.frame-video {
   .qf-modal.step-cal .qf-left { padding: 24px 18px 24px; }
   .qf-brand-logo { width: clamp(92px, 28vw, 120px); margin-top: 40px; }
 }
+
+/* ============================================================
+   ACCESSIBILITY PASS — bigger tap areas, keyboard focus, motion-safety
+   ============================================================ */
+
+/* The small round close (✕) buttons stay the same SIZE, but an invisible inset
+   overlay widens their tap area to ~48px so they're easy to hit on a phone. */
+.qf-close::before,
+.vmodal-close::before,
+.bts-modal-close::before {
+  content: ""; position: absolute; inset: -7px; border-radius: inherit;
+}
+
+/* Visible keyboard-focus ring for anyone navigating with the Tab key (only
+   shows for keyboard, never on a normal mouse click). */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible,
+.video-cell:focus-visible,
+.vcard:focus-visible,
+.creator-thumb:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Honour the OS/browser "Reduce Motion" setting: stop the perpetual, looping
+   motion (marquees, floating-icon streams, the barrel drift) that can trigger
+   motion sickness. These revert to a static, visible state. Brief one-shot
+   entrance fades are intentionally left alone — they don't loop and aren't the
+   motion-sensitivity concern. The JS-driven hero + card-strip drifts check
+   reduced-motion in their own components. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track, .logo-track,
+  .bts-marquee-track, .creator-marquee-track, .vc-marquee-track, .ce-track,
+  .sh-icon, .fs, .ws-barrel {
+    animation: none !important;
+  }
+}

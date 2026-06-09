@@ -69,13 +69,16 @@ export default function BTSPreview() {
     // animation. Re-checked on resize. NOT gated on the iframe lazy-mount — the
     // cards are sized by CSS, so the constant drift runs as soon as the page is up.
     const isScroller = () => getComputedStyle(track).overflowX === 'auto';
+    const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
     let mobile = isScroller();
     let raf = 0;
     let pausedUntil = 0;
     let pos = track.scrollLeft;
     const SPEED = 0.8; // px/frame ≈ 48px/s — a clearly-visible constant drift
     const tick = () => {
-      if (mobile) {
+      // Auto-drift only on the mobile scroller AND when reduced-motion is OFF
+      // (manual swipe still works either way).
+      if (mobile && !reduceMq.matches) {
         const half = track.scrollWidth / 2;
         if (half > 0) {
           if (performance.now() > pausedUntil) {

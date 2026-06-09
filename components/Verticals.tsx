@@ -120,13 +120,16 @@ export default function Verticals() {
     // iframe lazy-mount — the cards are sized by CSS before their media loads,
     // so the constant drift runs as soon as the page is up.
     const isScroller = () => getComputedStyle(row).overflowX === 'auto';
+    const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
     let mobile = isScroller();
     let raf = 0;
     let pausedUntil = 0;
     let pos = row.scrollLeft;
     const SPEED = 0.8; // px/frame ≈ 48px/s — a clearly-visible constant drift
     const tick = () => {
-      if (mobile) {
+      // Auto-drift only when on the mobile scroller AND the visitor hasn't asked
+      // for reduced motion (they can still swipe it manually).
+      if (mobile && !reduceMq.matches) {
         const half = row.scrollWidth / 2;
         if (half > 0) {
           if (!activeRef.current && performance.now() > pausedUntil) {
