@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HeroThumb from './HeroThumb';
 import type { Film } from '@/lib/types';
 
@@ -122,22 +122,67 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   const [mounted, setMounted] = useState<Set<number>>(initialMounted);
   const mountedRef = useRef<Set<number>>(mounted);
 
-  // Which iframes have loaded AND had a beat to paint their first frame. Until a
-  // cell is "ready" its video sits at opacity 0 and the poster shows through —
-  // so there is NEVER a black/blank box while the embed boots; the video then
-  // cross-fades in over the poster. (onLoad fires when the player chrome is up;
-  // a short delay lets the real first video frame paint before we reveal it.)
+  // Which cells are revealed. A cell's video sits at opacity 0 (poster shows
+  // through) until the video is ACTUALLY PLAYING — then it cross-fades in. We
+  // detect real playback via the player's play/timeupdate event (postMessage),
+  // NOT mere iframe-load: revealing on load faded in over a still-black,
+  // buffering player, which is the "thumbnail → black 3s → video" flash on
+  // return visits. A long fallback timer reveals anyway if the event is missed.
   const [ready, setReady] = useState<Set<number>>(new Set());
-  const markReady = (i: number) => {
-    setTimeout(() => {
-      setReady((prev) => {
-        if (prev.has(i)) return prev;
-        const next = new Set(prev);
-        next.add(i);
-        return next;
-      });
-    }, 500);
-  };
+  const markReady = useCallback((i: number) => {
+    setReady((prev) => {
+      if (prev.has(i)) return prev;
+      const next = new Set(prev);
+      next.add(i);
+      return next;
+    });
+  }, []);
+
+  // On iframe load: register for the platform's playback events so we know when
+  // it actually starts painting, and arm a safety-net reveal.
+  const onIframeLoad = useCallback((i: number, el: HTMLIFrameElement | null) => {
+    if (!el) return;
+    const cw = el.contentWindow;
+    const src = el.src || '';
+    try {
+      if (src.includes('youtube')) {
+        cw?.postMessage(JSON.stringify({ event: 'listening', id: films[i].videoId }), '*');
+      } else if (src.includes('vimeo')) {
+        cw?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'play' }), '*');
+        cw?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'timeupdate' }), '*');
+      }
+    } catch {}
+    // Safety net: if the play event is somehow missed, reveal after a beat (by
+    // which the frame has almost certainly painted) so the video never gets
+    // stuck hidden behind the poster.
+    setTimeout(() => markReady(i), 4000);
+  }, [films, markReady]);
+
+  // Reveal a cell the instant its video reports it's playing / advancing.
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      const slots = cellSlotsRef.current;
+      let idx = -1;
+      for (let i = 0; i < slots.length; i++) {
+        const f = slots[i]?.querySelector<HTMLIFrameElement>('iframe.frame-video');
+        if (f && e.source && f.contentWindow === e.source) { idx = i; break; }
+      }
+      if (idx < 0) return;
+      let playing = false;
+      try {
+        const d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (d) {
+          if (d.event === 'play') playing = true;                                   // vimeo
+          else if (d.event === 'timeupdate' && d.data && d.data.seconds > 0.05) playing = true; // vimeo, advancing
+          else if (d.event === 'onStateChange' && d.info === 1) playing = true;      // youtube playing
+          else if (d.event === 'infoDelivery' && d.info && d.info.playerState === 1) playing = true; // youtube
+        }
+      } catch {}
+      if (playing) markReady(idx);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [markReady]);
 
   // Container size drives cell width. Seed identical fixed defaults on the
   // server and the client's first render (React does not patch inline-style
@@ -512,7 +557,7 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
                       allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                       loading="eager"
                       frameBorder={0}
-                      onLoad={() => markReady(i)}
+                      onLoad={(e) => onIframeLoad(i, e.currentTarget)}
                     />
                   )}
                   <div className="frame-tint" />
