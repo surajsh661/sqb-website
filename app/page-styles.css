@@ -27,7 +27,7 @@
 .sqb-nav .lm img { width: 90px; height: 90px; object-fit: contain; } /* desktop logo */
 .sqb-nav .lm .stack { display: flex; flex-direction: column; gap: 2px; }
 .sqb-nav .lm .tg {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  font-family: var(--font-mono), monospace; font-size: 9px;
   letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-dim);
 }
 .sqb-nav .lm .tg b { color: var(--accent); font-weight: 500; }
@@ -36,7 +36,7 @@
   /* Truly centred on the bar (independent of the logo/right widths), and
      ~15% larger than before (11px → 12.65px). */
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  font-family: 'JetBrains Mono', monospace; font-size: 12.65px;
+  font-family: var(--font-mono), monospace; font-size: 12.65px;
   letter-spacing: 0.25em; text-transform: uppercase;
 }
 .sqb-nav .nav a {
@@ -61,7 +61,7 @@
   display: inline-flex; align-items: center; gap: 8px;
   height: 36px; padding: 0 18px; border-radius: 999px;
   background: var(--accent); color: #1a1410;
-  font-family: 'Inter', sans-serif; font-style: italic;
+  font-family: var(--font-inter), sans-serif; font-style: italic;
   font-size: 13px; font-weight: 900; letter-spacing: 0.02em;
   text-transform: uppercase; text-decoration: none;
   border: 1px solid var(--accent);
@@ -72,7 +72,7 @@
 /* Page shell */
 .page-shell {
   min-height: 100vh; background: var(--bg); color: var(--fg);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   position: relative;
 }
 
@@ -85,12 +85,12 @@
 }
 .wv-inner { max-width: 1500px; margin: 0 auto; position: relative; }
 .wv-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 28px;
 }
 .wv-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(64px, 11vw, 200px);
   line-height: 0.86; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -110,7 +110,7 @@
   display: inline-flex; align-items: center; gap: 10px;
   padding: 13px 28px; border-radius: 999px;
   background: var(--accent); color: #1a1410;
-  font-family: 'Inter', sans-serif; font-style: italic; font-weight: 900;
+  font-family: var(--font-inter), sans-serif; font-style: italic; font-weight: 900;
   font-size: 13px; letter-spacing: 0.04em;
   text-transform: uppercase; text-decoration: none;
   -webkit-text-stroke: 0.4px #1a1410;
@@ -127,7 +127,7 @@
   border-top: 1px solid var(--rule);
 }
 .wc-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 18px;
   text-align: center;
@@ -138,7 +138,7 @@
   text-align: center; text-wrap: balance;
 }
 .wc-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(48px, 8vw, 140px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase;
@@ -178,7 +178,7 @@
   font-size: 28px; color: #1a1410; font-weight: 700;
 }
 .wc-name {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 22px; font-weight: 600; color: var(--fg);
   margin-bottom: 8px;
 }
@@ -196,7 +196,7 @@
   align-items: center;
 }
 .ws-num {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(120px, 18vw, 280px);
   line-height: 0.9; letter-spacing: -0.02em;
   color: var(--accent);
@@ -204,7 +204,7 @@
 }
 .ws-num .plus { font-size: 0.55em; vertical-align: super; }
 .ws-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(36px, 5vw, 78px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -231,7 +231,7 @@
   gap: 40px; align-items: end;
 }
 .wf-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(48px, 8vw, 130px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -239,7 +239,7 @@
 }
 .wf-title em { font-style: normal; color: var(--accent); }
 .wf-sub {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 14px;
 }
@@ -249,7 +249,7 @@
   max-width: 540px; justify-content: flex-end;
 }
 .wf-chip {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
   padding: 9px 16px; border-radius: 999px;
   background: transparent; color: var(--fg-dim);
@@ -297,13 +297,13 @@
 .film-card:hover .film-play { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 .film-meta { padding: 0 4px; }
 .film-title {
-  font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 600;
+  font-family: var(--font-inter), sans-serif; font-size: 17px; font-weight: 600;
   color: var(--fg); margin-bottom: 6px;
   text-transform: uppercase; letter-spacing: 0.02em;
 }
 .film-row {
   display: flex; justify-content: space-between;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--fg-dim);
 }
@@ -326,7 +326,7 @@
   display: inline-flex; align-items: center; gap: 10px;
   padding: 14px 28px; border-radius: 4px;
   background: var(--accent); color: #1a1410;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px; letter-spacing: 0.22em; font-weight: 700;
   text-transform: uppercase; cursor: pointer;
   border: 0; transition: background .2s ease, transform .15s ease;
@@ -349,12 +349,12 @@
   max-width: 1400px; margin: 0 auto;
 }
 .ai-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 24px;
 }
 .ai-headline-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(54px, 9vw, 150px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -370,7 +370,7 @@
    editorial "what we make" index: monospace, muted ink, hairline gold dots. */
 .ai-caps {
   margin: 18px 0 22px; max-width: 720px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12.5px; letter-spacing: 0.06em; line-height: 1.95;
   color: var(--fg-dim);
 }
@@ -435,12 +435,12 @@
 }
 .ai-pane.anim .ap-content { color: #1a1410; }
 .ai-pane .ap-num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.3em; opacity: 0.8;
   margin-bottom: 10px;
 }
 .ai-pane .ap-name {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(28px, 4.5vw, 56px); line-height: 0.9;
   letter-spacing: -0.01em; text-transform: uppercase;
   white-space: nowrap; transition: opacity .4s;
@@ -461,7 +461,7 @@
   max-width: 1500px; margin: 0 auto;
 }
 .ai-track-section h2 {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(44px, 7vw, 110px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -553,7 +553,7 @@
 .ai-clip:hover .ai-clip-play { background: var(--accent); color: #1a1410; border-color: var(--accent); transform: translate(-50%, -50%) scale(1.06); }
 .ai-clip .ac-label {
   position: absolute; left: 14px; bottom: 14px; z-index: 2;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
   padding: 5px 9px; border-radius: 3px;
   background: rgba(0,0,0,0.6); color: var(--accent);
@@ -591,12 +591,12 @@
 .ailab-pane.vfx  .pane-tint { background: linear-gradient(180deg, rgba(255,169,40,0.0) 0%, rgba(255,77,46,0.5) 100%); }
 .ailab-pane .pane-num {
   position: absolute; top: 90px; left: 28px; z-index: 5;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; color: rgba(255,255,255,0.7);
 }
 .ailab-pane .pane-name {
   position: absolute; left: 28px; bottom: 28px; z-index: 5;
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(60px, 12vw, 200px); line-height: 0.86;
   text-transform: uppercase; letter-spacing: -0.01em;
   color: #fff; white-space: nowrap;
@@ -727,14 +727,14 @@
   display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
 }
 .creator-subs .cs-count {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(36px, 4.5vw, 64px);
   letter-spacing: -0.01em; color: var(--accent);
   text-shadow: 0 0 28px rgba(245,197,24,0.5);
   line-height: 1;
 }
 .creator-subs .cs-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
   color: var(--fg);
 }
@@ -742,7 +742,7 @@
 /* Creator thumb — add WATCH overlay */
 .creator-thumb .ct-ext {
   position: absolute; left: 8px; bottom: 8px; z-index: 2;
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  font-family: var(--font-mono), monospace; font-size: 9px;
   letter-spacing: 0.2em; padding: 4px 7px; border-radius: 3px;
   background: rgba(245,197,24,0.95); color: #1a1410;
   opacity: 0; transition: opacity .2s ease;
@@ -810,7 +810,7 @@
 .creator-thumb:hover .ct-play { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 .creator-thumb .ct-num {
   position: absolute; top: 8px; left: 10px;
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  font-family: var(--font-mono), monospace; font-size: 10px;
   color: #fff; letter-spacing: 0.18em;
   background: rgba(0,0,0,0.6); padding: 3px 7px; border-radius: 3px;
 }
@@ -868,12 +868,12 @@
   max-width: 1400px; margin: 0 auto;
 }
 .sh-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 24px;
 }
 .sh-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(54px, 10vw, 180px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -894,13 +894,13 @@
 }
 .sh-stats .n {
   display: block;
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(36px, 5vw, 64px);
   color: var(--accent); line-height: 1;
 }
 .sh-stats .l {
   display: block; margin-top: 8px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--fg-dim);
 }
@@ -920,19 +920,19 @@
   gap: 40px; margin-bottom: 40px;
 }
 .creator-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 14px;
 }
 .creator-name {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(48px, 7vw, 120px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
 }
 .creator.flagship .creator-name { color: var(--accent); }
 .creator-subs {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--fg); margin-top: 10px;
 }
@@ -941,13 +941,13 @@
   font-size: 15px; line-height: 1.55;
 }
 .creator-counter {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(60px, 9vw, 140px);
   color: var(--fg-dim); line-height: 0.9;
 }
 .creator-counter sup {
   display: block;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.28em; color: var(--accent);
   margin-top: 6px;
 }
@@ -981,13 +981,13 @@
 .creator-thumb.on { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(245,197,24,0.4) inset; }
 .creator-thumb .ct-num {
   position: absolute; top: 6px; left: 8px;
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  font-family: var(--font-mono), monospace; font-size: 10px;
   color: #fff; letter-spacing: 0.18em;
   background: rgba(0,0,0,0.6); padding: 3px 6px; border-radius: 3px;
 }
 .creator-thumb .ct-on {
   position: absolute; bottom: 6px; right: 8px;
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  font-family: var(--font-mono), monospace; font-size: 9px;
   letter-spacing: 0.22em; color: #1a1410;
   background: var(--accent); padding: 3px 8px; border-radius: 3px;
   text-transform: uppercase;
@@ -1006,7 +1006,7 @@
   position: relative;
 }
 .cocoon-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 20px;
 }
@@ -1015,7 +1015,7 @@
   align-items: start; margin-bottom: 50px;
 }
 .cocoon-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(72px, 11vw, 180px);
   line-height: 0.9; letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -1023,7 +1023,7 @@
   text-shadow: 0 0 40px rgba(245,197,24,0.4);
 }
 .cocoon-tagline {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--fg); margin-top: 14px;
 }
@@ -1038,7 +1038,7 @@
 .cocoon-btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 22px; border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
   text-transform: uppercase; text-decoration: none;
   border: 1px solid var(--fg-dim); color: var(--fg);
@@ -1059,17 +1059,17 @@
   font-size: 28px; color: var(--accent); line-height: 1;
 }
 .cocoon-rating .cr-num {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: 72px; line-height: 1;
   color: var(--accent); margin: 6px 0 8px;
 }
 .cocoon-rating .cr-source {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.24em; color: var(--fg-dim);
 }
 .cocoon-music { margin-top: 40px; }
 .cm-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 16px;
 }
@@ -1089,12 +1089,12 @@
   background: linear-gradient(180deg, transparent, rgba(0,0,0,0.85));
 }
 .cm-role {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.22em;
   color: var(--accent); margin-bottom: 4px;
 }
 .cm-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: 22px; text-transform: uppercase;
   color: #fff; letter-spacing: 0.01em;
 }
@@ -1119,12 +1119,12 @@
   margin-bottom: 60px;
 }
 .vc-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 18px;
 }
 .vc-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(60px, 10vw, 160px);
   line-height: 0.88; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -1146,14 +1146,14 @@
 }
 .vc-tally-num {
   display: block;
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(56px, 7vw, 100px);
   line-height: 1; color: var(--fg);
   letter-spacing: -0.02em;
 }
 .vc-tally-label {
   display: block; margin-top: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
   color: var(--accent);
 }
@@ -1205,7 +1205,7 @@
 .vc-tile-pill {
   position: absolute; top: 14px; left: 14px; z-index: 2;
   display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
   font-weight: 700;
   background: var(--accent); color: #1a1410;
@@ -1242,12 +1242,12 @@
   padding: 18px 4px 0;
 }
 .vc-tile-num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.24em;
   color: var(--accent);
 }
 .vc-tile-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(18px, 1.4vw, 24px);
   line-height: 1.1; letter-spacing: 0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -1256,7 +1256,7 @@
   font-size: clamp(28px, 2.4vw, 44px);
 }
 .vc-tile-year {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.22em;
   color: var(--fg-dim);
 }
@@ -1381,13 +1381,13 @@
 .vt-numrow {
   display: grid; grid-template-columns: auto 1fr auto;
   gap: 10px; align-items: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 18px; font-weight: 700;
   padding: 4px 6px 0;
 }
 .vt-rule { height: 1px; background: currentColor; opacity: 0.5; }
 .vt-title {
-  font-family: var(--display-font, 'Anton'), sans-serif;
+  font-family: var(--display-font, var(--font-anton)), sans-serif;
   font-size: clamp(18px, 1.4vw, 22px);
   line-height: 0.95;
   letter-spacing: 0.005em;
@@ -1415,7 +1415,7 @@
 }
 .vt-dotmark { font-size: 14px; line-height: 1; }
 .vt-foot-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1631,12 +1631,12 @@
 .social-hero.clean { padding: 160px 32px 60px; position: relative; z-index: 2; }
 .social-hero.clean .sh-inner { max-width: 1500px; margin: 0 auto; }
 .social-hero.clean .sh-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 24px;
 }
 .social-hero.clean .sh-title {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(56px, 10vw, 180px);
   line-height: 0.9; letter-spacing: -0.01em;
   text-transform: uppercase; color: var(--fg);
@@ -1658,12 +1658,12 @@
 }
 .social-hero.clean .sh-stats > div { display: flex; flex-direction: column; gap: 8px; }
 .social-hero.clean .sh-stats .n {
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-anton), sans-serif;
   font-size: clamp(40px, 5.5vw, 72px);
   color: var(--accent); line-height: 1;
 }
 .social-hero.clean .sh-stats .l {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
   color: var(--fg-dim);
 }

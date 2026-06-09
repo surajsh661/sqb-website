@@ -1,7 +1,17 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Anton, Inter, JetBrains_Mono } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 import './styles.css';
 import './page-styles.css';
+
+// Self-hosted via next/font: served from our own origin (no Google Fonts
+// round-trip) with an automatic size-adjusted fallback (no layout shift / text
+// flash). Exposed as CSS variables that the stylesheets reference.
+const anton = Anton({ weight: '400', subsets: ['latin'], variable: '--font-anton', display: 'swap' });
+const inter = Inter({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-inter', display: 'swap' });
+const jbMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
 const SITE = 'https://sqbpictures.com';
 const TITLE = "S'QB Pictures — Tell Your Story Today! | AI + Video Production";
@@ -166,17 +176,10 @@ const JSONLD = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en" data-theme="dark" className={`${anton.variable} ${inter.variable} ${jbMono.variable}`}>
       <head>
-        {/* Fonts — preconnect + stylesheet in <head> (parallel + early) instead
-            of a render-blocking CSS @import, so type shows in its true style
-            far faster. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Inter:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:wght@300;400;500&display=swap"
-        />
+        {/* Fonts are self-hosted via next/font (see imports) — no external font
+            request, and a size-adjusted fallback prevents layout shift. */}
 
         {/* Connect early to the video / image hosts so embeds start sooner. */}
         <link rel="preconnect" href="https://player.vimeo.com" />
@@ -198,6 +201,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         {/* Vimeo SDK — used by the case-study player for mute control */}
         <Script src="https://player.vimeo.com/api/player.js" strategy="afterInteractive" />
+        {/* Real-user performance (LCP/CLS/INP) + traffic — active on Vercel. */}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

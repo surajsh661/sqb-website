@@ -387,6 +387,19 @@ export const SQB_HERO_FILMS: Film[] = (() => {
   );
 })();
 
+// Preset hero posters — the OFFICIAL Vimeo thumbnail for each hero film, baked
+// in (keyed by videoId) so the hero shows a sharp first frame instantly without
+// the per-load Vimeo oembed round-trip or the vumbnail.com proxy. 960×540.
+export const HERO_POSTERS: Record<string, string> = {
+  '954302482':  'https://i.vimeocdn.com/video/1866562858-4f75ceb49f7b97850b0472ab318e4466d5c60b1ebc9ea89a353d832b185ca873-d_960x540',
+  '1190975373': 'https://i.vimeocdn.com/video/2155874827-363a94edd140326e3e63ad56ef607c490ecc3bc483d15ceee6c9d1ee8e215dbf-d_960x540',
+  '1083481304': 'https://i.vimeocdn.com/video/2014696334-8a477a8cbbb48d7601b8c000de49e4aff32a049f914a26b723744c46081ab158-d_960x540',
+  '964882350':  'https://i.vimeocdn.com/video/1877475538-9824707821dc9b0841219f579cd30b6cb7e1380804d10e2048678b63f45d670c-d_960x540',
+  '1082489881': 'https://i.vimeocdn.com/video/2014698836-22232cb3438c9bb2c92ecbcd59fd8ab710a890caeb3ddc6b166fdcb2997d028d-d_960x540',
+  '1083477570': 'https://i.vimeocdn.com/video/2014693830-833aeda7ae9c1558dc05c1cdd9fb8f3dfa4c761c35101c38aa3c3975371e9f47-d_960x540',
+  '935827293':  'https://i.vimeocdn.com/video/1835618947-0eb9c66ce4569a776affa6771354f8ea5d46586d270f258e04e6ea63cbc5041e-d_960x540',
+};
+
 // Verticals exposed for home-page section
 export const SQB_VERTICALS: Vertical[] = [
   ...SQB_FILMS

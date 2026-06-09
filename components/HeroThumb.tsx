@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { thumbSources, fetchVimeoThumb } from '@/lib/video-utils';
+import { HERO_POSTERS } from '@/lib/data';
 import type { Film } from '@/lib/types';
 
 interface Props {
@@ -10,17 +11,21 @@ interface Props {
 
 export default function HeroThumb({ film, className }: Props) {
   const [idx, setIdx] = useState(0);
-  const [override, setOverride] = useState<string | null>(null);
+  // A baked-in official poster (hero films) shows instantly — no oembed fetch,
+  // no third-party proxy. Falls back to the deterministic thumbnail sources.
+  const preset = HERO_POSTERS[film.videoId];
+  const [override, setOverride] = useState<string | null>(preset || null);
   const sources = thumbSources(film);
 
   useEffect(() => {
+    if (preset) return; // official poster already baked in — skip the round-trip
     if (film.type !== 'vm') return;
     let cancelled = false;
     fetchVimeoThumb(film.videoId).then((url) => {
       if (!cancelled && url) setOverride(url);
     });
     return () => { cancelled = true; };
-  }, [film.type, film.videoId]);
+  }, [film.type, film.videoId, preset]);
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
