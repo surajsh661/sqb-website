@@ -1699,14 +1699,16 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   position: absolute;
   left: 50%;
   bottom: -90px;
-  width: 86px; height: 86px;
+  width: 76px; height: 76px;
   transform: translateX(-50%);
-  animation: shFloat 16s linear infinite;
+  animation: shFloat 18s linear infinite;
   animation-delay: var(--d, 0s);
   color: var(--c, var(--accent));
 }
-.sh-icon:nth-child(odd)  { margin-left: -68px; }
-.sh-icon:nth-child(even) { margin-left:  68px; }
+/* Two tidy columns — closer together so the stream reads as one calm rising
+   column, not scattered. */
+.sh-icon:nth-child(odd)  { margin-left: -50px; }
+.sh-icon:nth-child(even) { margin-left:  50px; }
 /* Glassmorphism recipe reproduced from the reference icon kit: a faint diagonal
    white wash over a 10px backdrop blur, a hairline light border, a soft drop
    shadow, and a brand-coloured INSET glow. The brand glyph carries its colour. */
@@ -1848,12 +1850,15 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 /* Gentle up-and-to-the-left float with a slant. 2D only (no perspective) so the
    icons can't escape the stream's overflow clip, and the drift stays small so
    nothing spills over the CAAS title. */
+/* Calm, upright vertical drift — icons rise, gently breathe in scale, and fade
+   at the top. No hard tilt/rotation (that's what read as "off"); a whisper of
+   ±1.5° keeps them feeling alive without looking knocked over. */
 @keyframes shFloat {
-  0%   { transform: translate(-50%, 170px) scale(0.74) rotateZ(7deg); opacity: 0; }
-  14%  { opacity: 1; }
-  52%  { transform: translate(calc(-50% - 6px), -120px) scale(1.03) rotateZ(-5deg); opacity: 1; }
+  0%   { transform: translate(-50%, 150px) scale(0.8) rotate(1.5deg); opacity: 0; }
+  16%  { opacity: 1; }
+  50%  { transform: translate(-50%, -110px) scale(1) rotate(-1.5deg); opacity: 1; }
   86%  { opacity: 0.5; }
-  100% { transform: translate(calc(-50% - 12px), -500px) scale(0.84) rotateZ(-10deg); opacity: 0; }
+  100% { transform: translate(-50%, -430px) scale(0.86) rotate(1deg); opacity: 0; }
 }
 
 /* ============================================================

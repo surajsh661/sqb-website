@@ -122,6 +122,23 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
   const [mounted, setMounted] = useState<Set<number>>(initialMounted);
   const mountedRef = useRef<Set<number>>(mounted);
 
+  // Which iframes have loaded AND had a beat to paint their first frame. Until a
+  // cell is "ready" its video sits at opacity 0 and the poster shows through —
+  // so there is NEVER a black/blank box while the embed boots; the video then
+  // cross-fades in over the poster. (onLoad fires when the player chrome is up;
+  // a short delay lets the real first video frame paint before we reveal it.)
+  const [ready, setReady] = useState<Set<number>>(new Set());
+  const markReady = (i: number) => {
+    setTimeout(() => {
+      setReady((prev) => {
+        if (prev.has(i)) return prev;
+        const next = new Set(prev);
+        next.add(i);
+        return next;
+      });
+    }, 500);
+  };
+
   // Container size drives cell width. Seed identical fixed defaults on the
   // server and the client's first render (React does not patch inline-style
   // mismatches on hydration), then sync to the real viewport in the mount
@@ -489,12 +506,13 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
                   {mounted.has(i) && (
                     <iframe
                       key={film.videoId}
-                      className="frame-video"
+                      className={'frame-video' + (ready.has(i) ? ' ready' : '')}
                       src={videoSrc(film)}
                       title={film.title}
                       allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                       loading="eager"
                       frameBorder={0}
+                      onLoad={() => markReady(i)}
                     />
                   )}
                   <div className="frame-tint" />

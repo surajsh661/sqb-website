@@ -331,7 +331,12 @@ body.no-grain::before { display: none; }
   transform: translate(-50%,-50%);
   border: 0; pointer-events: none;
   z-index: 2; background: transparent;
+  /* Stay invisible until the embed has booted (the poster shows through), then
+     cross-fade in — so the hero NEVER shows a black/blank box while loading. */
+  opacity: 0;
+  transition: opacity 0.7s ease;
 }
+.video-cell .frame-video.ready { opacity: 1; }
 .video-cell .frame-poster {
   position: absolute; top: 50%; left: 50%;
   width: 100%; height: 100%;
