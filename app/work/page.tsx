@@ -113,6 +113,12 @@ function WorkInner() {
   useEffect(() => { setupReveal(); }, [displayed]);
   useEffect(() => { setupReveal(); }, []);
 
+  // A capability card → filter the films grid to that genre and scroll to it.
+  const goToFilms = (genre: Genre) => {
+    setFilter(genre);
+    setTimeout(() => document.getElementById('work-films')?.scrollIntoView({ behavior: 'smooth' }), 70);
+  };
+
   const openCase = (film: Film) => {
     setActiveFilm(film);
     requestAnimationFrame(() => setCaseOpen(true));
@@ -156,14 +162,31 @@ function WorkInner() {
       <section className="work-cap">
         <h2 className="wc-title">{rich(COPY.work.capTitle)}</h2>
         <div className="wc-grid">
-          {COPY.work.capabilities.map((cap, i) => (
-            <div className="wc-cell" key={i}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <div className="wc-icon"><img src={CAP_ICONS[i]} alt={cap.name} loading="lazy" /></div>
-              <div className="wc-name">{cap.name}</div>
-              <div className="wc-desc">{cap.desc}</div>
-            </div>
-          ))}
+          {COPY.work.capabilities.map((cap, i) => {
+            const inner = (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="wc-icon"><img src={CAP_ICONS[i]} alt={cap.name} loading="lazy" /></div>
+                <div className="wc-name">{cap.name}</div>
+                <div className="wc-desc">{cap.desc}</div>
+              </>
+            );
+            // i: 0 Ad Films · 1 CGI/VFX · 2 AI Film · 3 Short-Form · 4 Launch · 5 Documentary
+            if (i === 1) // CGI / VFX & 3D → the VFX section of the AI Lab
+              return <a className="wc-cell wc-cell-link" key={i} href="/ai-lab#section-vfx">{inner}</a>;
+            if (i === 2) // AI Film Production → the AI Lab page
+              return <a className="wc-cell wc-cell-link" key={i} href="/ai-lab">{inner}</a>;
+            if (i === 5) // Documentary & Long-Form → filter the films grid to Documentary
+              return (
+                <div
+                  className="wc-cell wc-cell-link" key={i}
+                  role="button" tabIndex={0}
+                  onClick={() => goToFilms('docu')}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToFilms('docu'); } }}
+                >{inner}</div>
+              );
+            return <div className="wc-cell" key={i}>{inner}</div>;
+          })}
         </div>
       </section>
 
@@ -177,7 +200,7 @@ function WorkInner() {
         <WorkBarrels films={SQB_FILMS} />
       </section>
 
-      <section className="work-films">
+      <section className="work-films" id="work-films">
         <div className="wf-head">
           <div>
             <h2 className="wf-title">{rich(COPY.work.filmsTitle)}</h2>

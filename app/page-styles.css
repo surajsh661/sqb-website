@@ -1766,9 +1766,15 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
 .wc-icon img {
   width: 100%; height: 100%;
   object-fit: contain; display: block;
-  border-radius: 18px;   /* match the tile's own rounded corners */
+  /* No CSS clip — the icon PNGs are already cleanly rounded with transparent
+     corners, so the full glass tile shows with nothing cropped. */
 }
 .wc-cell { transition: background .35s ease; }
+/* Clickable capability cards (CGI/VFX → AI Lab VFX, AI Film → AI Lab,
+   Documentary → filtered films). Whole card is the hit target. */
+.wc-cell-link { cursor: pointer; color: inherit; text-decoration: none; display: block; }
+.wc-cell-link:hover { background: rgba(245,197,24,0.06); }
+.wc-cell-link:hover .wc-name { color: var(--accent); }
 .wc-cell:hover .wc-icon {
   transform: translateY(-7px) scale(1.06);
   filter: drop-shadow(0 20px 38px rgba(0,0,0,0.55)) drop-shadow(0 0 22px rgba(245,197,24,0.35));
