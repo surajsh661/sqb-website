@@ -504,6 +504,13 @@ export const SQB_CREATORS: Creator[] = [
   },
 ];
 
+// TEDx stage talks — YouTube IDs (from the provided youtu.be links).
+export const SQB_TEDX: string[] = [
+  '0a_tm8zHuIY', 'lpPDpe1Sx0Q', 'SUza4di0sXg', 'Ao6J3tdgleQ',
+  'BtZq55v3HQ0', '37ZzAKdDacE', 'RJlX9ziT3tE', 'qYPEFNkwmao',
+  'JTNNR9uvKPo', 'y4Oh385eaec', 'A_IzQc9hkkc', 'NI3u07of3co',
+];
+
 // `size` is an optical-balance scale (applied as a CSS transform on the img)
 // to compensate for source PNGs that bake in different amounts of internal
 // padding. Most can stay at 1.00; logos whose visible art occupies less of

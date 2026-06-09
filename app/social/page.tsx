@@ -7,7 +7,7 @@ import QuoteForm from '@/components/QuoteForm';
 import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
-import { SQB_CREATORS } from '@/lib/data';
+import { SQB_CREATORS, SQB_TEDX } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
 import { setupReveal } from '@/lib/video-utils';
@@ -45,6 +45,47 @@ function CreatorBlock({ c }: { c: Creator }) {
               <img src={`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`} alt="" referrerPolicy="no-referrer" />
               <div className="ct-play">▶</div>
               <div className="ct-num">{String((i % c.videos.length) + 1).padStart(2, '0')}</div>
+              <div className="ct-ext">{COPY.social.watchYt}</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// TEDx — same visual language as a creator block, but the stat is the number of
+// talks (not subscribers). Reuses the .creator / .creator-marquee styles.
+function TedxBlock() {
+  return (
+    <section className="creator tedx" data-screen-label="TEDx">
+      <div className="creator-head">
+        <div>
+          <div className="creator-eyebrow">{COPY.social.tedxEyebrow}</div>
+          <h2 className="creator-name">{COPY.social.tedxName}</h2>
+          <div className="creator-subs">
+            <span className="cs-count">{SQB_TEDX.length}</span>
+            <span className="cs-label">{COPY.social.tedxLabel}</span>
+          </div>
+          <p className="creator-blurb">{COPY.social.tedxBlurb}</p>
+        </div>
+        <div className="creator-counter" />
+      </div>
+
+      <div className="creator-marquee">
+        <div className="creator-marquee-track">
+          {[...SQB_TEDX, ...SQB_TEDX].map((vid, i) => (
+            <a
+              className="creator-thumb"
+              key={i}
+              href={`https://www.youtube.com/watch?v=${vid}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`} alt="" referrerPolicy="no-referrer" />
+              <div className="ct-play">▶</div>
+              <div className="ct-num">{String((i % SQB_TEDX.length) + 1).padStart(2, '0')}</div>
               <div className="ct-ext">{COPY.social.watchYt}</div>
             </a>
           ))}
@@ -112,6 +153,8 @@ export default function SocialPage() {
       {SQB_CREATORS.map((c) => (
         <CreatorBlock key={c.id} c={c} />
       ))}
+
+      <TedxBlock />
 
       <TrustedBlock />
       <ContactSection compact />

@@ -265,6 +265,11 @@ export const COPY = {
     creatorPartnerEyebrow: `CHANNEL PARTNER`,
     subsLabel: `SUBSCRIBERS · YOUTUBE`,
     watchYt: `WATCH ON YT ↗`,
+    // TEDx block.
+    tedxEyebrow: `LIVE · ON STAGE`,
+    tedxName: `TEDx`,
+    tedxLabel: `TALKS · TEDx STAGE`,
+    tedxBlurb: `TEDx stage talks — filmed live and cut for the screen, end to end.`,
   },
 
   // ── Shared bits used in a few places ──────────────────────────────────────
