@@ -1483,6 +1483,10 @@
   object-fit: cover;
   object-position: center;
   display: block;
+  /* belt-and-suspenders with draggable={false}: never let the browser "pick
+     up" a card image — that ghost-drag steals the ring's spin gesture. */
+  -webkit-user-drag: none;
+  user-select: none;
 }
 .ws-barrel-card::after {
   content: ""; position: absolute; inset: 0;

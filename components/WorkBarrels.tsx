@@ -38,6 +38,11 @@ function wireBarrel(stageEl: HTMLElement) {
     (c as HTMLElement).dataset.i = String(i);
   });
 
+  // Kill the browser's native image-drag inside the stage (a drag started on a
+  // card's <img> "picks up" a ghost thumbnail and steals the pointer events, so
+  // the ring stops spinning mid-gesture).
+  stageEl.addEventListener('dragstart', (e) => e.preventDefault());
+
   stageEl.addEventListener('pointerdown', (e) => {
     dragging = true;
     lockedAxis = null;

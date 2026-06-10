@@ -34,6 +34,10 @@ export default function HeroThumb({ film, className }: Props) {
       alt={film.title}
       referrerPolicy="no-referrer"
       className={className}
+      /* decorative thumbnail — never native-draggable. Without this, starting a
+         drag on a barrel/hero card "picks up" the image (browser drag ghost)
+         and steals the pointer events from the spin/swipe handlers. */
+      draggable={false}
       onError={() => {
         if (override) setOverride(null);
         else setIdx((i) => Math.min(i + 1, sources.length - 1));
