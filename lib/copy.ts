@@ -46,12 +46,12 @@ export const COPY = {
     // NOTE: the big animated headline ("We love filmmaking first and AI
     // second…") has moving icons baked in, so it lives in
     // components/ManifestoHeadline.tsx — ask the developer to change that line.
-    paragraph: `S'QB Pictures is where storytelling meets the future of filmmaking. From Delhi and Mumbai to locations across the globe, we create films, commercials, and original content for the world's most ambitious brands. With a seasoned crew, world-class production expertise, and AI-powered creative workflows, we deliver work that is bigger, faster, and louder. But technology is never the story. Story comes first. Performance comes first. Craft comes first.`,
+    paragraph: `We're filmmakers who happen to be very good with AI. From Delhi and Mumbai to locations across the globe, we create films, commercials, and original content for the world's most ambitious brands. With a seasoned crew, world-class production expertise, and AI-powered creative workflows, we deliver work that is bigger, faster, and louder. But technology is never the story. Story comes first. Performance comes first. Craft comes first.`,
   },
 
   // ── Section 03 · Clients ──────────────────────────────────────────────────
   clients: {
-    heading: `TRUSTED BY *GLOBAL BRANDS*`,
+    heading: `TRUSTED BY GLOBAL BRANDS`,
   },
 
   // ── Section 04 · By the numbers (the 3 big stats) ─────────────────────────
@@ -173,7 +173,7 @@ export const COPY = {
 
   // ── "Trusted by global brands" block (shown on Video / AI Lab / Social) ────
   trustedBlock: {
-    heading: `TRUSTED BY *GLOBAL BRANDS*`,
+    heading: `TRUSTED BY GLOBAL BRANDS`,
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -182,25 +182,25 @@ export const COPY = {
   work: {
     visionEyebrow: ``,
     visionTitle: `THE CONTENT *STUDIO*`,
-    visionBlurb: `Whether you're starting with a vague idea or a fully fleshed-out concept, S'QB can bring your vision to life. We deliver high-fidelity, high-volume video content across every format imaginable — from cinematic AI films to camera-shot TVCs, vertical micro-dramas to long-form documentary.`,
+    visionBlurb: `Bring us a one-line idea or a finished script. We take it to screen — AI films, camera-shot TVCs, vertical micro-dramas, long-form documentary.`,
     // The arrow → after the button is added automatically.
     visionCta: `START PROJECT`,
 
-    capTitle: `OUR *PRODUCTION* CAPABILITIES`,
+    capTitle: `OUR PRODUCTION CAPABILITIES`,
     // The 6 capability cards. Each has a name and a one-line description.
     // (The little icons are set in code — just edit the words.)
     capabilities: [
       { name: `Ad Films & TVCs`, desc: `Full cinematic script-to-screen production.` },
       { name: `CGI / VFX & 3D`, desc: `Complex visual effects and motion graphics.` },
-      { name: `AI Film Production`, desc: `Rapid content generation and versioning.` },
-      { name: `Short-Form Digital`, desc: `Platform-native content for viral reach.` },
-      { name: `Launch & Explainers`, desc: `Clear, engaging product value demonstration.` },
-      { name: `Documentary & Long-Form`, desc: `Building brand affinity through narrative.` },
+      { name: `AI Film Production`, desc: `Cinema-grade AI film, from blank page to final cut.` },
+      { name: `Short-Form Digital`, desc: `Shorts built for the feed, not cut down from TV.` },
+      { name: `Launch & Explainers`, desc: `Launch films that explain it in 90 seconds.` },
+      { name: `Documentary & Long-Form`, desc: `Long-form stories people actually finish.` },
     ],
 
     // The big "150 → 500+" number is set in code; edit the words around it.
-    scaleTitle: `MINUTES / *MONTH*`,
-    scaleSub: `The scale and speed required to win the attention economy.`,
+    scaleTitle: `MINUTES / MONTH`,
+    scaleSub: `Real volume, without ever dropping the grade.`,
     scaleFine: `Short-form digital, animated explainers, launch videos, high-fidelity commercial spots — delivered every month for India's biggest brands.`,
 
     filmsTitle: `OUR *FILMS*`,

@@ -1,5 +1,6 @@
 'use client';
 import HeroThumb from './HeroThumb';
+import { IconPlay } from './Icons';
 import type { Film } from '@/lib/types';
 
 interface Props { film: Film; onClick: (f: Film) => void }
@@ -16,7 +17,7 @@ export default function FilmCard({ film, onClick }: Props) {
       <div className="film-thumb">
         <HeroThumb film={film} />
         <div className="film-shade" />
-        <div className="film-play">▶</div>
+        <div className="film-play"><IconPlay size={20} /></div>
       </div>
       <div className="film-meta">
         <div className="film-title">{film.title}</div>

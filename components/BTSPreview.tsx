@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SQB_BTS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
+import { IconX } from './Icons';
 import { rich } from '@/lib/rich';
 import type { BTS } from '@/lib/types';
 
@@ -243,7 +244,7 @@ export default function BTSPreview() {
                 allowFullScreen
                 scrolling="no"
               />
-              <button className="bts-modal-close" aria-label="Close" onClick={() => setModal(null)}>×</button>
+              <button className="bts-modal-close" aria-label="Close" onClick={() => setModal(null)}><IconX size={15} /></button>
               <a className="bts-modal-ext" href={externalUrl(modal)} target="_blank" rel="noopener noreferrer">
                 Watch on {modal.type === 'ig' ? 'Instagram' : modal.type === 'gd' ? 'Drive' : modal.type === 'vm' ? 'Vimeo' : 'YouTube'} ↗
               </a>

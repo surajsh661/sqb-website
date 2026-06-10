@@ -7,6 +7,7 @@ import QuoteForm from '@/components/QuoteForm';
 import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
+import { IconPlay } from '@/components/Icons';
 import { SQB_CREATORS, SQB_TEDX } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
@@ -43,7 +44,7 @@ function CreatorBlock({ c }: { c: Creator }) {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`} alt="" referrerPolicy="no-referrer" />
-              <div className="ct-play">▶</div>
+              <div className="ct-play"><IconPlay size={16} /></div>
               <div className="ct-num">{String((i % c.videos.length) + 1).padStart(2, '0')}</div>
               <div className="ct-ext">{COPY.social.watchYt}</div>
             </a>
@@ -84,7 +85,7 @@ function TedxBlock() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`} alt="" referrerPolicy="no-referrer" />
-              <div className="ct-play">▶</div>
+              <div className="ct-play"><IconPlay size={16} /></div>
               <div className="ct-num">{String((i % SQB_TEDX.length) + 1).padStart(2, '0')}</div>
               <div className="ct-ext">{COPY.social.watchYt}</div>
             </a>

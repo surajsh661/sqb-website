@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { COPY } from '@/lib/copy';
+import { IconX } from './Icons';
 
 interface Props { open: boolean; onClose: () => void; onReachOut?: () => void }
 
@@ -30,7 +31,7 @@ export default function TicketMenu({ open, onClose, onReachOut }: Props) {
               <div>{COPY.menu.stubLine}</div>
               <div className="big">{COPY.menu.stubBig}</div>
             </div>
-            <button className="ticket-close" onClick={onClose} aria-label="Close menu">✕</button>
+            <button className="ticket-close" onClick={onClose} aria-label="Close menu"><IconX size={13} /></button>
           </div>
 
           <nav className="ticket-menu">

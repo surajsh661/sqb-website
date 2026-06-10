@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { IconArrow, IconPlay } from './Icons';
 import type { Film } from '@/lib/types';
 
 interface Props {
@@ -159,7 +160,7 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
       data-screen-label={`Case ${film.id}`}
     >
       <button className="case-back prominent" onClick={onClose}>
-        <span className="cb-arrow">←</span> BACK
+        <span className="cb-arrow"><IconArrow size={14} dir="left" /></span> BACK
       </button>
 
       <section className={'case-hero' + (isVertical ? ' vertical' : '') + (film.type === 'gd' ? ' gd' : '')}>
@@ -302,7 +303,7 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
                     loading="lazy"
                   />
                   <div className="ce-shade" />
-                  <div className="ce-play" aria-hidden="true">▶</div>
+                  <div className="ce-play" aria-hidden="true"><IconPlay size={26} /></div>
                 </div>
                 <div className="ce-label">{ep.label}</div>
               </a>
@@ -330,7 +331,7 @@ export default function CaseStudy({ film, films, open, onClose, onPick }: Props)
           <div className="next-label">NEXT FEATURE — {next.category}</div>
           <div className="next-title">{next.title}</div>
         </div>
-        <div className="arrow-big">→</div>
+        <div className="arrow-big"><IconArrow size={26} /></div>
       </div>
     </div>
   );

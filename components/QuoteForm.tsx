@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { isDisposableEmail } from '@/lib/spam';
+import { IconX } from './Icons';
 
 interface Props {
   open: boolean;
@@ -177,7 +178,7 @@ export default function QuoteForm({ open, onClose }: Props) {
   return (
     <div className="qf-overlay" onClick={onClose}>
       <div className={'qf-modal step-' + step} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="What's your story">
-        <button className="qf-close" onClick={onClose} aria-label="Close">✕</button>
+        <button className="qf-close" onClick={onClose} aria-label="Close"><IconX size={14} /></button>
 
         <div className="qf-grid">
           {/* ── Left: brand panel — embossed-logo image bg + orange glow ── */}

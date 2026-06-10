@@ -13,6 +13,7 @@ import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import CountUp from '@/components/CountUp';
+import { IconX } from '@/components/Icons';
 import {
   SQB_FILMS, SQB_GENRES, SQB_FEATURED_DEFAULT, SQB_COCOON,
 } from '@/lib/data';
@@ -378,7 +379,7 @@ function WorkInner() {
               <span className="tag">{vertPick.category}</span>
               <span className="ttl">{vertPick.title}</span>
             </div>
-            <button className="vmodal-close" aria-label="Close" onClick={() => setVertPick(null)}>×</button>
+            <button className="vmodal-close" aria-label="Close" onClick={() => setVertPick(null)}><IconX size={16} /></button>
           </div>
           <div className="vmodal-hint">{COPY.common.vmodalHint}</div>
         </div>

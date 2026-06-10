@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import HeroThumb from './HeroThumb';
+import { IconArrow } from './Icons';
 import type { Film } from '@/lib/types';
 
 // Map a videoId to a deterministic-but-arbitrary start offset (5–30 seconds).
@@ -607,9 +608,9 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
 
       {/* Touch controls — only shown on phones/tablets (no cursor to scrub). */}
       <div className="hero-touch-nav" aria-hidden="false">
-        <button onClick={() => nudge(-1)} aria-label="Previous">←</button>
+        <button onClick={() => nudge(-1)} aria-label="Previous"><IconArrow dir="left" /></button>
         <button className="hero-open" onClick={() => onPick(films[activeIdx])}>WATCH</button>
-        <button onClick={() => nudge(1)} aria-label="Next">→</button>
+        <button onClick={() => nudge(1)} aria-label="Next"><IconArrow /></button>
       </div>
     </section>
   );

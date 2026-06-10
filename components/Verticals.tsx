@@ -5,6 +5,7 @@ import { SQB_VERTICALS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
 import { videoSrc, thumbSources } from '@/lib/video-utils';
+import { IconArrow, IconPlay, IconX } from './Icons';
 import type { Vertical } from '@/lib/types';
 
 // Fan geometry — a 5-card window (centre = slot 2) drawn from however many
@@ -289,15 +290,15 @@ export default function Verticals() {
                   <span className="tag">{v.tag}</span>
                   <div className="ttl">{v.title}</div>
                 </div>
-                <div className="vplay" aria-hidden="true">▶</div>
+                <div className="vplay" aria-hidden="true"><IconPlay size={20} /></div>
               </div>
             );
           })}
         </div>
       </div>
       <div className="vrow-controls">
-        <button onClick={() => rotate(-1)} aria-label="prev">←</button>
-        <button onClick={() => rotate(1)} aria-label="next">→</button>
+        <button onClick={() => rotate(-1)} aria-label="prev"><IconArrow dir="left" /></button>
+        <button onClick={() => rotate(1)} aria-label="next"><IconArrow /></button>
       </div>
 
       <p className="vc-home-blurb">{COPY.verticalsHome.blurb}</p>
@@ -320,7 +321,7 @@ export default function Verticals() {
                 <span className="tag">{active.tag}</span>
                 <span className="ttl">{active.title}</span>
               </div>
-              <button className="vmodal-close" aria-label="Close" onClick={() => setActive(null)}>×</button>
+              <button className="vmodal-close" aria-label="Close" onClick={() => setActive(null)}><IconX size={16} /></button>
             </div>
             <div className="vmodal-hint">{COPY.common.vmodalHint}</div>
           </div>,
