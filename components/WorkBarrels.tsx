@@ -43,7 +43,20 @@ function wireBarrel(stageEl: HTMLElement) {
   // the ring stops spinning mid-gesture).
   stageEl.addEventListener('dragstart', (e) => e.preventDefault());
 
+  // Single exit point for a drag. Always clears the state/class — never gated
+  // on `dragging` — so a missed pointerup can't leave the ring "grabbed".
+  const endDrag = (e?: PointerEvent) => {
+    const wasDragging = dragging;
+    dragging = false;
+    lockedAxis = null;
+    if (e) { try { stageEl.releasePointerCapture(e.pointerId); } catch {} }
+    stageEl.classList.remove('dragging');
+    if (wasDragging) { cancelAnimationFrame(raf); raf = requestAnimationFrame(apply); }
+  };
+
   stageEl.addEventListener('pointerdown', (e) => {
+    // Only a primary-button press starts a drag (no right/middle click spins).
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     dragging = true;
     lockedAxis = null;
     startX = e.clientX; startY = e.clientY;
@@ -55,13 +68,18 @@ function wireBarrel(stageEl: HTMLElement) {
   });
   stageEl.addEventListener('pointermove', (e) => {
     if (!dragging) return;
+    // Self-heal: if the mouse button is no longer pressed (release happened
+    // outside the window / was swallowed by a native drag), end the drag now —
+    // otherwise the ring would track the bare cursor as if still grabbed.
+    if (e.pointerType === 'mouse' && e.buttons === 0) { endDrag(e); return; }
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     if (!lockedAxis && Math.abs(dx) + Math.abs(dy) > 6) {
       lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
       if (lockedAxis === 'y') {
-        dragging = false;
-        stageEl.classList.remove('dragging');
+        // Vertical intent → this is a page scroll, not a spin. Fully release
+        // (including pointer capture) so no half-armed state lingers.
+        endDrag(e);
         return;
       }
     }
@@ -78,15 +96,13 @@ function wireBarrel(stageEl: HTMLElement) {
     inner.style.setProperty('--barrel-rot', rot + 'deg');
     [...inner.children].forEach((c) => c.classList.toggle('frontal', isCardFrontal(c)));
   });
-  const release = (e: PointerEvent) => {
-    if (!dragging) return;
-    dragging = false;
-    try { stageEl.releasePointerCapture(e.pointerId); } catch {}
-    stageEl.classList.remove('dragging');
-    cancelAnimationFrame(raf); raf = requestAnimationFrame(apply);
-  };
-  stageEl.addEventListener('pointerup', release);
-  stageEl.addEventListener('pointercancel', release);
+  stageEl.addEventListener('pointerup', endDrag);
+  stageEl.addEventListener('pointercancel', endDrag);
+  stageEl.addEventListener('lostpointercapture', () => endDrag());
+  // Backstops for releases the stage never hears about (e.g. mouseup over the
+  // browser chrome, tab switch mid-drag).
+  window.addEventListener('pointerup', () => endDrag());
+  window.addEventListener('blur', () => endDrag());
 
   [...inner.children].forEach((c) => c.classList.toggle('frontal', isCardFrontal(c)));
 }
