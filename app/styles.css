@@ -1586,6 +1586,9 @@ body.no-grain::before { display: none; }
   position: absolute; inset: 0; z-index: 3;
   touch-action: pan-y; cursor: pointer;
 }
+/* Drive cards render a poster (no interactive embed), so their tap-to-open
+   overlay stays active on desktop too. */
+.bts-swipe.always { display: block; }
 /* On-site lightbox for a tapped BTS clip — plays here instead of opening
    instagram.com. Reels are vertical, so the card is portrait. */
 .bts-modal {

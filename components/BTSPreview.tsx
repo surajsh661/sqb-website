@@ -177,6 +177,21 @@ export default function BTSPreview() {
       <div className="bts-card" key={key}>
         <div className="bts-frame">
           {active ? (
+            b.type === 'gd' ? (
+              /* Drive: render the POSTER, not the player. The strip mounts each
+                 card twice (seamless loop), and two anonymous Drive players of
+                 the same file trip Drive's rate limit → "Unable to load video.
+                 Try again." The thumbnail endpoint is reliable; tapping opens
+                 the lightbox player (a single, user-initiated embed). */
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={`https://drive.google.com/thumbnail?id=${b.videoId}&sz=w800`}
+                alt={b.title}
+                referrerPolicy="no-referrer"
+                loading="lazy"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
             <iframe
               src={srcFor(b)}
               title={b.title}
@@ -193,6 +208,7 @@ export default function BTSPreview() {
                  whole page over to instagram.com. */
               sandbox={isIg ? 'allow-scripts allow-same-origin allow-presentation' : undefined}
             />
+            )
           ) : (
             <div className="bts-placeholder" aria-hidden="true" />
           )}
@@ -200,7 +216,9 @@ export default function BTSPreview() {
           {/* Mobile swipe + tap-to-open overlay (hidden on desktop via CSS, so the
               embed stays directly interactive there). */}
           <div
-            className="bts-swipe"
+            /* 'always': Drive cards show a poster (no interactive embed), so the
+               tap-to-open overlay must work on desktop too, not just mobile. */
+            className={'bts-swipe' + (b.type === 'gd' ? ' always' : '')}
             onPointerDown={onOverlayPointerDown}
             onPointerMove={onOverlayPointerMove}
             onClick={() => onOverlayTap(b)}
