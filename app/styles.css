@@ -64,6 +64,13 @@ body { min-height: 100vh; position: relative; }
    explicitly listed. `* { cursor: inherit }` makes children inherit it unless a
    more specific rule (hand / text) overrides. */
 html { cursor: url('/cursor-arrow.png') 2 2, auto; }
+/* Retina-sharp cursor: image-set serves the @2x bitmap on high-DPI screens
+   (same on-screen size, double the pixels). The plain url() above stays as the
+   fallback for browsers without image-set-in-cursor support. */
+html {
+  cursor: -webkit-image-set(url('/cursor-arrow.png') 1x, url('/cursor-arrow@2x.png') 2x) 2 2, auto;
+  cursor: image-set(url('/cursor-arrow.png') 1x, url('/cursor-arrow@2x.png') 2x) 2 2, auto;
+}
 * { cursor: inherit; }
 /* 8-bit hand over clickable video / media thumbnails. !important so it beats the
    per-element `cursor: pointer` rules (e.g. .vcard) that come later in the file.
@@ -73,6 +80,8 @@ html { cursor: url('/cursor-arrow.png') 2 2, auto; }
 .ce-card, .ce-card *, .cm-card, .cm-card *, .case-tap, .case-tap *,
 .vt-art, .vt-art *, .frame, .frame *, .case-hero .bg, .case-hero .bg * {
   cursor: url('/cursor-hand.png') 8 2, pointer !important;
+  cursor: -webkit-image-set(url('/cursor-hand.png') 1x, url('/cursor-hand@2x.png') 2x) 8 2, pointer !important;
+  cursor: image-set(url('/cursor-hand.png') 1x, url('/cursor-hand@2x.png') 2x) 8 2, pointer !important;
 }
 input, textarea, select, [contenteditable] { cursor: text !important; }
 
