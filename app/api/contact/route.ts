@@ -23,7 +23,46 @@ const escapeHtml = (s: string) =>
 
 const LOGO_URL = process.env.CONTACT_LOGO_URL || 'https://sqbpictures.com/logo-dark.png';
 
+// Origins allowed to call this endpoint from a browser. Anything else (another
+// website cross-site-posting to burn our Resend quota / spam the inbox) is
+// rejected. Requests with NO Origin header (curl, server-to-server) still pass
+// the spam gauntlet below — this guard is specifically against cross-site abuse.
+const ALLOWED_ORIGINS = new Set([
+  'https://sqbpictures.com',
+  'https://www.sqbpictures.com',
+  'http://localhost:3000',
+]);
+const originAllowed = (req: Request) => {
+  const origin = req.headers.get('origin');
+  if (!origin) return true;
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  // *.vercel.app preview deployments of this project
+  try { return new URL(origin).hostname.endsWith('.vercel.app'); } catch { return false; }
+};
+
+// Best-effort per-IP rate limit (in-memory, per serverless instance — resets on
+// cold start, which is fine: its job is blunting bursts, not perfect accounting).
+const hits = new Map<string, { n: number; t: number }>();
+const RATE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const RATE_MAX = 8;                    // submissions per window per IP
+const rateLimited = (req: Request) => {
+  const ip = (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim();
+  const now = Date.now();
+  const cur = hits.get(ip);
+  if (!cur || now - cur.t > RATE_WINDOW_MS) { hits.set(ip, { n: 1, t: now }); return false; }
+  cur.n += 1;
+  if (hits.size > 5000) hits.clear(); // memory cap
+  return cur.n > RATE_MAX;
+};
+
 export async function POST(req: Request) {
+  if (!originAllowed(req)) {
+    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  }
+  if (rateLimited(req)) {
+    return NextResponse.json({ error: 'too many requests' }, { status: 429 });
+  }
+
   let payload: Body;
   try {
     payload = (await req.json()) as Body;
