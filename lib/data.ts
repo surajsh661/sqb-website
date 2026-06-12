@@ -387,10 +387,19 @@ export const SQB_HERO_FILMS: Film[] = (() => {
   );
 })();
 
-// Preset hero posters — the OFFICIAL Vimeo thumbnail for each hero film, baked
-// in (keyed by videoId) so the hero shows a sharp first frame instantly without
-// the per-load Vimeo oembed round-trip or the vumbnail.com proxy. 960×540.
+// Preset film posters, keyed by videoId — consulted by HeroThumb for EVERY
+// film, so no per-load Vimeo oembed round-trip and no reliance on the
+// vumbnail.com third-party proxy (now a deep fallback only).
+// · Hero films: the official Vimeo CDN thumbnail at 960×540 (sharpest).
+// · All other Vimeo films: SELF-HOSTED posters in /public/posters — served
+//   first-party from our own CDN, zero third-party fragility.
 export const HERO_POSTERS: Record<string, string> = {
+  '1080608698': '/posters/1080608698.jpg',
+  '1083476755': '/posters/1083476755.jpg',
+  '1127747874': '/posters/1127747874.jpg',
+  '1127751934': '/posters/1127751934.jpg',
+  '1127752962': '/posters/1127752962.jpg',
+  '735189733':  '/posters/735189733.jpg',
   '954302482':  'https://i.vimeocdn.com/video/1866562858-4f75ceb49f7b97850b0472ab318e4466d5c60b1ebc9ea89a353d832b185ca873-d_960x540',
   '1190975373': 'https://i.vimeocdn.com/video/2155874827-363a94edd140326e3e63ad56ef607c490ecc3bc483d15ceee6c9d1ee8e215dbf-d_960x540',
   '1083481304': 'https://i.vimeocdn.com/video/2014696334-8a477a8cbbb48d7601b8c000de49e4aff32a049f914a26b723744c46081ab158-d_960x540',

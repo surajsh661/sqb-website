@@ -543,7 +543,8 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
                 onClick={() => onCellClick(i)}
               >
                 <div className="frame">
-                  <HeroThumb film={film} className="frame-poster" />
+                  {/* index 0 starts centred = the LCP image → top fetch priority */}
+                  <HeroThumb film={film} className="frame-poster" priority={i === 0} />
                   {/* The poster always renders; the iframe is mounted lazily
                       once the cell nears centre (so first paint loads only the
                       visible cluster, not all N). Once mounted it stays mounted

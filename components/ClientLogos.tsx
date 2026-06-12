@@ -45,6 +45,13 @@ export default function ClientLogos() {
     <>
       <Row list={logosA} />
       <Row reverse list={logosB} />
+      {/* The logos are images, so the brand names never exist as crawlable text.
+          This visually-hidden line mirrors EXACTLY the logos shown above (same
+          content, accessible + indexable) — screen readers and search engines
+          get the client list the sighted visitor sees. */}
+      <p className="sr-only">
+        Clients include {logos.map((c) => c.name).join(', ')}.
+      </p>
     </>
   );
 }
