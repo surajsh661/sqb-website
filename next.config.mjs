@@ -42,5 +42,26 @@ const nextConfig = {
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },
+  // ── Canonical host: consolidate www → apex ────────────────────────────────
+  // Both www.sqbpictures.com and sqbpictures.com currently serve the site, so
+  // Google indexes them separately and splits ranking. We pick the non-www
+  // (apex) form as the single canonical — it already ranks better and every
+  // listing (Google/Clutch/Crunchbase) uses it; the site's canonical tags,
+  // sitemap, og:url and robots host are all non-www already. This adds the
+  // missing piece: a permanent redirect so any www request lands on the apex.
+  // `permanent: true` issues a 308 (Permanent Redirect) — Google treats it
+  // identically to a 301 for canonicalization and passes all link signals.
+  // HTTP→HTTPS is handled by Vercel/Cloudflare (HSTS above also enforces it),
+  // and the destination is always https.
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.sqbpictures.com' }],
+        destination: 'https://sqbpictures.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 export default nextConfig;
