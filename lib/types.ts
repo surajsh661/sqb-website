@@ -39,7 +39,7 @@ export interface Film {
   episodes?: Episode[];
 }
 
-export interface AILabItem { id: string; title: string; type: VideoType; videoId: string; vertical?: boolean }
+export interface AILabItem { id: string; title: string; type: VideoType; videoId: string; vertical?: boolean; /** if set, clicking the clip opens this film's full case study (via /work?case=<id>) instead of the reel lightbox */ caseId?: string }
 export interface AILabData {
   animated: AILabItem[];
   realistic: AILabItem[];

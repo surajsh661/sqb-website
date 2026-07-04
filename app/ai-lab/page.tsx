@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useRouter } from 'next/navigation';
 import Topbar from '@/components/Topbar';
 import Loader from '@/components/Loader';
 import TicketMenu from '@/components/TicketMenu';
@@ -98,6 +99,7 @@ function AISection({
 }
 
 export default function AILabPage() {
+  const router = useRouter();
   const [hover, setHover] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
@@ -105,6 +107,9 @@ export default function AILabPage() {
   const [reel, setReel] = useState<{ item: AILabItem; section: string } | null>(null);
 
   const openReel = (item: AILabItem, section: string) => {
+    // Flagship items (e.g. Muthoot) link to their full case study instead of a
+    // sizzle lightbox — deep-link to /work, which opens the case study on load.
+    if (item.caseId) { router.push(`/work?case=${item.caseId}`); return; }
     setReel({ item, section });
     document.body.style.overflow = 'hidden';
   };

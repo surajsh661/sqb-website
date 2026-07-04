@@ -139,6 +139,24 @@ function WorkInner() {
     }, 400);
   };
 
+  // Deep-link: /work?case=<filmId> opens that case study on load. Used by the
+  // AI Lab Muthoot clip and makes every case study a shareable URL. We set the
+  // film synchronously then flip `open` after the first render commits, so the
+  // slide-in transition plays reliably (and it survives StrictMode's dev
+  // double-mount via the timeout cleanup).
+  useEffect(() => {
+    const id = searchParams.get('case');
+    if (!id) return;
+    const film = SQB_FILMS.find((f) => f.id === id);
+    if (!film) return;
+    setActiveFilm(film);
+    document.body.style.overflow = 'hidden';
+    const t = setTimeout(() => setCaseOpen(true), 80);
+    return () => clearTimeout(t);
+    // run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="page-shell">
       <Topbar active="work" variant="nav" onOpenMenu={() => setMenuOpen(true)} onReachOut={() => setQuoteOpen(true)} />

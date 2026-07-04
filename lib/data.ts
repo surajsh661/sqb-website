@@ -433,7 +433,7 @@ export const SQB_AI_LAB: AILabData = {
     // (22-episode docu-AI series, real customers turned into cinema). Leads the
     // Realistic section and its intro pane. Vimeo-hosted, so it's robust as a
     // background player (no Drive rate-limit fragility).
-    { id: 'r0', title: 'MUTHOOT — SUNHERI SOCH', type: 'vm', videoId: '1190975373' },
+    { id: 'r0', title: 'MUTHOOT — SUNHERI SOCH', type: 'vm', videoId: '1190975373', caseId: 'muthoot-sunheri-soch' },
     { id: 'r1', title: 'REAL REEL 01', type: 'gd', videoId: '1F-iqYy4IoBWw9tZSn3krZqEXf-vYxsKJ' },
     { id: 'r2', title: 'REAL REEL 02', type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J' },
     { id: 'r3', title: 'REAL REEL 03', type: 'gd', videoId: '1N_Ia4SnPfNbhOd4n1RAvhJeW8fXXaN-a' },
