@@ -41,7 +41,14 @@ export default function ThemeShell({ children }: { children: React.ReactNode }) 
           </svg>
         )}
       </button>
-      {children}
+      <div className="adm-stack">
+        {/* S'QB logo — the theme-appropriate variant is shown via CSS. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="adm-logo adm-logo-dark" src="/logo-admin-dark.png" alt="S'QB Pictures" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="adm-logo adm-logo-light" src="/logo-admin-light.png" alt="S'QB Pictures" />
+        {children}
+      </div>
     </div>
   );
 }

@@ -93,7 +93,7 @@ function Setup({ post, busy, err, onDone }: any) {
   };
   return (
     <>
-      <div className="adm-brand"><b>S'QB</b> · Admin</div>
+      <div className="adm-brand">Admin Console</div>
       <h1 className="adm-title">Set your password</h1>
       <p className="adm-sub">First time here. Choose the password you'll use to manage your case studies. There's only one account — yours.</p>
       <div className="adm-field">
@@ -120,7 +120,7 @@ function Login({ post, busy, err, onDone, onForgot }: any) {
   const submit = async () => { if (await post('/api/admin/login', { password: pw })) onDone(); };
   return (
     <>
-      <div className="adm-brand"><b>S'QB</b> · Admin</div>
+      <div className="adm-brand">Admin Console</div>
       <h1 className="adm-title">Welcome back</h1>
       <p className="adm-sub">Enter your password to manage your case studies.</p>
       <div className="adm-field">
@@ -157,7 +157,7 @@ function Reset({ post, busy, err, onDone, onBack }: any) {
 
   return (
     <>
-      <div className="adm-brand"><b>S'QB</b> · Admin</div>
+      <div className="adm-brand">Admin Console</div>
       <h1 className="adm-title">Reset password</h1>
       {step === 'request' ? (
         <>
@@ -244,7 +244,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     <div className="adm-card wide">
       <div className="adm-head">
         <div>
-          <div className="adm-brand"><b>S'QB</b> · Case Studies</div>
+          <div className="adm-brand">Case Studies</div>
           <h1 className="adm-title">Editor</h1>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
