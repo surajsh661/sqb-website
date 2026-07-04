@@ -8,7 +8,7 @@ import QuoteForm from '@/components/QuoteForm';
 import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
-import { SQB_AI_LAB } from '@/lib/data';
+import { SQB_AI_LAB, HERO_POSTERS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
 import { videoSrc, thumbSources, setupReveal } from '@/lib/video-utils';
@@ -143,7 +143,11 @@ export default function AILabPage() {
 
         <div className="ai-picker">
           {PANES.map((p, i) => {
-            const isDrive = p.bg.type === 'gd';
+            // Prefer a static poster for the pane background — keeps all three
+            // panes visually consistent and avoids a lone live-loading iframe
+            // when the lead item is Vimeo (e.g. Muthoot in Realistic). Uses the
+            // baked Vimeo-CDN poster for vm, the Drive thumbnail for gd.
+            const poster = HERO_POSTERS[p.bg.videoId] || (p.bg.type === 'gd' ? thumbSources(p.bg)[0] : null);
             return (
               <div
                 key={p.key}
@@ -152,10 +156,10 @@ export default function AILabPage() {
                 onClick={() => scrollTo(p.anchor)}
               >
                 <div className="ap-bg">
-                  {isDrive ? (
+                  {poster ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={thumbSources(p.bg)[0]}
+                      src={poster}
                       alt={p.name}
                       referrerPolicy="no-referrer"
                     />
