@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { IconArrow, IconPlay } from './Icons';
+import { useOverrides, mergeFilm } from '@/lib/useOverrides';
 import type { Film } from '@/lib/types';
 
 interface Props {
@@ -11,7 +12,12 @@ interface Props {
   onPick: (f: Film) => void;
 }
 
-export default function CaseStudy({ film, films, open, onClose, onPick }: Props) {
+export default function CaseStudy({ film: rawFilm, films: rawFilms, open, onClose, onPick }: Props) {
+  // Apply any edits saved in /admin so the case study shows the owner's latest
+  // copy + credits. Base data is the fallback when nothing's been edited.
+  const overrides = useOverrides();
+  const film = mergeFilm(rawFilm, overrides);
+  const films = rawFilms.map((f) => mergeFilm(f, overrides));
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const playerRef = useRef<any>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
