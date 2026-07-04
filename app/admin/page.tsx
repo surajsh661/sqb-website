@@ -1,0 +1,299 @@
+'use client';
+import { useEffect, useState, useCallback } from 'react';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+type View = 'loading' | 'setup' | 'login' | 'reset' | 'dash';
+type Credit = { role: string; name: string };
+type Item = Record<string, any> & { id: string; credits: Credit[]; edited?: boolean };
+
+const MIN_PW = 10;
+
+const FIELDS: { key: string; label: string; area?: boolean }[] = [
+  { key: 'title', label: 'Title' },
+  { key: 'category', label: 'Category' },
+  { key: 'client', label: 'Client' },
+  { key: 'talent', label: 'Talent / Cast' },
+  { key: 'year', label: 'Year' },
+  { key: 'runtime', label: 'Runtime' },
+  { key: 'lede', label: 'Lede — the one-line summary', area: true },
+  { key: 'brief', label: 'The Brief', area: true },
+  { key: 'solution', label: 'The Solution', area: true },
+  { key: 'body', label: 'Body / Story', area: true },
+  { key: 'timeline', label: 'Timeline' },
+  { key: 'release', label: 'Release' },
+  { key: 'impact', label: 'Impact', area: true },
+];
+
+function pwScore(pw: string): number {
+  let s = 0;
+  if (pw.length >= MIN_PW) s++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
+  if (/\d/.test(pw)) s++;
+  if (/[^A-Za-z0-9]/.test(pw)) s++;
+  return s;
+}
+
+export default function AdminPage() {
+  const [view, setView] = useState<View>('loading');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  const post = useCallback(async (url: string, body?: any) => {
+    setBusy(true); setErr('');
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { setErr(data.error || 'Something went wrong.'); return null; }
+      return data;
+    } catch {
+      setErr('Network error. Try again.');
+      return null;
+    } finally { setBusy(false); }
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/admin/session')
+      .then((r) => r.json())
+      .then((d) => setView(!d.isSetup ? 'setup' : d.isAuthed ? 'dash' : 'login'))
+      .catch(() => setView('login'));
+  }, []);
+
+  if (view === 'loading') {
+    return <div className="adm-card"><div className="adm-brand"><b>S'QB</b> · Admin</div><p className="adm-sub">Loading…</p></div>;
+  }
+  if (view === 'dash') return <Dashboard onLogout={() => setView('login')} />;
+
+  return (
+    <div className="adm-card">
+      {view === 'setup' && <Setup post={post} busy={busy} err={err} onDone={() => setView('dash')} />}
+      {view === 'login' && <Login post={post} busy={busy} err={err} onDone={() => setView('dash')} onForgot={() => { setErr(''); setView('reset'); }} />}
+      {view === 'reset' && <Reset post={post} busy={busy} err={err} onDone={() => setView('dash')} onBack={() => { setErr(''); setView('login'); }} />}
+    </div>
+  );
+}
+
+function Pips({ pw }: { pw: string }) {
+  const s = pwScore(pw);
+  return <div className="adm-pips">{[0, 1, 2, 3].map((i) => <div key={i} className={'adm-pip' + (i < s ? ' on' : '')} />)}</div>;
+}
+
+// ── First-run: set the one password ──────────────────────────────────────────
+function Setup({ post, busy, err, onDone }: any) {
+  const [pw, setPw] = useState(''); const [pw2, setPw2] = useState(''); const [local, setLocal] = useState('');
+  const submit = async () => {
+    setLocal('');
+    if (pw.length < MIN_PW) return setLocal(`Use at least ${MIN_PW} characters.`);
+    if (pw !== pw2) return setLocal('The two passwords don’t match.');
+    if (await post('/api/admin/setup', { password: pw })) onDone();
+  };
+  return (
+    <>
+      <div className="adm-brand"><b>S'QB</b> · Admin</div>
+      <h1 className="adm-title">Set your password</h1>
+      <p className="adm-sub">First time here. Choose the password you'll use to manage your case studies. There's only one account — yours.</p>
+      <div className="adm-field">
+        <label className="adm-label">New password</label>
+        <input className="adm-input" type="password" value={pw} autoFocus onChange={(e) => setPw(e.target.value)} placeholder={`At least ${MIN_PW} characters`} />
+        <Pips pw={pw} />
+      </div>
+      <div className="adm-field">
+        <label className="adm-label">Confirm password</label>
+        <input className="adm-input" type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submit()} />
+      </div>
+      {(local || err) && <p className="adm-msg err">{local || err}</p>}
+      <div className="adm-actions">
+        <button className="adm-btn" disabled={busy} onClick={submit}>{busy ? 'Saving…' : 'Create password & enter'}</button>
+      </div>
+      <p className="adm-note">You can reset this any time with a code sent to your email.</p>
+    </>
+  );
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+function Login({ post, busy, err, onDone, onForgot }: any) {
+  const [pw, setPw] = useState('');
+  const submit = async () => { if (await post('/api/admin/login', { password: pw })) onDone(); };
+  return (
+    <>
+      <div className="adm-brand"><b>S'QB</b> · Admin</div>
+      <h1 className="adm-title">Welcome back</h1>
+      <p className="adm-sub">Enter your password to manage your case studies.</p>
+      <div className="adm-field">
+        <label className="adm-label">Password</label>
+        <input className="adm-input" type="password" value={pw} autoFocus onChange={(e) => setPw(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submit()} />
+      </div>
+      {err && <p className="adm-msg err">{err}</p>}
+      <div className="adm-actions">
+        <button className="adm-btn" disabled={busy} onClick={submit}>{busy ? 'Checking…' : 'Log in'}</button>
+      </div>
+      <div className="adm-foot">
+        <button className="adm-link" onClick={onForgot}>Forgot password?</button>
+      </div>
+    </>
+  );
+}
+
+// ── Reset via emailed code ────────────────────────────────────────────────────
+function Reset({ post, busy, err, onDone, onBack }: any) {
+  const [step, setStep] = useState<'request' | 'confirm'>('request');
+  const [code, setCode] = useState(''); const [pw, setPw] = useState(''); const [pw2, setPw2] = useState('');
+  const [local, setLocal] = useState(''); const [hint, setHint] = useState('');
+
+  const request = async () => {
+    const d = await post('/api/admin/reset-request');
+    if (d) { setStep('confirm'); if (d.devCode) setHint(`Dev code: ${d.devCode}`); }
+  };
+  const confirm = async () => {
+    setLocal('');
+    if (pw.length < MIN_PW) return setLocal(`Use at least ${MIN_PW} characters.`);
+    if (pw !== pw2) return setLocal('The two passwords don’t match.');
+    if (await post('/api/admin/reset-confirm', { code: code.trim(), password: pw })) onDone();
+  };
+
+  return (
+    <>
+      <div className="adm-brand"><b>S'QB</b> · Admin</div>
+      <h1 className="adm-title">Reset password</h1>
+      {step === 'request' ? (
+        <>
+          <p className="adm-sub">We'll email a one-time 6-digit code to your address on file. It works once and expires in 15 minutes.</p>
+          {err && <p className="adm-msg err">{err}</p>}
+          <div className="adm-actions">
+            <button className="adm-btn" disabled={busy} onClick={request}>{busy ? 'Sending…' : 'Email me a reset code'}</button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="adm-sub">Enter the 6-digit code from your email, then choose a new password.</p>
+          <div className="adm-field">
+            <label className="adm-label">Reset code</label>
+            <input className="adm-input code" inputMode="numeric" maxLength={6} value={code} autoFocus onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} placeholder="••••••" />
+            {hint && <p className="adm-msg ok">{hint}</p>}
+          </div>
+          <div className="adm-field">
+            <label className="adm-label">New password</label>
+            <input className="adm-input" type="password" value={pw} onChange={(e) => setPw(e.target.value)} />
+            <Pips pw={pw} />
+          </div>
+          <div className="adm-field">
+            <label className="adm-label">Confirm new password</label>
+            <input className="adm-input" type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && confirm()} />
+          </div>
+          {(local || err) && <p className="adm-msg err">{local || err}</p>}
+          <div className="adm-actions">
+            <button className="adm-btn" disabled={busy} onClick={confirm}>{busy ? 'Saving…' : 'Set new password & enter'}</button>
+          </div>
+        </>
+      )}
+      <div className="adm-foot"><button className="adm-link" onClick={onBack}>← Back to login</button></div>
+    </>
+  );
+}
+
+// ── Dashboard / case-study editor ─────────────────────────────────────────────
+function Dashboard({ onLogout }: { onLogout: () => void }) {
+  const [items, setItems] = useState<Item[]>([]);
+  const [sel, setSel] = useState<string>('');
+  const [form, setForm] = useState<Item | null>(null);
+  const [status, setStatus] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [store, setStore] = useState<string>('');
+
+  useEffect(() => {
+    fetch('/api/admin/session').then((r) => r.json()).then((d) => setStore(d.store || ''));
+    fetch('/api/admin/content')
+      .then((r) => r.json())
+      .then((d) => { setItems(d.items || []); if (d.items?.[0]) { setSel(d.items[0].id); setForm(structuredClone(d.items[0])); } });
+  }, []);
+
+  const pick = (id: string) => {
+    setStatus('');
+    const it = items.find((x) => x.id === id);
+    setSel(id); setForm(it ? structuredClone(it) : null);
+  };
+  const setField = (k: string, v: string) => setForm((f) => (f ? { ...f, [k]: v } : f));
+  const setCredit = (i: number, k: 'role' | 'name', v: string) =>
+    setForm((f) => { if (!f) return f; const credits = [...f.credits]; credits[i] = { ...credits[i], [k]: v }; return { ...f, credits }; });
+  const addCredit = () => setForm((f) => (f ? { ...f, credits: [...f.credits, { role: '', name: '' }] } : f));
+  const rmCredit = (i: number) => setForm((f) => (f ? { ...f, credits: f.credits.filter((_, j) => j !== i) } : f));
+
+  const save = async () => {
+    if (!form) return;
+    setBusy(true); setStatus('');
+    const { id, edited, ...fields } = form;
+    try {
+      const res = await fetch('/api/admin/content', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, fields }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok) { setStatus('Saved ✓'); setItems((xs) => xs.map((x) => (x.id === id ? { ...form, edited: true } : x))); }
+      else setStatus(d.error || 'Save failed');
+    } catch { setStatus('Network error'); }
+    finally { setBusy(false); }
+  };
+
+  const logout = async () => { await fetch('/api/admin/logout', { method: 'POST' }); onLogout(); };
+
+  return (
+    <div className="adm-card wide">
+      <div className="adm-head">
+        <div>
+          <div className="adm-brand"><b>S'QB</b> · Case Studies</div>
+          <h1 className="adm-title">Editor</h1>
+        </div>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <span className={'adm-badge ' + (store === 'kv' ? 'live' : 'draft')}>{store === 'kv' ? 'Live DB' : 'Local draft'}</span>
+          <button className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={logout}>Log out</button>
+        </div>
+      </div>
+
+      <div className="adm-field">
+        <label className="adm-label">Choose a case study</label>
+        <select className="adm-select" value={sel} onChange={(e) => pick(e.target.value)}>
+          {items.map((it) => <option key={it.id} value={it.id}>{it.title}{it.edited ? '  •  edited' : ''}</option>)}
+        </select>
+      </div>
+
+      {form && (
+        <>
+          <div className="adm-divider" />
+          {FIELDS.map((f) => (
+            <div className="adm-field" key={f.key}>
+              <label className="adm-label">{f.label}</label>
+              {f.area
+                ? <textarea className="adm-textarea" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />
+                : <input className="adm-input" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />}
+            </div>
+          ))}
+
+          <div className="adm-field">
+            <label className="adm-label">Credits</label>
+            <p className="adm-hint">Add a row for each role — Director, DOP, Editor, and so on.</p>
+            <div className="adm-credits">
+              {form.credits.map((c, i) => (
+                <div className="adm-credit-row" key={i}>
+                  <input className="adm-input" placeholder="ROLE (e.g. DIRECTOR)" value={c.role} onChange={(e) => setCredit(i, 'role', e.target.value)} />
+                  <input className="adm-input" placeholder="Name" value={c.name} onChange={(e) => setCredit(i, 'name', e.target.value)} />
+                  <button className="adm-icon-btn" title="Remove" onClick={() => rmCredit(i)}>×</button>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10 }}><button className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={addCredit}>+ Add credit</button></div>
+          </div>
+
+          <div className="adm-divider" />
+          <div className="adm-row">
+            <button className="adm-btn" disabled={busy} onClick={save}>{busy ? 'Saving…' : 'Save changes'}</button>
+            {status && <span className={'adm-msg ' + (status.includes('✓') ? 'ok' : 'err')} style={{ marginLeft: 4 }}>{status}</span>}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,166 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   S'QB Admin — skeuomorphic black & gold.
+   Brushed-metal panels, beveled edges, inset fields, glossy pressable buttons.
+   Uses the site's self-hosted font vars (--font-anton / --font-inter / --font-mono).
+   ───────────────────────────────────────────────────────────────────────────── */
+.adm-root {
+  --gold: #F5C518;
+  --gold-deep: #b8920f;
+  --ink: #0E0E0E;
+  --panel: #1a1a1a;
+  --panel-hi: #2c2c2c;
+  --fg: #F4ECDB;
+  --fg-dim: #9c968a;
+  --line: #000;
+  min-height: 100vh;
+  color: var(--fg);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px 80px;
+  background:
+    radial-gradient(120% 80% at 50% -10%, #232323 0%, #121212 45%, #0b0b0b 100%);
+  position: relative;
+}
+/* faint brushed-metal striping */
+.adm-root::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; opacity: .04;
+  background: repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 3px);
+}
+
+.adm-card {
+  width: 100%;
+  max-width: 440px;
+  border-radius: 16px;
+  padding: 30px 28px 26px;
+  position: relative;
+  background: linear-gradient(180deg, var(--panel-hi) 0%, var(--panel) 22%, #141414 100%);
+  border: 1px solid #333;
+  border-top-color: #4a4a4a;
+  border-bottom-color: #000;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 -18px 40px rgba(0,0,0,.5) inset,
+    0 24px 60px rgba(0,0,0,.6),
+    0 2px 0 #000;
+}
+.adm-card.wide { max-width: 760px; }
+
+.adm-brand {
+  font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--fg-dim); margin-bottom: 6px;
+}
+.adm-brand b { color: var(--gold); font-weight: 800; }
+.adm-title {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400; letter-spacing: .01em; line-height: 1;
+  font-size: 30px; margin: 0 0 4px;
+  color: var(--fg);
+  text-shadow: 0 1px 0 #000, 0 2px 3px rgba(0,0,0,.6);
+}
+.adm-sub { color: var(--fg-dim); font-size: 13.5px; line-height: 1.5; margin: 0 0 22px; }
+
+.adm-field { margin-bottom: 15px; }
+.adm-label {
+  display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--fg-dim); margin-bottom: 7px;
+}
+.adm-input, .adm-textarea, .adm-select {
+  width: 100%; box-sizing: border-box;
+  background: #0c0c0c;
+  color: var(--fg);
+  border: 1px solid #000;
+  border-radius: 9px;
+  padding: 12px 13px;
+  font-size: 15px;
+  font-family: var(--font-inter), sans-serif;
+  box-shadow: 0 2px 5px rgba(0,0,0,.6) inset, 0 1px 0 rgba(255,255,255,.05);
+  outline: none;
+  transition: box-shadow .15s, border-color .15s;
+}
+.adm-input:focus, .adm-textarea:focus, .adm-select:focus {
+  border-color: var(--gold-deep);
+  box-shadow: 0 2px 5px rgba(0,0,0,.6) inset, 0 0 0 3px rgba(245,197,24,.18);
+}
+.adm-textarea { resize: vertical; min-height: 74px; line-height: 1.5; }
+.adm-input.code {
+  font-family: var(--font-mono), monospace;
+  letter-spacing: .3em; text-align: center; font-size: 22px;
+}
+
+/* glossy pressable gold button */
+.adm-btn {
+  width: 100%;
+  appearance: none; border: 0; cursor: pointer;
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-weight: 800; font-size: 15px; letter-spacing: .02em;
+  color: #241d00;
+  background: linear-gradient(180deg, #ffe066 0%, var(--gold) 46%, var(--gold-deep) 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.6) inset,
+    0 -2px 6px rgba(0,0,0,.25) inset,
+    0 6px 14px rgba(0,0,0,.45),
+    0 2px 0 #6d5406;
+  transition: transform .06s, box-shadow .06s, filter .15s;
+}
+.adm-btn:hover { filter: brightness(1.05); }
+.adm-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.5) inset, 0 -1px 4px rgba(0,0,0,.25) inset, 0 2px 6px rgba(0,0,0,.4);
+}
+.adm-btn:disabled { opacity: .55; cursor: default; transform: none; filter: grayscale(.3); }
+.adm-btn.ghost {
+  color: var(--fg); background: linear-gradient(180deg, #333 0%, #222 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 3px 8px rgba(0,0,0,.4), 0 2px 0 #000;
+}
+
+.adm-link {
+  background: none; border: 0; cursor: pointer; padding: 6px 2px;
+  color: var(--gold); font-size: 13px; text-decoration: none;
+}
+.adm-link:hover { text-decoration: underline; }
+
+.adm-row { display: flex; gap: 10px; align-items: center; }
+.adm-row .adm-btn { width: auto; flex: 1; }
+.adm-actions { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+.adm-foot { margin-top: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+.adm-msg { font-size: 13px; margin: 4px 0 0; line-height: 1.4; }
+.adm-msg.err { color: #ff8a6a; }
+.adm-msg.ok  { color: #7bd88f; }
+
+.adm-note {
+  margin-top: 14px; font-size: 12px; color: var(--fg-dim);
+  border-top: 1px solid #000; padding-top: 12px; line-height: 1.5;
+}
+.adm-badge {
+  display: inline-block; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 5px; border: 1px solid #333;
+  background: #101010; color: var(--fg-dim);
+}
+.adm-badge.live { color: #7bd88f; border-color: #234a2c; }
+.adm-badge.draft { color: var(--gold); border-color: #4a3d0f; }
+
+/* password strength pips */
+.adm-pips { display: flex; gap: 5px; margin-top: 8px; }
+.adm-pip { height: 4px; flex: 1; border-radius: 3px; background: #000; box-shadow: 0 1px 0 rgba(255,255,255,.04); }
+.adm-pip.on { background: linear-gradient(90deg, var(--gold-deep), var(--gold)); }
+
+/* ── editor ── */
+.adm-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; }
+.adm-head .adm-title { font-size: 24px; margin: 0; }
+.adm-credits { display: flex; flex-direction: column; gap: 8px; }
+.adm-credit-row { display: flex; gap: 8px; }
+.adm-credit-row .adm-input:first-child { flex: 0 0 40%; }
+.adm-icon-btn {
+  flex: 0 0 auto; width: 42px; border-radius: 9px; cursor: pointer;
+  border: 1px solid #000; color: var(--fg-dim); font-size: 18px; line-height: 1;
+  background: linear-gradient(180deg, #2a2a2a, #191919);
+  box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 2px 5px rgba(0,0,0,.4);
+}
+.adm-icon-btn:hover { color: var(--fg); }
+.adm-divider { height: 1px; background: #000; box-shadow: 0 1px 0 rgba(255,255,255,.05); margin: 20px 0; }
+.adm-hint { font-size: 12px; color: var(--fg-dim); margin: -2px 0 14px; }
