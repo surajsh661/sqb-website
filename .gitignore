@@ -11,3 +11,6 @@ out
 
 # local backups of pre-normalized capability icons
 public/cap/_orig/
+
+# admin portal local dev store (serverless prod uses the KV database instead)
+.admin-data/
