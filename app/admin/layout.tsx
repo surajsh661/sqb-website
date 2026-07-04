@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import ThemeShell from './ThemeShell';
 import './admin.css';
 
 // Never index the admin portal.
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <div className="adm-root">{children}</div>;
+  return <ThemeShell>{children}</ThemeShell>;
 }
