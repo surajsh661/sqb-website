@@ -62,7 +62,7 @@ export function setupReveal(): void {
   const wire = () => {
     document
       .querySelectorAll(
-        '.section, .engine, .verticals, .bts, .contact, .footer, .stats-section, .testimonials, .manifesto, .work-vision, .work-cap, .work-scale, .work-films, .vertical-cinema, .ailab-section, .ailab-hero, .ai-headline, .ai-track-section, .social-hero, .creator, .trusted-block',
+        '.section, .engine, .verticals, .bts, .contact, .footer, .stats-section, .testimonials, .manifesto, .work-vision, .work-cap, .work-scale, .work-films, .vertical-cinema, .ailab-section, .ailab-hero, .ai-headline, .ai-track-section, .social-hero, .creator, .trusted-block, .cr-roles',
       )
       .forEach((el) => {
         if (!el.classList.contains('reveal')) {

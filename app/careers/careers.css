@@ -115,11 +115,11 @@
 .cr-dept { color: var(--accent); }
 .cr-role-title {
   font-family: var(--font-anton), sans-serif; font-weight: 400;
-  font-size: clamp(26px, 2.5vw, 40px); line-height: 1; text-transform: uppercase; color: var(--fg); margin: 0;
+  font-size: clamp(26px, 2.5vw, 40px); line-height: 1.02; text-transform: uppercase; color: var(--fg); margin: 0;
 }
 .cr-role-sub {
   font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .16em;
-  text-transform: uppercase; color: var(--fg-dim); margin-top: 7px;
+  text-transform: uppercase; color: var(--fg-dim); margin-top: 12px;
 }
 .cr-lede { font-size: 15px; line-height: 1.55; color: var(--fg-dim); margin: 16px 0 20px; }
 

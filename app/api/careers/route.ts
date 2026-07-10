@@ -99,7 +99,7 @@ export async function POST(req: Request) {
   }));
 
   const apiKey = process.env.RESEND_API_KEY;
-  const to = (process.env.CAREERS_TO || process.env.CONTACT_TO || 'surajsharma@sqbpictures.com')
+  const to = (process.env.CAREERS_TO || 'hr@sqbpictures.com')
     .split(',').map((s) => s.trim()).filter(Boolean);
   const from = process.env.CONTACT_FROM || "S'QB Careers <onboarding@resend.dev>";
 

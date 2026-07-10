@@ -74,7 +74,7 @@ export default function CareersPage() {
         <div className="cr-grid">
           {SQB_ROLES.map((r, i) => (
             <article
-              className="cr-slate reveal"
+              className="cr-slate"
               key={r.id}
               role="button"
               tabIndex={0}
@@ -108,7 +108,7 @@ export default function CareersPage() {
 
         <p className="cr-nofit">
           Don&apos;t see your seat? Send your reel to{' '}
-          <a href="mailto:surajsharma@sqbpictures.com?subject=Open%20application">surajsharma@sqbpictures.com</a> anyway.
+          <a href="mailto:hr@sqbpictures.com?subject=Open%20application">hr@sqbpictures.com</a> anyway.
         </p>
       </section>
 
