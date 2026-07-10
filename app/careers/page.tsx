@@ -165,6 +165,28 @@ function RoleSheet({ role, step, setStep, onClose }: {
   const [form, setForm] = useState({ name: '', email: '', phone: '', portfolio: '', resume: '', note: '' });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  // Uploaded résumé PDF (base64). Capped below Vercel's 4.5MB request limit
+  // once base64 inflation (~33%) is accounted for.
+  const MAX_PDF = 2.5 * 1024 * 1024;
+  const [file, setFile] = useState<{ name: string; size: number; data: string } | null>(null);
+  const [fileErr, setFileErr] = useState('');
+  const [drag, setDrag] = useState(false);
+
+  const takeFile = (f: File | null | undefined) => {
+    setFileErr('');
+    if (!f) return;
+    const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+    if (!isPdf) { setFileErr('PDF files only.'); return; }
+    if (f.size > MAX_PDF) { setFileErr('That file is over 2.5 MB — compress it, or use a link instead.'); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const res = String(reader.result);
+      setFile({ name: f.name, size: f.size, data: res.slice(res.indexOf(',') + 1) });
+    };
+    reader.onerror = () => setFileErr('Could not read that file. Try again.');
+    reader.readAsDataURL(f);
+  };
+  const prettySize = (b: number) => (b < 1024 * 1024 ? `${Math.round(b / 1024)} KB` : `${(b / 1024 / 1024).toFixed(1)} MB`);
   // Budget is fetched only once the candidate proceeds to apply — it never ships
   // with the page. `undefined` = not fetched yet.
   const [brief, setBrief] = useState<{ salary: string | null; note: string } | undefined>();
@@ -196,7 +218,10 @@ function RoleSheet({ role, step, setStep, onClose }: {
       const res = await fetch('/api/careers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roleId: role.id, ...form, answers, hp, t: Date.now() - openedAt.current }),
+        body: JSON.stringify({
+          roleId: role.id, ...form, answers, hp, t: Date.now() - openedAt.current,
+          resumeFile: file ? { name: file.name, size: file.size, data: file.data } : undefined,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) { setErr(data.error || 'Could not send. Try again in a moment.'); return; }
@@ -367,8 +392,36 @@ function RoleSheet({ role, step, setStep, onClose }: {
                 <input className="cr-input" value={form.phone} onChange={(e) => set('phone', e.target.value)} /></div>
               <div className="cr-field"><label>Portfolio / reel link *</label>
                 <input className="cr-input" placeholder="Vimeo, YouTube, Drive, Behance…" value={form.portfolio} onChange={(e) => set('portfolio', e.target.value)} /></div>
-              <div className="cr-field wide"><label>Resume link</label>
-                <input className="cr-input" placeholder="Drive / Dropbox link" value={form.resume} onChange={(e) => set('resume', e.target.value)} /></div>
+              <div className="cr-field wide">
+                <label>Résumé <span className="cr-opt">— link or PDF, optional</span></label>
+                <input className="cr-input" placeholder="Paste a Drive / Dropbox link…" value={form.resume} onChange={(e) => set('resume', e.target.value)} />
+                {!file ? (
+                  <label
+                    className={'cr-drop' + (drag ? ' over' : '')}
+                    onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
+                    onDragLeave={() => setDrag(false)}
+                    onDrop={(e) => { e.preventDefault(); setDrag(false); takeFile(e.dataTransfer.files?.[0]); }}
+                  >
+                    <input type="file" accept="application/pdf,.pdf" hidden
+                      onChange={(e) => { takeFile(e.target.files?.[0]); e.target.value = ''; }} />
+                    <svg className="cr-drop-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M12 16V4M12 4l-4 4M12 4l4 4" /><path d="M5 20h14" />
+                    </svg>
+                    <span className="cr-drop-t">…or drop your résumé PDF here</span>
+                    <span className="cr-drop-s">PDF · up to 2.5 MB</span>
+                  </label>
+                ) : (
+                  <div className="cr-file">
+                    <svg className="cr-file-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" />
+                    </svg>
+                    <span className="cr-file-name">{file.name}</span>
+                    <span className="cr-file-size">{prettySize(file.size)}</span>
+                    <button type="button" className="cr-file-x" onClick={() => setFile(null)} aria-label="Remove file"><IconX size={13} /></button>
+                  </div>
+                )}
+                {fileErr && <p className="cr-err sm">{fileErr}</p>}
+              </div>
               <div className="cr-field wide"><label>Anything else?</label>
                 <textarea className="cr-input" rows={4} value={form.note} onChange={(e) => set('note', e.target.value)} /></div>
             </div>

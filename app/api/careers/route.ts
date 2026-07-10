@@ -15,6 +15,7 @@ interface Body {
   resume?: string;
   note?: string;
   answers?: Record<string, string>;
+  resumeFile?: { name?: string; size?: number; data?: string }; // base64 PDF
   hp?: string;   // honeypot — must stay empty
   t?: number;    // ms spent on the form
 }
@@ -98,6 +99,27 @@ export async function POST(req: Request) {
     a: clamp(String((payload.answers || {})[q.id] ?? '').trim(), 300) || '—',
   }));
 
+  // Optional résumé PDF upload. Validated hard: real PDF magic bytes + size cap
+  // (kept under Vercel's 4.5MB request limit after base64 inflation).
+  let attachment: { filename: string; content: Buffer } | null = null;
+  const rf = payload.resumeFile;
+  if (rf && typeof rf.data === 'string' && rf.data.trim()) {
+    if (rf.data.length > 3_600_000) { // ~2.6MB decoded
+      return NextResponse.json({ error: 'Résumé file is too large (max 2.5 MB).' }, { status: 400 });
+    }
+    let buf: Buffer;
+    try { buf = Buffer.from(rf.data, 'base64'); } catch {
+      return NextResponse.json({ error: 'Could not read the résumé file.' }, { status: 400 });
+    }
+    if (buf.length < 5 || buf.subarray(0, 4).toString('latin1') !== '%PDF') {
+      return NextResponse.json({ error: 'That résumé file is not a valid PDF.' }, { status: 400 });
+    }
+    // Sanitise the filename; force a .pdf extension.
+    const base = (rf.name || 'resume').replace(/[^a-zA-Z0-9._-]/g, '_').replace(/\.pdf$/i, '').slice(0, 60) || 'resume';
+    const safeName = `${name.replace(/[^a-zA-Z0-9]+/g, '-').slice(0, 40) || 'applicant'}--${base}.pdf`;
+    attachment = { filename: safeName, content: buf };
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = (process.env.CAREERS_TO || 'hr@sqbpictures.com')
     .split(',').map((s) => s.trim()).filter(Boolean);
@@ -121,7 +143,9 @@ export async function POST(req: Request) {
       ${row('Email', `<a href="mailto:${escapeHtml(email)}" style="color:#f4ecdb">${escapeHtml(email)}</a>`)}
       ${phone ? row('Phone', escapeHtml(phone)) : ''}
       ${row('Portfolio / Reel', `<a href="${escapeHtml(portfolio)}" style="color:#f5c518">${escapeHtml(portfolio)}</a>`)}
-      ${resume ? row('Resume', `<a href="${escapeHtml(resume)}" style="color:#f5c518">${escapeHtml(resume)}</a>`) : ''}
+      ${resume ? row('Résumé link', `<a href="${escapeHtml(resume)}" style="color:#f5c518">${escapeHtml(resume)}</a>`) : ''}
+      ${attachment ? row('Résumé PDF', `📎 <b>Attached</b> — ${escapeHtml(attachment.filename)}`) : ''}
+      ${!resume && !attachment ? row('Résumé', '<span style="color:#8d877a">Not provided</span>') : ''}
     </table>
     <div style="margin-top:22px;border-top:1px solid #2a2a2a;padding-top:16px">
       <div style="font-size:11px;letter-spacing:.2em;color:#B5AE9F;text-transform:uppercase;margin-bottom:10px">Screening</div>
@@ -132,13 +156,17 @@ export async function POST(req: Request) {
     ${note ? `<div style="margin-top:22px;border-top:1px solid #2a2a2a;padding-top:16px">
       <div style="font-size:11px;letter-spacing:.2em;color:#B5AE9F;text-transform:uppercase;margin-bottom:8px">Note</div>
       <div style="font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(note)}</div></div>` : ''}
+    <div style="margin-top:24px;border-top:1px solid #2a2a2a;padding-top:14px;color:#6f6a5f;font-size:12px">
+      Reply to this email to reach ${escapeHtml(name)} directly.
+    </div>
   </div>`;
 
   try {
     const result = await new Resend(apiKey).emails.send({
       from, to, replyTo: email,
-      subject: `Application · ${role.title} · ${name}`,
+      subject: `New application · ${role.title} · ${name}`,
       html,
+      ...(attachment ? { attachments: [attachment] } : {}),
     });
     if (result.error) {
       console.error('[careers] resend rejected:', JSON.stringify(result.error));
