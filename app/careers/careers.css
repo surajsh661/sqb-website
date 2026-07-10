@@ -22,18 +22,28 @@
 .cr-leader-ring::after {
   content: ''; position: absolute; inset: -1px; border-radius: 50%;
   border: 2px solid transparent; border-top-color: var(--accent);
-  animation: crSweep 3s linear infinite;
+  /* one sweep per counted number */
+  animation: crSweep 1.2s linear infinite;
 }
 .cr-leader-cross::before, .cr-leader-cross::after {
   content: ''; position: absolute; left: 50%; top: 50%; background: rgba(245, 197, 24, 0.28);
 }
 .cr-leader-cross::before { width: 1px; height: 128px; transform: translate(-50%, -50%); }
 .cr-leader-cross::after  { width: 128px; height: 1px; transform: translate(-50%, -50%); }
+/* Absolutely centred over the ring — a grid item alone can't cancel Anton's
+   tall ascender/descender metrics, which pushed the glyph visibly low. */
 .cr-leader-num {
-  font-family: var(--font-anton), sans-serif; font-size: 54px; color: var(--fg);
-  position: relative; z-index: 1; line-height: 1;
+  position: absolute; inset: 0; z-index: 1;
+  display: grid; place-items: center;
+  font-family: var(--font-anton), sans-serif; font-size: 56px; color: var(--fg);
+  line-height: 1;
+  animation: crTick .5s cubic-bezier(.22,1,.36,1);
 }
 @keyframes crSweep { to { transform: rotate(360deg); } }
+@keyframes crTick {
+  0%   { opacity: 0; transform: scale(1.4); }
+  100% { opacity: 1; transform: scale(1); }
+}
 
 .cr-rec {
   display: inline-flex; align-items: center; gap: 9px;
@@ -83,28 +93,62 @@
   font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .2em; color: var(--fg-dim);
 }
 
-.cr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
+/* row gap leaves headroom for the stick to swing up without hitting the row above */
+.cr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 52px 26px; }
 
 .cr-slate {
-  position: relative; cursor: pointer; overflow: hidden;
+  position: relative; cursor: pointer; z-index: 1;
+  /* visible, so the lifting stick isn't clipped. The card's own background is
+     still clipped to the border-radius, so the corners stay clean. */
+  overflow: visible;
   border-radius: 14px; background: #121212;
   border: 1px solid rgba(255,255,255,.09);
   transition: transform .3s cubic-bezier(.22,1,.36,1), border-color .3s, box-shadow .3s;
 }
-.cr-slate:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 28px 60px rgba(0,0,0,.55); }
+.cr-slate:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 28px 60px rgba(0,0,0,.55); z-index: 3; }
 .cr-slate:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* the clapper sticks — they snap shut on hover */
+/* ── A real clapperboard head ──────────────────────────────────────────────
+   Two striped bars: the slate's own edge (base) and the hinged stick lying on
+   it. The stick pivots on its LEFT end (transform-origin: 0 100%), so the free
+   RIGHT end swings UPWARD — the way a clapper actually opens. The slate must
+   not clip it, hence overflow:visible on the card. */
 .cr-clap {
-  height: 30px; display: flex; overflow: hidden;
-  background: #0a0a0a; border-bottom: 1px solid rgba(255,255,255,.1);
-  transform-origin: 0 100%;
-  transition: transform .32s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+  height: 36px;
+  border-radius: 14px 14px 0 0;
 }
-.cr-slate:hover .cr-clap { transform: rotate(-7deg); }
-.cr-clap span { flex: 1; }
-.cr-clap span:nth-child(odd)  { background: repeating-linear-gradient(115deg, var(--fg) 0 14px, transparent 14px 28px); opacity: .85; }
-.cr-clap span:nth-child(even) { background: repeating-linear-gradient(115deg, var(--accent) 0 14px, transparent 14px 28px); opacity: .5; }
+.cr-clap-base, .cr-clap-stick {
+  position: absolute; left: 0; right: 0; height: 18px;
+  display: flex; overflow: hidden; background: #0b0b0b;
+}
+/* the slate edge, revealed as the stick lifts */
+.cr-clap-base { bottom: 0; }
+.cr-clap-stick {
+  top: 0; z-index: 2;
+  border-radius: 14px 14px 0 0;
+  transform-origin: 0% 100%;                       /* hinge: left end */
+  transition: transform .42s cubic-bezier(.34,1.4,.5,1);
+  box-shadow: 0 2px 6px rgba(0,0,0,.55);
+}
+.cr-slate:hover .cr-clap-stick { transform: rotate(-4deg); }   /* right end lifts */
+
+/* skewed bars read as the diagonal clapper stripes. Stick and slate carry the
+   SAME pattern (like a real clapper) — the slate's are simply in shadow, so the
+   two only separate when the stick lifts. */
+.cr-clap-base span, .cr-clap-stick span { flex: 1; transform: skewX(-18deg); }
+.cr-clap-stick span:nth-child(odd) { background: var(--fg); }
+.cr-clap-base  span:nth-child(odd) { background: var(--fg); opacity: .34; }
+/* gold hairline where the clapper meets the card */
+.cr-clap-base { border-bottom: 2px solid var(--accent); }
+
+/* the hinge pin the stick swings on */
+.cr-clap-hinge {
+  position: absolute; left: 8px; top: 13px; z-index: 3;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #2b2b2b; border: 1px solid rgba(255,255,255,.28);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.5);
+}
 
 .cr-slate-body { padding: 26px 26px 24px; }
 .cr-slate-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -240,18 +284,27 @@
 
 /* the clapboard that reveals the budget */
 .cr-board {
-  border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.12);
-  background: #101010; margin-top: 8px;
+  border-radius: 12px; border: 1px solid rgba(255,255,255,.12);
+  background: #101010;
+  /* headroom so the stick can start OPEN above the slate without being clipped */
+  margin-top: 62px; overflow: visible;
 }
-.cr-board-clap {
-  height: 40px; display: flex; overflow: hidden; background: #070707;
-  transform-origin: 0 100%;
-  animation: crClap .72s cubic-bezier(.34,1.56,.64,1) .12s both;
+.cr-board-clap { position: relative; }
+.cr-board-clap .cr-clap { height: 44px; border-radius: 12px 12px 0 0; }
+.cr-board-clap .cr-clap-base,
+.cr-board-clap .cr-clap-stick { height: 22px; }
+.cr-board-clap .cr-clap-stick {
+  border-radius: 12px 12px 0 0;
+  transition: none;
+  /* opens on the left hinge, then claps shut with a little overshoot */
+  animation: crClapShut .85s cubic-bezier(.3,1.25,.5,1) .18s both;
 }
-@keyframes crClap { 0% { transform: rotate(-16deg) } 60% { transform: rotate(2deg) } 100% { transform: rotate(0) } }
-.cr-board-clap span { flex: 1; }
-.cr-board-clap span:nth-child(odd)  { background: repeating-linear-gradient(115deg, var(--fg) 0 16px, transparent 16px 32px); opacity: .85; }
-.cr-board-clap span:nth-child(even) { background: repeating-linear-gradient(115deg, var(--accent) 0 16px, transparent 16px 32px); opacity: .5; }
+.cr-board-clap .cr-clap-hinge { top: 16px; }
+@keyframes crClapShut {
+  0%   { transform: rotate(-5deg); }
+  68%  { transform: rotate(0.9deg); }
+  100% { transform: rotate(0); }
+}
 .cr-board-face { padding: 8px 22px 20px; }
 .cr-board-row {
   display: flex; align-items: baseline; justify-content: space-between; gap: 18px;
@@ -331,9 +384,10 @@ textarea.cr-input { resize: vertical; line-height: 1.55; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cr-leader-ring::after, .cr-rec-dot { animation: none; }
-  .cr-board-clap, .cr-budget, .cr-step, .cr-sheet { animation: none; }
-  .cr-slate:hover .cr-clap { transform: none; }
+  .cr-leader-ring::after, .cr-rec-dot, .cr-leader-num { animation: none; }
+  .cr-board-clap .cr-clap-stick { animation: none; transform: none; }
+  .cr-budget, .cr-step, .cr-sheet { animation: none; }
+  .cr-slate:hover .cr-clap-stick { transform: none; }
   .cr-slate:hover { transform: none; }
 }
 

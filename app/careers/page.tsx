@@ -15,6 +15,44 @@ import { setupReveal } from '@/lib/video-utils';
 type Step = 'jd' | 'brief' | 'questions' | 'details' | 'done';
 const STEPS: Step[] = ['brief', 'questions', 'details'];
 
+const reduceMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+/** Academy leader: a real 3 → 2 → 1 countdown, looping. Static under reduced motion. */
+function Leader() {
+  const [n, setN] = useState(3);
+  useEffect(() => {
+    if (reduceMotion()) return;
+    const id = setInterval(() => setN((p) => (p === 1 ? 3 : p - 1)), 1200);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="cr-leader" aria-hidden="true">
+      <div className="cr-leader-ring" />
+      <div className="cr-leader-cross" />
+      {/* keyed so the tick animation replays on every number */}
+      <span className="cr-leader-num" key={n}>{n}</span>
+    </div>
+  );
+}
+
+/**
+ * A real clapperboard head: the striped slate edge (base) with a hinged stick
+ * lying on top of it. The stick's pivot is its LEFT end, so the free RIGHT end
+ * swings upward — exactly how a clapper opens.
+ */
+function Clapper() {
+  const STRIPES = 13; // enough to read as a real clapper, not chunky blocks
+  const bars = () => Array.from({ length: STRIPES }, (_, k) => <span key={k} />);
+  return (
+    <div className="cr-clap" aria-hidden="true">
+      <div className="cr-clap-base">{bars()}</div>
+      <div className="cr-clap-stick">{bars()}</div>
+      <span className="cr-clap-hinge" />
+    </div>
+  );
+}
+
 export default function CareersPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
@@ -46,22 +84,14 @@ export default function CareersPage() {
 
       {/* ── Hero: a countdown leader ─────────────────────────────────────── */}
       <section className="cr-hero">
-        <div className="cr-leader" aria-hidden="true">
-          <div className="cr-leader-ring" />
-          <div className="cr-leader-cross" />
-          <span className="cr-leader-num">3</span>
-        </div>
+        <Leader />
         <div className="cr-rec"><span className="cr-rec-dot" />REC · NOW CASTING</div>
         <h1 className="cr-title">JOIN THE <em>CREW</em></h1>
         <p className="cr-blurb">
-          We&apos;re an AI-first film house in Noida. Filmmakers who happen to be very good with AI —
-          shooting, generating and cutting at a pace the old pipeline can&apos;t hold.
-          Four seats open. Every one of them on set.
+          We&apos;re an AI-first film house in Delhi NCR. Filmmakers who happen to be very good with AI —
+          generating and cutting at a pace the old pipeline can&apos;t hold.
+          We hire on the work, not the r&eacute;sum&eacute;.
         </p>
-        <div className="cr-stack">
-          <span className="cr-stack-label">Current stack</span>
-          {AI_MODELS.map((m) => <span className="cr-chip" key={m}>{m}</span>)}
-        </div>
       </section>
 
       {/* ── The slates ───────────────────────────────────────────────────── */}
@@ -82,9 +112,7 @@ export default function CareersPage() {
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRole(r); } }}
               aria-label={`${r.title} — view role and apply`}
             >
-              <div className="cr-clap" aria-hidden="true">
-                <span /><span /><span /><span /><span /><span />
-              </div>
+              <Clapper />
               <div className="cr-slate-body">
                 <div className="cr-slate-top">
                   <span className="cr-scene">SCENE {String(i + 1).padStart(2, '0')}</span>
@@ -251,7 +279,7 @@ function RoleSheet({ role, step, setStep, onClose }: {
           <div className="cr-step">
             <div className="cr-step-eyebrow">Step 01 · The brief</div>
             <div className="cr-board">
-              <div className="cr-board-clap" aria-hidden="true"><span /><span /><span /><span /><span /><span /></div>
+              <div className="cr-board-clap"><Clapper /></div>
               <div className="cr-board-face">
                 <div className="cr-board-row"><span>ROLE</span><b>{role.title}</b></div>
                 <div className="cr-board-row"><span>TYPE</span><b>{role.type}</b></div>
