@@ -16,12 +16,17 @@ export interface ScreeningQuestion {
   required?: boolean;
   suffix?: string;      // e.g. "years"
   placeholder?: string;
+  min?: number;         // numeric: the hiring bar — answers below it are rejected
 }
+
+/** Broad bucket for the careers-page filter. */
+export type RoleCategory = 'creative' | 'operations';
 
 export interface Role {
   id: string;
   title: string;
   subtitle?: string;
+  category: RoleCategory;     // powers the Creative / Operations filter
   dept: string;
   type: string;              // Contract · Full Time
   location: string;
@@ -44,12 +49,15 @@ const COMMUTE: ScreeningQuestion = {
   id: 'commute', kind: 'boolean', required: true,
   label: 'Are you comfortable commuting to Noida Sector 4 (on-site)?',
 };
-const yrs = (id: string, label: string): ScreeningQuestion =>
-  ({ id, kind: 'number', required: true, suffix: 'years', label, placeholder: '0' });
+// A years-of-experience question with a hiring bar (`min`). Answers below the
+// bar are rejected — this is the studio's minimum, enforced on both ends.
+const yrs = (id: string, label: string, min = 2): ScreeningQuestion =>
+  ({ id, kind: 'number', required: true, suffix: 'years', label, placeholder: '0', min });
 
 export const SQB_ROLES: Role[] = [
   {
     id: 'ai-video-editor',
+    category: 'creative',
     title: 'AI Video Editor',
     subtitle: 'AI Filmmaking',
     dept: 'Post-Production',
@@ -81,6 +89,7 @@ export const SQB_ROLES: Role[] = [
   },
   {
     id: 'ai-visual-artist',
+    category: 'creative',
     title: 'AI Visual Artist',
     subtitle: 'AI Video Creator',
     dept: 'AI Filmmaking',
@@ -112,6 +121,7 @@ export const SQB_ROLES: Role[] = [
   },
   {
     id: 'ai-creative-director',
+    category: 'creative',
     title: 'AI Creative Director',
     dept: 'Creative',
     type: 'Contract',
@@ -132,7 +142,7 @@ export const SQB_ROLES: Role[] = [
     questions: [
       { id: 'onsite', kind: 'boolean', required: true, label: 'Are you comfortable working in an on-site setting?' },
       yrs('genai', 'How many years of experience do you have with Generative AI?'),
-      yrs('filmmaking', 'How many years of experience do you have with filmmaking?'),
+      yrs('filmmaking', 'How many years of experience do you have with filmmaking?', 4),
       yrs('editing', 'How many years of experience do you have with video editing?'),
     ],
     datePosted: '2026-07-01',
@@ -140,6 +150,7 @@ export const SQB_ROLES: Role[] = [
   },
   {
     id: 'hr-executive',
+    category: 'operations',
     title: 'HR Executive',
     dept: 'People & Operations',
     type: 'Full Time',

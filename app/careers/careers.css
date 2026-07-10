@@ -94,6 +94,26 @@
 }
 
 /* row gap leaves headroom for the stick to swing up without hitting the row above */
+/* Creative / Operations filter */
+.cr-filter { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 34px; }
+.cr-filter-tab {
+  appearance: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border-radius: 999px;
+  background: transparent; color: var(--fg-dim);
+  border: 1px solid rgba(255,255,255,.14);
+  font-family: var(--font-mono), monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  transition: color .18s, border-color .18s, background .18s;
+}
+.cr-filter-tab:hover { color: var(--fg); border-color: rgba(245,197,24,.5); }
+.cr-filter-tab.on { color: #0E0E0E; background: var(--accent); border-color: var(--accent); }
+.cr-filter-n {
+  font-size: 10px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.1); color: var(--fg-dim);
+}
+.cr-filter-tab.on .cr-filter-n { background: rgba(0,0,0,.22); color: #0E0E0E; }
+
 .cr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 52px 26px; }
 
 .cr-slate {
@@ -340,6 +360,8 @@
 .cr-pill.on { background: var(--accent); color: #0E0E0E; border-color: var(--accent); }
 .cr-num { display: flex; align-items: center; gap: 12px; }
 .cr-num .cr-input { max-width: 120px; }
+.cr-input.bad { border-color: #ff8a6a; box-shadow: 0 0 0 3px rgba(255,138,106,.16); }
+.cr-q-bar { margin: 9px 0 0; font-size: 12.5px; color: #ffb27a; }
 .cr-num span {
   font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .16em;
   text-transform: uppercase; color: var(--fg-dim);

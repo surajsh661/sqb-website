@@ -58,6 +58,14 @@ export default function CareersPage() {
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [role, setRole] = useState<Role | null>(null);
   const [step, setStep] = useState<Step>('jd');
+  const [filter, setFilter] = useState<'all' | 'creative' | 'operations'>('all');
+
+  const TABS: { key: 'all' | 'creative' | 'operations'; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'creative', label: 'Creative' },
+    { key: 'operations', label: 'Operations' },
+  ];
+  const shownRoles = filter === 'all' ? SQB_ROLES : SQB_ROLES.filter((r) => r.category === filter);
 
   useEffect(() => { setupReveal(); }, []);
 
@@ -98,11 +106,28 @@ export default function CareersPage() {
       <section className="cr-roles" id="roles">
         <div className="cr-roles-head">
           <h2>OPEN <em>ROLES</em></h2>
-          <span className="cr-count">{String(SQB_ROLES.length).padStart(2, '0')} POSITIONS</span>
+          <span className="cr-count">{String(shownRoles.length).padStart(2, '0')} {shownRoles.length === 1 ? 'POSITION' : 'POSITIONS'}</span>
+        </div>
+
+        <div className="cr-filter" role="tablist" aria-label="Filter roles">
+          {TABS.map((t) => {
+            const n = t.key === 'all' ? SQB_ROLES.length : SQB_ROLES.filter((r) => r.category === t.key).length;
+            return (
+              <button
+                key={t.key}
+                role="tab"
+                aria-selected={filter === t.key}
+                className={'cr-filter-tab' + (filter === t.key ? ' on' : '')}
+                onClick={() => setFilter(t.key)}
+              >
+                {t.label} <span className="cr-filter-n">{n}</span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="cr-grid">
-          {SQB_ROLES.map((r, i) => (
+          {shownRoles.map((r, i) => (
             <article
               className="cr-slate"
               key={r.id}
@@ -204,14 +229,37 @@ function RoleSheet({ role, step, setStep, onClose }: {
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
   const answer = (id: string, v: string) => setAnswers((a) => ({ ...a, [id]: v }));
 
-  const questionsOk = role.questions.every((q) => !q.required || (answers[q.id] || '').trim() !== '');
+  // Client-safe URL check (mirrors the server's isUrlish — no node:dns here).
+  const isUrlish = (v: string) => {
+    const s = v.trim();
+    if (!s || /\s/.test(s)) return false;
+    try { const u = new URL(/^https?:\/\//i.test(s) ? s : `https://${s}`); return u.hostname.includes('.'); }
+    catch { return false; }
+  };
+  // Per-question hiring-bar message (numeric `min`). Null while empty.
+  const belowBar = (q: (typeof role.questions)[number]) => {
+    if (q.kind !== 'number' || q.min == null) return null;
+    const raw = (answers[q.id] || '').trim();
+    if (raw === '') return null;
+    const n = Number(raw);
+    return Number.isFinite(n) && n < q.min ? `This role is looking for ${q.min}+ years.` : null;
+  };
+  const questionsOk = role.questions.every((q) => {
+    const raw = (answers[q.id] || '').trim();
+    if (q.required && raw === '') return false;
+    if (q.kind === 'number' && q.min != null && raw !== '' && Number(raw) < q.min) return false;
+    return true;
+  });
 
   const submit = async () => {
     setErr('');
     if (!form.name.trim() || !form.email.trim()) return setErr('Name and email are required.');
+    if (form.name.trim().length < 2 || !/[a-zA-Z]/.test(form.name)) return setErr('Please enter your real name.');
     if (!isValidEmail(form.email.trim())) return setErr('That email doesn’t look right.');
     if (isDisposableEmail(form.email.trim())) return setErr('Please use a permanent email — temporary inboxes aren’t accepted.');
     if (!form.portfolio.trim()) return setErr('A portfolio or reel link is required — we hire on the work.');
+    if (!isUrlish(form.portfolio)) return setErr('Please paste a valid portfolio / reel link (a full URL).');
+    if (form.resume.trim() && !isUrlish(form.resume)) return setErr('The résumé link doesn’t look like a valid URL.');
 
     setBusy(true);
     try {
@@ -348,16 +396,19 @@ function RoleSheet({ role, step, setStep, onClose }: {
                       ))}
                     </div>
                   ) : q.kind === 'number' ? (
-                    <div className="cr-num">
-                      <input
-                        className="cr-input"
-                        type="number" min={0} max={50} inputMode="numeric"
-                        placeholder={q.placeholder}
-                        value={answers[q.id] || ''}
-                        onChange={(e) => answer(q.id, e.target.value)}
-                      />
-                      <span>{q.suffix}</span>
-                    </div>
+                    <>
+                      <div className="cr-num">
+                        <input
+                          className={'cr-input' + (belowBar(q) ? ' bad' : '')}
+                          type="number" min={0} max={50} inputMode="numeric"
+                          placeholder={q.placeholder}
+                          value={answers[q.id] || ''}
+                          onChange={(e) => answer(q.id, e.target.value)}
+                        />
+                        <span>{q.suffix}</span>
+                      </div>
+                      {belowBar(q) && <p className="cr-q-bar">{belowBar(q)}</p>}
+                    </>
                   ) : (
                     <input
                       className="cr-input"

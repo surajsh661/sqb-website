@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { isValidEmail, isDisposableEmail } from '@/lib/spam';
+import { domainCanReceiveMail, isUrlish } from '@/lib/email-verify';
 import { roleById } from '@/lib/careers';
 
 export const runtime = 'nodejs';
@@ -87,11 +88,39 @@ export async function POST(req: Request) {
   const note = clamp((payload.note || '').trim(), 4000);
 
   if (!name || !email) return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 });
+  if (name.length < 2 || !/[a-zA-Z]/.test(name)) {
+    return NextResponse.json({ error: 'Please enter your real name.' }, { status: 400 });
+  }
   if (!isValidEmail(email)) return NextResponse.json({ error: 'That email doesn’t look right.' }, { status: 400 });
   if (isDisposableEmail(email)) {
     return NextResponse.json({ error: 'Please use a permanent email — temporary inboxes aren’t accepted.' }, { status: 400 });
   }
+  // Real-domain check: reject addresses whose domain can't receive mail (fail
+  // OPEN on a transient DNS error so a genuine applicant is never blocked).
+  if ((await domainCanReceiveMail(email)) === false) {
+    return NextResponse.json({ error: 'That email address doesn’t look reachable — please check it.' }, { status: 400 });
+  }
+  // Portfolio / reel must be a real link, not free text.
   if (!portfolio) return NextResponse.json({ error: 'A portfolio or reel link is required.' }, { status: 400 });
+  if (!isUrlish(portfolio)) {
+    return NextResponse.json({ error: 'Please paste a valid portfolio / reel link (a full URL).' }, { status: 400 });
+  }
+  if (resume && !isUrlish(resume)) {
+    return NextResponse.json({ error: 'The résumé link doesn’t look like a valid URL.' }, { status: 400 });
+  }
+
+  // Enforce the hiring bar: every numeric question with a `min` must be met.
+  for (const q of role.questions) {
+    if (q.kind !== 'number' || q.min == null) continue;
+    const raw = String((payload.answers || {})[q.id] ?? '').trim();
+    const n = Number(raw);
+    if (raw === '' || !Number.isFinite(n) || n < q.min) {
+      return NextResponse.json(
+        { error: `This role needs at least ${q.min} years — ${q.label.replace(/^How many years of experience do you have with /i, '').replace(/\?$/, '')}.` },
+        { status: 400 },
+      );
+    }
+  }
 
   // Only answers to THIS role's questions, clamped.
   const answers = role.questions.map((q) => ({
