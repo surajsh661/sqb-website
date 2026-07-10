@@ -41,6 +41,8 @@ export interface Film {
 
 export interface AILabItem { id: string; title: string; type: VideoType; videoId: string; vertical?: boolean; /** if set, clicking the clip opens this film's full case study (via /work?case=<id>) instead of the reel lightbox */ caseId?: string }
 export interface AILabData {
+  /** Flagship original IP, shown in its own dedicated section above the reels. */
+  featured: AILabItem;
   animated: AILabItem[];
   realistic: AILabItem[];
   vfx: AILabItem[];

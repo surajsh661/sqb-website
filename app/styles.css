@@ -76,6 +76,7 @@ html {
    per-element `cursor: pointer` rules (e.g. .vcard) that come later in the file.
    Descendants of these (overlays, play glyphs, captured-tap layers) inherit it. */
 .vcard, .vcard *, .video-cell, .video-cell *, .ai-clip, .ai-clip *,
+.aif-media, .aif-media *,
 .vc-ticket, .vc-ticket *, .creator-thumb, .creator-thumb *,
 .ce-card, .ce-card *, .cm-card, .cm-card *, .case-tap, .case-tap *,
 .vt-art, .vt-art *, .frame, .frame *, .case-hero .bg, .case-hero .bg * {

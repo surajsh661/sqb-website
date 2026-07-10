@@ -98,6 +98,44 @@ function AISection({
   );
 }
 
+// Flagship original IP — its own dedicated section: the film on one side, a
+// short summary beside it. The whole frame (and the CTA) opens the case study.
+function FeaturedIP({ item, onOpen }: { item: AILabItem; onOpen: () => void }) {
+  const c = COPY.aiLab;
+  return (
+    <section className="ai-feature" id="section-featured" data-screen-label="section-featured">
+      <div
+        className="aif-media"
+        role="button"
+        tabIndex={0}
+        aria-label={`${item.title} — open the full case study`}
+        onClick={onOpen}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); } }}
+      >
+        <iframe src={bgSrc(item)} title={item.title} allow="autoplay; encrypted-media" loading="lazy" />
+        <span className="aif-play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
+        </span>
+        <span className="aif-tag">{c.featClient}</span>
+      </div>
+
+      <div className="aif-info">
+        <div className="aif-eyebrow">{c.featEyebrow}</div>
+        <h2 className="aif-title">{rich(c.featTitle)}</h2>
+        <p className="aif-summary">{c.featSummary}</p>
+        <ul className="aif-stats">
+          {c.featStats.map((s) => (
+            <li key={s.k}><b>{s.v}</b><span>{s.k}</span></li>
+          ))}
+        </ul>
+        <button className="aif-cta" onClick={onOpen}>
+          {c.featCta} <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+  );
+}
+
 export default function AILabPage() {
   const router = useRouter();
   const [hover, setHover] = useState(1);
@@ -183,6 +221,8 @@ export default function AILabPage() {
           })}
         </div>
       </section>
+
+      <FeaturedIP item={LAB.featured} onOpen={() => openReel(LAB.featured, 'Featured IP')} />
 
       <AISection
         id="section-anim"

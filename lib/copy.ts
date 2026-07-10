@@ -245,6 +245,18 @@ export const COPY = {
     realBlurb: `Generative cinema indistinguishable from a shot film. Real-reference performances staged inside art-directed worlds — including OTT-grade docu-films like Sunheri Soch S4.`,
     vfxTitle: `VFX & Action`,
     vfxBlurb: `Action and scale shots, effects, set extensions. The impossible day on set turned into the inevitable shot in the cut.`,
+
+    // Flagship IP section — Muthoot "Sunheri Soch". Video left, summary right.
+    featEyebrow: `Flagship Original IP`,
+    featTitle: `Muthoot — *Sunheri Soch*`,
+    featClient: `Muthoot Finance × RedFM`,
+    featSummary: `A nine-month, twenty-two-episode docu-AI series that turned real Muthoot customers into cinema. Every story researched, storyboarded and rendered to feel indistinguishable from a documentary shoot — RedFM aired the audio, we owned the visual.`,
+    featStats: [
+      { k: `Episodes`, v: `22` },
+      { k: `Run`, v: `9 months` },
+      { k: `Efficiency`, v: `10× cost` },
+    ],
+    featCta: `View the full case study`,
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

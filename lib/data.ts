@@ -424,16 +424,24 @@ export const SQB_VERTICALS: Vertical[] = [
 
 export const SQB_AI_LAB: AILabData = {
   // Headline copy (eyebrow / title / blurb) now lives in lib/copy.ts → COPY.aiLab
+
+  // Muthoot "Sunheri Soch" — the studio's flagship original IP (22-episode
+  // docu-AI series). It gets its OWN dedicated section above the reel tracks
+  // rather than being folded into Realistic. Clicking it opens the case study.
+  featured: {
+    id: 'feat-muthoot',
+    title: 'MUTHOOT — SUNHERI SOCH',
+    type: 'vm',
+    videoId: '1190975373',
+    caseId: 'muthoot-sunheri-soch',
+  },
+
   animated: [
     { id: 'a1', title: 'ANIM REEL 01', type: 'gd', videoId: '1vgRjfCsBqKjL65-AS1QRR0PPlPxarXR_' },
     { id: 'a2', title: 'ANIM REEL 02', type: 'gd', videoId: '14G6XsrS2aj9nQrugnFb593xMwdWmCh_F' },
   ],
   realistic: [
-    // Muthoot "Sunheri Soch" — the studio's most credible AI-generation IP
-    // (22-episode docu-AI series, real customers turned into cinema). Leads the
-    // Realistic section and its intro pane. Vimeo-hosted, so it's robust as a
-    // background player (no Drive rate-limit fragility).
-    { id: 'r0', title: 'MUTHOOT — SUNHERI SOCH', type: 'vm', videoId: '1190975373', caseId: 'muthoot-sunheri-soch' },
+    // Exactly 5 items — the #section-real grid places these by nth-child.
     { id: 'r1', title: 'REAL REEL 01', type: 'gd', videoId: '1F-iqYy4IoBWw9tZSn3krZqEXf-vYxsKJ' },
     { id: 'r2', title: 'REAL REEL 02', type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J' },
     { id: 'r3', title: 'REAL REEL 03', type: 'gd', videoId: '1N_Ia4SnPfNbhOd4n1RAvhJeW8fXXaN-a' },

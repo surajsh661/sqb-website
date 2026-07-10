@@ -456,6 +456,74 @@
 .ai-pane.shrink .ap-desc { display: none; }
 
 /* AI section (one per category) */
+/* ── Flagship IP feature (Muthoot — Sunheri Soch) ──────────────────────────
+   Its own section above the reel tracks: the film on the left, a short summary
+   beside it. The frame and the CTA both open the full case study. */
+.ai-feature {
+  max-width: 1500px; margin: 0 auto;
+  padding: 96px 32px 24px;
+  display: grid;
+  grid-template-columns: 1.12fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.aif-media {
+  position: relative; overflow: hidden; cursor: pointer;
+  border-radius: 14px; aspect-ratio: 16 / 9; background: #1a1410;
+  border: 1px solid rgba(245, 197, 24, 0.14);
+  transition: transform .3s cubic-bezier(.22,1,.36,1), border-color .3s, box-shadow .3s;
+}
+.aif-media:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 26px 64px rgba(0,0,0,.5); }
+.aif-media:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* the preview player is decorative — clicks belong to the card, not the iframe */
+.aif-media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; }
+.aif-play {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  z-index: 2; width: 62px; height: 62px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(2px); color: #fff;
+  transition: background .2s, color .2s, transform .2s;
+}
+.aif-media:hover .aif-play { background: var(--accent); color: #0E0E0E; transform: translate(-50%, -50%) scale(1.08); }
+.aif-play svg { width: 24px; height: 24px; margin-left: 2px; }
+.aif-tag {
+  position: absolute; left: 14px; bottom: 14px; z-index: 2;
+  font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--fg);
+  background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.14);
+  padding: 6px 10px; border-radius: 6px; backdrop-filter: blur(4px);
+}
+.aif-eyebrow {
+  font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+}
+.aif-title {
+  font-family: var(--font-anton), sans-serif; font-weight: 400;
+  font-size: clamp(32px, 3.6vw, 58px); line-height: 0.95; letter-spacing: -0.01em;
+  text-transform: uppercase; color: var(--fg); margin: 0 0 16px;
+}
+.aif-title em { font-style: normal; color: var(--accent); }
+.aif-summary { font-size: 16px; line-height: 1.6; color: var(--fg-dim); margin: 0 0 26px; max-width: 52ch; }
+.aif-stats { list-style: none; display: flex; gap: 34px; padding: 0; margin: 0 0 30px; }
+.aif-stats li { display: flex; flex-direction: column; gap: 5px; }
+.aif-stats b { font-family: var(--font-anton), sans-serif; font-weight: 400; font-size: 26px; color: var(--fg); line-height: 1; }
+.aif-stats span { font-family: var(--font-mono), monospace; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-dim); }
+.aif-cta {
+  appearance: none; cursor: pointer;
+  background: transparent; color: var(--accent);
+  border: 1px solid rgba(245, 197, 24, 0.45); border-radius: 999px;
+  padding: 13px 24px; font-size: 14px; font-weight: 600; letter-spacing: .02em;
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: background .2s, color .2s, border-color .2s, gap .2s;
+}
+.aif-cta:hover { background: var(--accent); color: #0E0E0E; border-color: var(--accent); gap: 14px; }
+
+@media (max-width: 900px) {
+  .ai-feature { grid-template-columns: 1fr; gap: 26px; padding: 64px 20px 8px; }
+  .aif-stats { gap: 24px; }
+}
+
 .ai-track-section {
   padding: 100px 32px;
   max-width: 1500px; margin: 0 auto;
@@ -532,6 +600,9 @@
   display: block;
   width: 100%; height: 100%;
   border: 0;
+  /* The card is the click target (it opens the watch-lightbox). Without this a
+     cross-origin player iframe swallows the click and the card never opens. */
+  pointer-events: none;
 }
 /* vertical reels: clean 9:16 poster fills the card (Drive's player pillarboxes
    portrait video, so we poster the card and play in the lightbox on click) */
