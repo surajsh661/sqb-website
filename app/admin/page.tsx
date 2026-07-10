@@ -8,6 +8,9 @@ type Credit = { role: string; name: string };
 type Item = Record<string, any> & { id: string; credits: Credit[]; edited?: boolean };
 
 const MIN_PW = 10;
+// The console's name — a director's cutting room, where everything that goes
+// public gets shaped. (Rename in one place if you ever want to.)
+const CONSOLE_NAME = 'The Cutting Room';
 
 const FIELDS: { key: string; label: string; area?: boolean }[] = [
   { key: 'title', label: 'Title' },
@@ -64,7 +67,7 @@ export default function AdminPage() {
   }, []);
 
   if (view === 'loading') {
-    return <div className="adm-card"><div className="adm-brand"><b>S'QB</b> · Admin</div><p className="adm-sub">Loading…</p></div>;
+    return <div className="adm-card"><div className="adm-brand"><b>S'QB</b> · {CONSOLE_NAME}</div><p className="adm-sub">Rolling…</p></div>;
   }
   if (view === 'dash') return <Dashboard onLogout={() => setView('login')} />;
 
@@ -93,7 +96,7 @@ function Setup({ post, busy, err, onDone }: any) {
   };
   return (
     <>
-      <div className="adm-brand">Admin Console</div>
+      <div className="adm-brand"><b>S'QB</b> · {CONSOLE_NAME}</div>
       <h1 className="adm-title">Set your password</h1>
       <p className="adm-sub">First time here. Choose the password you'll use to manage your case studies. There's only one account — yours.</p>
       <div className="adm-field">
@@ -120,7 +123,7 @@ function Login({ post, busy, err, onDone, onForgot }: any) {
   const submit = async () => { if (await post('/api/admin/login', { password: pw })) onDone(); };
   return (
     <>
-      <div className="adm-brand">Admin Console</div>
+      <div className="adm-brand"><b>S'QB</b> · {CONSOLE_NAME}</div>
       <h1 className="adm-title">Welcome back</h1>
       <p className="adm-sub">Enter your password to manage your case studies.</p>
       <div className="adm-field">
@@ -157,7 +160,7 @@ function Reset({ post, busy, err, onDone, onBack }: any) {
 
   return (
     <>
-      <div className="adm-brand">Admin Console</div>
+      <div className="adm-brand"><b>S'QB</b> · {CONSOLE_NAME}</div>
       <h1 className="adm-title">Reset password</h1>
       {step === 'request' ? (
         <>
@@ -203,7 +206,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [store, setStore] = useState<string>('');
-  const [section, setSection] = useState<'cases' | 'careers'>('cases');
+  const [section, setSection] = useState<'overview' | 'cases' | 'careers'>('overview');
 
   useEffect(() => {
     fetch('/api/admin/session').then((r) => r.json()).then((d) => setStore(d.store || ''));
@@ -245,6 +248,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     <div className="adm-card wide">
       <div className="adm-head">
         <div className="adm-nav">
+          <button className={'adm-tab' + (section === 'overview' ? ' on' : '')} onClick={() => setSection('overview')}>Overview</button>
           <button className={'adm-tab' + (section === 'cases' ? ' on' : '')} onClick={() => setSection('cases')}>Case Studies</button>
           <button className={'adm-tab' + (section === 'careers' ? ' on' : '')} onClick={() => setSection('careers')}>Careers</button>
         </div>
@@ -254,7 +258,9 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         </div>
       </div>
 
-      {section === 'careers' ? <CareersAdmin /> : (
+      {section === 'overview' && <Overview items={items} store={store} onGo={setSection} />}
+      {section === 'careers' && <CareersAdmin />}
+      {section === 'cases' && (
         <>
           <div className="adm-field">
             <label className="adm-label">Choose a case study</label>
@@ -298,6 +304,71 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             </>
           )}
         </>
+      )}
+    </div>
+  );
+}
+
+/* ── Overview: the control-room landing ───────────────────────────────────── */
+function Overview({ items, store, onGo }: { items: Item[]; store: string; onGo: (s: 'cases' | 'careers') => void }) {
+  const [roles, setRoles] = useState<any[]>([]);
+  useEffect(() => { fetch('/api/admin/careers').then((r) => r.json()).then((d) => setRoles(d.roles || [])).catch(() => {}); }, []);
+
+  const openRoles = roles.filter((r) => r.open);
+  const editedN = items.filter((i) => i.edited).length;
+  const stats: { k: string; v: React.ReactNode; sub: string; small?: boolean }[] = [
+    { k: 'Case studies', v: items.length, sub: editedN ? `${editedN} edited by you` : 'in the reel' },
+    { k: 'Open roles', v: openRoles.length, sub: 'live & hiring' },
+    { k: 'Closed roles', v: roles.length - openRoles.length, sub: 'paused' },
+    { k: 'Publishing', v: store === 'kv' ? 'LIVE' : 'DRAFT', sub: store === 'kv' ? 'database connected' : 'local only', small: true },
+  ];
+
+  return (
+    <div className="adm-over">
+      <div className="adm-over-hero">
+        <div className="adm-over-eyebrow"><span className="adm-rec" />Studio online</div>
+        <h2 className="adm-over-title">Roll <em>camera</em>.</h2>
+        <p className="adm-over-sub">Everything the world sees, you shape from here — and it goes live the moment you save.</p>
+      </div>
+
+      <div className="adm-stats">
+        {stats.map((s) => (
+          <div className={'adm-stat' + (s.small ? ' sm' : '')} key={s.k}>
+            <div className="adm-stat-v">{s.v}</div>
+            <div className="adm-stat-k">{s.k}</div>
+            <div className="adm-stat-s">{s.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="adm-quick">
+        <button className="adm-action" onClick={() => onGo('careers')}>
+          <span className="adm-action-ic">＋</span>
+          <span className="adm-action-t"><b>Post / manage a job</b><i>Open, close, edit listings</i></span>
+        </button>
+        <button className="adm-action" onClick={() => onGo('cases')}>
+          <span className="adm-action-ic">✎</span>
+          <span className="adm-action-t"><b>Edit a case study</b><i>Copy, credits, impact</i></span>
+        </button>
+        <a className="adm-action" href="/careers" target="_blank" rel="noopener noreferrer">
+          <span className="adm-action-ic">↗</span>
+          <span className="adm-action-t"><b>View careers page</b><i>See it as the world does</i></span>
+        </a>
+        <a className="adm-action" href="/" target="_blank" rel="noopener noreferrer">
+          <span className="adm-action-ic">↗</span>
+          <span className="adm-action-t"><b>View live site</b><i>sqbpictures.com</i></span>
+        </a>
+      </div>
+
+      {openRoles.length > 0 && (
+        <div className="adm-live">
+          <div className="adm-live-head"><span className="adm-rec" />Now casting</div>
+          <div className="adm-live-list">
+            {openRoles.map((r) => (
+              <button key={r.id} className="adm-live-chip" onClick={() => onGo('careers')}>{r.title}</button>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
