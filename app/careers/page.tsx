@@ -59,15 +59,27 @@ export default function CareersPage() {
   const [role, setRole] = useState<Role | null>(null);
   const [step, setStep] = useState<Step>('jd');
   const [filter, setFilter] = useState<'all' | 'creative' | 'operations'>('all');
+  // Live roles from the admin-managed store. Seeded with the code roles so the
+  // page renders instantly and never breaks if the store is unavailable.
+  const [roles, setRoles] = useState<Role[]>(SQB_ROLES);
+
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/careers/roles')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (alive && Array.isArray(d?.roles)) setRoles(d.roles); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   const TABS: { key: 'all' | 'creative' | 'operations'; label: string }[] = [
     { key: 'all', label: 'All' },
     { key: 'creative', label: 'Creative' },
     { key: 'operations', label: 'Operations' },
   ];
-  const shownRoles = filter === 'all' ? SQB_ROLES : SQB_ROLES.filter((r) => r.category === filter);
+  const shownRoles = filter === 'all' ? roles : roles.filter((r) => r.category === filter);
 
-  useEffect(() => { setupReveal(); }, []);
+  useEffect(() => { setupReveal(); }, [roles]);
 
   const openRole = (r: Role) => {
     setRole(r); setStep('jd');
@@ -111,7 +123,7 @@ export default function CareersPage() {
 
         <div className="cr-filter" role="tablist" aria-label="Filter roles">
           {TABS.map((t) => {
-            const n = t.key === 'all' ? SQB_ROLES.length : SQB_ROLES.filter((r) => r.category === t.key).length;
+            const n = t.key === 'all' ? roles.length : roles.filter((r) => r.category === t.key).length;
             return (
               <button
                 key={t.key}

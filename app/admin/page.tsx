@@ -203,6 +203,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [store, setStore] = useState<string>('');
+  const [section, setSection] = useState<'cases' | 'careers'>('cases');
 
   useEffect(() => {
     fetch('/api/admin/session').then((r) => r.json()).then((d) => setStore(d.store || ''));
@@ -243,9 +244,9 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   return (
     <div className="adm-card wide">
       <div className="adm-head">
-        <div>
-          <div className="adm-brand">Case Studies</div>
-          <h1 className="adm-title">Editor</h1>
+        <div className="adm-nav">
+          <button className={'adm-tab' + (section === 'cases' ? ' on' : '')} onClick={() => setSection('cases')}>Case Studies</button>
+          <button className={'adm-tab' + (section === 'careers' ? ' on' : '')} onClick={() => setSection('careers')}>Careers</button>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span className={'adm-badge ' + (store === 'kv' ? 'live' : 'draft')}>{store === 'kv' ? 'Live DB' : 'Local draft'}</span>
@@ -253,47 +254,240 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         </div>
       </div>
 
+      {section === 'careers' ? <CareersAdmin /> : (
+        <>
+          <div className="adm-field">
+            <label className="adm-label">Choose a case study</label>
+            <select className="adm-select" value={sel} onChange={(e) => pick(e.target.value)}>
+              {items.map((it) => <option key={it.id} value={it.id}>{it.title}{it.edited ? '  •  edited' : ''}</option>)}
+            </select>
+          </div>
+
+          {form && (
+            <>
+              <div className="adm-divider" />
+              {FIELDS.map((f) => (
+                <div className="adm-field" key={f.key}>
+                  <label className="adm-label">{f.label}</label>
+                  {f.area
+                    ? <textarea className="adm-textarea" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />
+                    : <input className="adm-input" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />}
+                </div>
+              ))}
+
+              <div className="adm-field">
+                <label className="adm-label">Credits</label>
+                <p className="adm-hint">Add a row for each role — Director, DOP, Editor, and so on.</p>
+                <div className="adm-credits">
+                  {form.credits.map((c, i) => (
+                    <div className="adm-credit-row" key={i}>
+                      <input className="adm-input" placeholder="ROLE (e.g. DIRECTOR)" value={c.role} onChange={(e) => setCredit(i, 'role', e.target.value)} />
+                      <input className="adm-input" placeholder="Name" value={c.name} onChange={(e) => setCredit(i, 'name', e.target.value)} />
+                      <button className="adm-icon-btn" title="Remove" onClick={() => rmCredit(i)}>×</button>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: 10 }}><button className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={addCredit}>+ Add credit</button></div>
+              </div>
+
+              <div className="adm-divider" />
+              <div className="adm-row">
+                <button className="adm-btn" disabled={busy} onClick={save}>{busy ? 'Saving…' : 'Save changes'}</button>
+                {status && <span className={'adm-msg ' + (status.includes('✓') ? 'ok' : 'err')} style={{ marginLeft: 4 }}>{status}</span>}
+              </div>
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ── Careers manager: add / edit / delete job listings ────────────────────── */
+type QKind = 'boolean' | 'number' | 'text';
+interface AdminQ { id: string; label: string; kind: QKind; required?: boolean; min?: number; placeholder?: string }
+interface AdminRole {
+  id: string; title: string; subtitle?: string; category: 'creative' | 'operations';
+  dept: string; type: string; location: string; onsite: string; experience: string;
+  lede: string; description: string;
+  responsibilities?: string[]; qualifications: string[]; bonus?: string[];
+  tools: boolean; questions: AdminQ[];
+  datePosted: string; validThrough: string;
+  salary: string | null; salaryNote: string; open: boolean;
+}
+
+const blankRole = (): AdminRole => ({
+  id: '', title: '', category: 'creative', dept: 'Team', type: 'Full Time',
+  location: 'Delhi NCR', onsite: 'On-site', experience: '', lede: '', description: '',
+  qualifications: [''], tools: false, questions: [], datePosted: '2026-07-01', validThrough: '2027-06-30',
+  salary: '', salaryNote: '', open: true,
+});
+
+const TEXT_ROWS: [keyof AdminRole, string][] = [
+  ['title', 'Job title'], ['subtitle', 'Subtitle (optional)'], ['dept', 'Department'],
+  ['type', 'Type — Contract / Full Time'], ['location', 'Location'],
+  ['onsite', 'On-site / remote line'], ['experience', 'Experience line'],
+  ['lede', 'One-line hook (lede)'],
+];
+const LIST_ROWS: [keyof AdminRole, string][] = [
+  ['qualifications', 'Requirements — one per line'],
+  ['responsibilities', 'Responsibilities — one per line (optional)'],
+  ['bonus', 'Bonus points — one per line (optional)'],
+];
+
+function CareersAdmin() {
+  const [roles, setRoles] = useState<AdminRole[]>([]);
+  const [sel, setSel] = useState<string>('');
+  const [form, setForm] = useState<AdminRole | null>(null);
+  const [isNew, setIsNew] = useState(false);
+  const [status, setStatus] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    const d = await fetch('/api/admin/careers').then((r) => r.json()).catch(() => ({}));
+    const rs: AdminRole[] = (d.roles || []).map((r: any) => ({ ...r, salary: r.salary ?? '' }));
+    setRoles(rs);
+    if (rs[0]) { setSel(rs[0].id); setForm(structuredClone(rs[0])); setIsNew(false); }
+  };
+  useEffect(() => { load(); }, []);
+
+  const pick = (id: string) => {
+    setStatus('');
+    if (id === '__new__') { setSel('__new__'); setForm(blankRole()); setIsNew(true); return; }
+    const r = roles.find((x) => x.id === id);
+    setSel(id); setForm(r ? structuredClone(r) : null); setIsNew(false);
+  };
+  const set = (k: keyof AdminRole, v: any) => setForm((f) => (f ? { ...f, [k]: v } : f));
+  const listVal = (arr?: string[]) => (arr || []).join('\n');
+  const setList = (k: keyof AdminRole, text: string) =>
+    set(k, text.split('\n').map((s) => s.replace(/\s+$/, '')).filter((s, i, a) => s.trim() !== '' || i < a.length));
+
+  const setQ = (i: number, patch: Partial<AdminQ>) =>
+    setForm((f) => { if (!f) return f; const questions = [...f.questions]; questions[i] = { ...questions[i], ...patch }; return { ...f, questions }; });
+  const addQ = () => setForm((f) => (f ? { ...f, questions: [...f.questions, { id: `q${f.questions.length + 1}`, label: '', kind: 'boolean', required: true }] } : f));
+  const rmQ = (i: number) => setForm((f) => (f ? { ...f, questions: f.questions.filter((_, j) => j !== i) } : f));
+
+  const save = async () => {
+    if (!form) return;
+    setBusy(true); setStatus('');
+    const role = { ...form, salary: (form.salary || '').trim() || null };
+    try {
+      const res = await fetch('/api/admin/careers', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role, isNew }) });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok) { setStatus('Saved ✓'); await load(); if (d.role) { setSel(d.role.id); setForm(structuredClone({ ...d.role, salary: d.role.salary ?? '' })); setIsNew(false); } }
+      else setStatus(d.error || 'Save failed');
+    } catch { setStatus('Network error'); }
+    finally { setBusy(false); }
+  };
+  const del = async () => {
+    if (!form || isNew) { pick(roles[0]?.id || '__new__'); return; }
+    if (!window.confirm(`Delete “${form.title}”? This removes the listing from the site for good.`)) return;
+    setBusy(true); setStatus('');
+    try {
+      const res = await fetch('/api/admin/careers?id=' + encodeURIComponent(form.id), { method: 'DELETE' });
+      if (res.ok) { setStatus('Deleted'); await load(); } else setStatus('Delete failed');
+    } catch { setStatus('Network error'); }
+    finally { setBusy(false); }
+  };
+
+  return (
+    <>
       <div className="adm-field">
-        <label className="adm-label">Choose a case study</label>
+        <label className="adm-label">Job listing</label>
         <select className="adm-select" value={sel} onChange={(e) => pick(e.target.value)}>
-          {items.map((it) => <option key={it.id} value={it.id}>{it.title}{it.edited ? '  •  edited' : ''}</option>)}
+          {roles.map((r) => <option key={r.id} value={r.id}>{r.title}{r.open ? '' : '  •  closed'}</option>)}
+          <option value="__new__">+ New job…</option>
         </select>
       </div>
 
       {form && (
         <>
           <div className="adm-divider" />
-          {FIELDS.map((f) => (
-            <div className="adm-field" key={f.key}>
-              <label className="adm-label">{f.label}</label>
-              {f.area
-                ? <textarea className="adm-textarea" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />
-                : <input className="adm-input" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />}
+          <div className="adm-field">
+            <label className="adm-label">Status</label>
+            <div className="cr-adm-pills">
+              <button type="button" className={'adm-pill' + (form.open ? ' on' : '')} onClick={() => set('open', true)}>Open</button>
+              <button type="button" className={'adm-pill' + (!form.open ? ' off' : '')} onClick={() => set('open', false)}>Closed</button>
+            </div>
+            <p className="adm-hint">Closed listings drop off the careers page and stop accepting applications.</p>
+          </div>
+          <div className="adm-field">
+            <label className="adm-label">Category</label>
+            <select className="adm-select" value={form.category} onChange={(e) => set('category', e.target.value)}>
+              <option value="creative">Creative</option>
+              <option value="operations">Operations</option>
+            </select>
+          </div>
+
+          {TEXT_ROWS.map(([k, l]) => (
+            <div className="adm-field" key={k}>
+              <label className="adm-label">{l}</label>
+              <input className="adm-input" value={(form[k] as string) || ''} onChange={(e) => set(k, e.target.value)} />
             </div>
           ))}
-
           <div className="adm-field">
-            <label className="adm-label">Credits</label>
-            <p className="adm-hint">Add a row for each role — Director, DOP, Editor, and so on.</p>
-            <div className="adm-credits">
-              {form.credits.map((c, i) => (
-                <div className="adm-credit-row" key={i}>
-                  <input className="adm-input" placeholder="ROLE (e.g. DIRECTOR)" value={c.role} onChange={(e) => setCredit(i, 'role', e.target.value)} />
-                  <input className="adm-input" placeholder="Name" value={c.name} onChange={(e) => setCredit(i, 'name', e.target.value)} />
-                  <button className="adm-icon-btn" title="Remove" onClick={() => rmCredit(i)}>×</button>
-                </div>
-              ))}
+            <label className="adm-label">Description</label>
+            <textarea className="adm-textarea" rows={5} value={form.description} onChange={(e) => set('description', e.target.value)} />
+          </div>
+          {LIST_ROWS.map(([k, l]) => (
+            <div className="adm-field" key={k}>
+              <label className="adm-label">{l}</label>
+              <textarea className="adm-textarea" rows={4} value={listVal(form[k] as string[])} onChange={(e) => setList(k, e.target.value)} />
             </div>
-            <div style={{ marginTop: 10 }}><button className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={addCredit}>+ Add credit</button></div>
+          ))}
+          <div className="adm-field">
+            <label className="adm-label" style={{ display: 'flex', alignItems: 'center', gap: 8, textTransform: 'none', letterSpacing: 0, fontSize: 14 }}>
+              <input type="checkbox" checked={form.tools} onChange={(e) => set('tools', e.target.checked)} />
+              Show the AI-model stack chips on this role
+            </label>
           </div>
 
           <div className="adm-divider" />
-          <div className="adm-row">
-            <button className="adm-btn" disabled={busy} onClick={save}>{busy ? 'Saving…' : 'Save changes'}</button>
-            {status && <span className={'adm-msg ' + (status.includes('✓') ? 'ok' : 'err')} style={{ marginLeft: 4 }}>{status}</span>}
+          <div className="adm-field">
+            <label className="adm-label">Budget — revealed only when someone applies</label>
+            <input className="adm-input" placeholder="₹25,000 – ₹30,000 / month   (blank = “on discussion”)" value={form.salary || ''} onChange={(e) => set('salary', e.target.value)} />
+          </div>
+          <div className="adm-field">
+            <label className="adm-label">Budget note</label>
+            <input className="adm-input" placeholder="Contract engagement, paid monthly." value={form.salaryNote} onChange={(e) => set('salaryNote', e.target.value)} />
+          </div>
+
+          <div className="adm-divider" />
+          <div className="adm-field">
+            <label className="adm-label">Screening questions</label>
+            <p className="adm-hint">Asked as the candidate applies. “Years” questions can set a minimum bar that blocks under-qualified applicants.</p>
+            <div className="cr-adm-qs">
+              {form.questions.map((q, i) => (
+                <div className="cr-adm-q" key={i}>
+                  <input className="adm-input" placeholder="Question…" value={q.label} onChange={(e) => setQ(i, { label: e.target.value })} />
+                  <div className="cr-adm-qrow">
+                    <select className="adm-select" value={q.kind} onChange={(e) => setQ(i, { kind: e.target.value as QKind })}>
+                      <option value="boolean">Yes / No</option>
+                      <option value="number">Years</option>
+                      <option value="text">Text</option>
+                    </select>
+                    {q.kind === 'number' && (
+                      <label className="cr-adm-min">min&nbsp;<input className="adm-input" type="number" min={0} max={50} value={q.min ?? ''} onChange={(e) => setQ(i, { min: e.target.value === '' ? undefined : Number(e.target.value) })} />&nbsp;yrs</label>
+                    )}
+                    <label className="cr-adm-req"><input type="checkbox" checked={!!q.required} onChange={(e) => setQ(i, { required: e.target.checked })} />&nbsp;required</label>
+                    <button type="button" className="adm-icon-btn" title="Remove" onClick={() => rmQ(i)}>×</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10 }}><button type="button" className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={addQ}>+ Add question</button></div>
+          </div>
+
+          <div className="adm-divider" />
+          <div className="adm-row" style={{ justifyContent: 'space-between' }}>
+            <button className="adm-btn" disabled={busy} onClick={save}>{busy ? 'Saving…' : (isNew ? 'Create job' : 'Save changes')}</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              {status && <span className={'adm-msg ' + (status.includes('✓') || status === 'Deleted' ? 'ok' : 'err')}>{status}</span>}
+              {!isNew && <button className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px', color: '#ff8a6a' }} disabled={busy} onClick={del}>Delete job</button>}
+            </div>
           </div>
         </>
       )}
-    </div>
+    </>
   );
 }

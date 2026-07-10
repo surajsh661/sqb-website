@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { isValidEmail, isDisposableEmail } from '@/lib/spam';
 import { domainCanReceiveMail, isUrlish } from '@/lib/email-verify';
-import { roleById } from '@/lib/careers';
+import { roleForApplication } from '@/lib/careers-store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -77,8 +77,8 @@ export async function POST(req: Request) {
   if ((payload.hp || '').trim()) return NextResponse.json({ ok: true });
   if (typeof payload.t === 'number' && payload.t > 0 && payload.t < 2500) return NextResponse.json({ ok: true });
 
-  const role = roleById((payload.roleId || '').trim());
-  if (!role) return NextResponse.json({ error: 'Unknown role.' }, { status: 400 });
+  const role = await roleForApplication((payload.roleId || '').trim());
+  if (!role) return NextResponse.json({ error: 'This role is no longer accepting applications.' }, { status: 400 });
 
   const name = clamp((payload.name || '').trim(), 120);
   const email = clamp((payload.email || '').trim(), 160);

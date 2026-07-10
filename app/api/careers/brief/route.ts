@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { roleById } from '@/lib/careers';
-import { ROLE_BRIEF } from '@/lib/careers-salary';
+import { getRoleBrief } from '@/lib/careers-store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,9 +9,9 @@ export const dynamic = 'force-dynamic';
 // it is never cached or crawled.
 export async function GET(req: Request) {
   const id = new URL(req.url).searchParams.get('role') || '';
-  if (!roleById(id)) return NextResponse.json({ error: 'Unknown role.' }, { status: 404 });
+  const brief = await getRoleBrief(id);
+  if (!brief) return NextResponse.json({ error: 'Unknown role.' }, { status: 404 });
 
-  const brief = ROLE_BRIEF[id] ?? { salary: null, note: 'Discussed on the first call.' };
   return NextResponse.json(brief, {
     headers: { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' },
   });
