@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifySession } from '@/lib/admin/auth';
-import { getSessionToken, originAllowed } from '@/lib/admin/http';
+import { getSessionToken, originAllowed, storeUnavailable } from '@/lib/admin/http';
 import { adminStore } from '@/lib/admin/store';
 import { SQB_FILMS } from '@/lib/data';
 
@@ -27,6 +27,8 @@ const authed = async (req: Request) => verifySession(getSessionToken(req));
 
 // GET → every case study's current editable values (base data with overrides applied).
 export async function GET(req: Request) {
+  const down = storeUnavailable();
+  if (down) return down;
   if (!(await authed(req))) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const overrides = await loadOverrides();
   const items = SQB_FILMS.map((f) => {
@@ -42,6 +44,8 @@ export async function GET(req: Request) {
 
 // PUT → save an override for one case study.
 export async function PUT(req: Request) {
+  const down = storeUnavailable();
+  if (down) return down;
   if (!originAllowed(req)) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   if (!(await authed(req))) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 

@@ -261,6 +261,7 @@ export default function Verticals() {
                 data-off={firstPass && p.off ? '1' : undefined}
                 title={v.title}
                 onClick={() => onCardActivate(v)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onCardActivate(v); } }}
                 onPointerDown={onCardPointerDown}
                 onPointerMove={onCardPointerMove}
                 role="button"

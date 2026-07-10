@@ -1582,14 +1582,17 @@ body.no-grain::before { display: none; }
 /* Swipe/tap overlay — desktop OFF (embed is directly interactive); mobile ON
    (shown via the ≤900px rule). touch-action:pan-y lets vertical page-scroll
    through while we handle horizontal drags in JS. */
+/* Always on, every breakpoint. It used to be hidden on desktop on the theory
+   that "the embed stays directly interactive there" — but these are muted,
+   controls-less background embeds, and an Instagram embed's only affordance is
+   a "Watch on Instagram" link that navigates OFF-SITE. So on desktop the card
+   was either dead or a one-way exit. The overlay is the only thing that opens
+   the on-site lightbox, so it must always capture the tap. */
 .bts-swipe {
-  display: none;
+  display: block;
   position: absolute; inset: 0; z-index: 3;
   touch-action: pan-y; cursor: pointer;
 }
-/* Drive cards render a poster (no interactive embed), so their tap-to-open
-   overlay stays active on desktop too. */
-.bts-swipe.always { display: block; }
 /* On-site lightbox for a tapped BTS clip — plays here instead of opening
    instagram.com. Reels are vertical, so the card is portrait. */
 .bts-modal {
@@ -2279,10 +2282,6 @@ video.frame-video {
     animation: none !important;       /* JS drives the scroll instead */
     width: max-content;
   }
-  /* Mobile: a transparent overlay over each embed catches horizontal swipes
-     (scrolls the strip) and a clean tap (opens the reel). Shown only on mobile;
-     on desktop the embed itself stays directly interactive. */
-  .bts-swipe { display: block; }
 
   /* Contact — stack columns */
   .contact-inner { grid-template-columns: 1fr; gap: 32px; padding: 0 20px; }

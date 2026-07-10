@@ -320,6 +320,7 @@ function WorkInner() {
                 className={'vc-ticket' + (i % 2 === 0 ? ' amber' : ' cream')}
                 key={f.id + '-' + i}
                 onClick={() => setVertPick(f)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVertPick(f); } }}
                 role="button"
                 tabIndex={0}
               >

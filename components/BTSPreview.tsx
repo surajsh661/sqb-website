@@ -213,15 +213,16 @@ export default function BTSPreview() {
             <div className="bts-placeholder" aria-hidden="true" />
           )}
           <div className="bts-vignette" />
-          {/* Mobile swipe + tap-to-open overlay (hidden on desktop via CSS, so the
-              embed stays directly interactive there). */}
+          {/* Swipe + tap-to-open overlay. Active on every breakpoint: it is the
+              only thing that opens the on-site lightbox, and the embeds beneath
+              are muted, controls-less previews (an Instagram one would otherwise
+              only offer a "Watch on Instagram" link straight off the site). */}
           <div
-            /* 'always': Drive cards show a poster (no interactive embed), so the
-               tap-to-open overlay must work on desktop too, not just mobile. */
-            className={'bts-swipe' + (b.type === 'gd' ? ' always' : '')}
+            className="bts-swipe"
             onPointerDown={onOverlayPointerDown}
             onPointerMove={onOverlayPointerMove}
             onClick={() => onOverlayTap(b)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOverlayTap(b); } }}
             role="button"
             tabIndex={0}
             aria-label={`Open ${b.title}`}

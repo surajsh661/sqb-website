@@ -68,6 +68,7 @@ function AISection({
             className={'ai-clip' + (it.vertical ? ' vertical' : '')}
             key={it.id}
             onClick={() => onOpen(it, title)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(it, title); } }}
             role="button"
             tabIndex={0}
           >

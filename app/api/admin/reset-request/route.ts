@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createResetCode, isSetup } from '@/lib/admin/auth';
-import { originAllowed, rateLimited } from '@/lib/admin/http';
+import { originAllowed, rateLimited, storeUnavailable } from '@/lib/admin/http';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,6 +11,8 @@ const ADMIN_EMAIL = process.env.ADMIN_RESET_EMAIL || 'surajsharma@sqbpictures.co
 // Emails a one-time 6-digit reset code to the owner. Always responds { ok: true }
 // (never reveals whether a password is set) and only truly sends when set up.
 export async function POST(req: Request) {
+  const down = storeUnavailable();
+  if (down) return down;
   if (!originAllowed(req)) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   if (rateLimited(req, 'reset', 4, 15 * 60_000)) {
     return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });

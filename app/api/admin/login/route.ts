@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { checkPassword, issueSession, isSetup } from '@/lib/admin/auth';
-import { originAllowed, withSession, rateLimited } from '@/lib/admin/http';
+import { originAllowed, withSession, rateLimited, storeUnavailable } from '@/lib/admin/http';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
+  const down = storeUnavailable();
+  if (down) return down;
   if (!originAllowed(req)) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   if (rateLimited(req, 'login', 8, 5 * 60_000)) {
     return NextResponse.json({ error: 'Too many attempts. Wait a few minutes.' }, { status: 429 });

@@ -84,3 +84,14 @@ export function adminStore(): AdminStore {
 export function storeMode(): 'kv' | 'file' {
   return KV_URL && KV_TOKEN ? 'kv' : 'file';
 }
+
+/**
+ * Fail closed. In production the ephemeral file store must NEVER back the admin
+ * console: a cold serverless instance has no file, so isSetup() would report
+ * "no password set" and /api/admin/setup (unauthenticated by design, for the
+ * genuine first run) would let ANY caller claim the console. If the KV env ever
+ * goes missing, admin routes must refuse rather than silently degrade.
+ */
+export function storeReady(): boolean {
+  return Boolean(KV_URL && KV_TOKEN) || process.env.NODE_ENV !== 'production';
+}

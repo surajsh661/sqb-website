@@ -36,9 +36,20 @@ const originAllowed = (req: Request) => {
   const origin = req.headers.get('origin');
   if (!origin) return true;
   if (ALLOWED_ORIGINS.has(origin)) return true;
-  // *.vercel.app preview deployments of this project
-  try { return new URL(origin).hostname.endsWith('.vercel.app'); } catch { return false; }
+  try {
+    // Only THIS project's preview deployments — a blanket "*.vercel.app" would
+    // let anybody's Vercel app drive our Resend quota.
+    const h = new URL(origin).hostname;
+    return h.startsWith('sqb-website') && h.endsWith('.vercel.app');
+  } catch { return false; }
 };
+
+// `x-real-ip` is set by Vercel and not client-settable; the left-most
+// x-forwarded-for entry is client-supplied and trivially rotated.
+const clientIp = (req: Request) =>
+  req.headers.get('x-real-ip')?.trim() ||
+  (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim() ||
+  'unknown';
 
 // Best-effort per-IP rate limit (in-memory, per serverless instance — resets on
 // cold start, which is fine: its job is blunting bursts, not perfect accounting).
@@ -46,12 +57,16 @@ const hits = new Map<string, { n: number; t: number }>();
 const RATE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 const RATE_MAX = 8;                    // submissions per window per IP
 const rateLimited = (req: Request) => {
-  const ip = (req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim();
+  const ip = clientIp(req);
   const now = Date.now();
   const cur = hits.get(ip);
   if (!cur || now - cur.t > RATE_WINDOW_MS) { hits.set(ip, { n: 1, t: now }); return false; }
   cur.n += 1;
-  if (hits.size > 5000) hits.clear(); // memory cap
+  // Evict only EXPIRED entries — a blanket clear() would let a flood of junk
+  // keys reset the counter of the offender we're actually throttling.
+  if (hits.size > 5000) {
+    for (const [k, v] of hits) if (now - v.t > RATE_WINDOW_MS) hits.delete(k);
+  }
   return cur.n > RATE_MAX;
 };
 

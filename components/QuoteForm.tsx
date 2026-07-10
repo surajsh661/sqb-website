@@ -160,17 +160,31 @@ export default function QuoteForm({ open, onClose }: Props) {
     if (!notified.current) {
       notified.current = true;
       const svc = services.map((s) => (s === 'Other' && other.trim() ? `Other: ${other.trim()}` : s));
-      // fire-and-forget: capture the lead even if they don't finish booking
-      fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name, email: form.email,
-          phone: form.phone.trim() ? `${dialCode} ${form.phone.trim()}` : '',
-          org: form.company, services: svc, brief: form.note,
-          hp, t: Date.now() - openedAt.current,
-        }),
-      }).catch(() => { /* non-blocking */ });
+      const payload = JSON.stringify({
+        name: form.name, email: form.email,
+        phone: form.phone.trim() ? `${dialCode} ${form.phone.trim()}` : '',
+        org: form.company, services: svc, brief: form.note,
+        hp, t: Date.now() - openedAt.current,
+      });
+      // Non-blocking so the user goes straight to booking — but never lose the
+      // lead silently: `keepalive` lets the send survive navigation, and a
+      // rejected send (429/5xx/network) is retried once before giving up.
+      const send = (): Promise<void> =>
+        fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true,
+        }).then((res) => { if (!res.ok) throw new Error(String(res.status)); });
+
+      send().catch(() =>
+        new Promise((r) => setTimeout(r, 1500))
+          .then(send)
+          .catch((e) => {
+            notified.current = false; // let a later attempt re-send
+            console.error('[quote] lead capture failed', e);
+          }),
+      );
     }
     setStep('cal');
   };
