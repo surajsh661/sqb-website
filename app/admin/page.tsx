@@ -12,25 +12,27 @@ const MIN_PW = 10;
 // public gets shaped. (Rename in one place if you ever want to.)
 const CONSOLE_NAME = 'The Cutting Room';
 
-// Bright comic palette — pick cards cycle through these by index so the grid
-// reads like a Gumroad / sticker wall of colored boxes.
-const CARD_COLORS = ['#FFC93C', '#FF7EB6', '#A98BFF', '#2FD3B6', '#FF6A3D', '#9BE870', '#5AA9FF'];
-const cardColor = (i: number) => CARD_COLORS[i % CARD_COLORS.length];
-
-const FIELDS: { key: string; label: string; area?: boolean }[] = [
-  { key: 'title', label: 'Title' },
-  { key: 'category', label: 'Category' },
-  { key: 'client', label: 'Client' },
-  { key: 'talent', label: 'Talent / Cast' },
-  { key: 'year', label: 'Year' },
-  { key: 'runtime', label: 'Runtime' },
-  { key: 'lede', label: 'Lede — the one-line summary', area: true },
-  { key: 'brief', label: 'The Brief', area: true },
-  { key: 'solution', label: 'The Solution', area: true },
-  { key: 'body', label: 'Body / Story', area: true },
-  { key: 'timeline', label: 'Timeline' },
-  { key: 'release', label: 'Release' },
-  { key: 'impact', label: 'Impact', area: true },
+type CaseField = { key: string; label: string; area?: boolean; wide?: boolean; tall?: boolean };
+const FIELD_GROUPS: { title: string; fields: CaseField[] }[] = [
+  { title: 'The basics', fields: [
+    { key: 'title', label: 'Title', wide: true },
+    { key: 'category', label: 'Category' },
+    { key: 'client', label: 'Client' },
+    { key: 'talent', label: 'Talent / Cast' },
+    { key: 'year', label: 'Year' },
+    { key: 'runtime', label: 'Runtime' },
+  ] },
+  { title: 'The story', fields: [
+    { key: 'lede', label: 'Lede — the one-line summary', area: true, wide: true },
+    { key: 'brief', label: 'The Brief', area: true, wide: true, tall: true },
+    { key: 'solution', label: 'The Solution', area: true, wide: true, tall: true },
+    { key: 'body', label: 'Body / Story', area: true, wide: true, tall: true },
+  ] },
+  { title: 'Release & impact', fields: [
+    { key: 'timeline', label: 'Timeline' },
+    { key: 'release', label: 'Release' },
+    { key: 'impact', label: 'Impact', area: true, wide: true },
+  ] },
 ];
 
 function pwScore(pw: string): number {
@@ -278,8 +280,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             ? <p className="adm-sub">No case studies loaded yet.</p>
             : (
               <div className="adm-grid">
-                {items.map((it, i) => (
-                  <button className="adm-pick" key={it.id} style={{ '--c': cardColor(i) } as React.CSSProperties}
+                {items.map((it) => (
+                  <button className="adm-pick" key={it.id}
                     onClick={() => { pick(it.id); setCaseView('edit'); }}>
                     <span className="adm-pick-tag">{it.category || 'Case study'}</span>
                     <span className="adm-pick-title">{it.title}</span>
@@ -293,35 +295,41 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         <>
           <button className="adm-back" onClick={() => setCaseView('grid')}>← All case studies</button>
           <h2 className="adm-editing-title">Editing <em>{form.title || 'case study'}</em></h2>
-          {FIELDS.map((f) => (
-                <div className="adm-field" key={f.key}>
-                  <label className="adm-label">{f.label}</label>
-                  {f.area
-                    ? <textarea className="adm-textarea" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />
-                    : <input className="adm-input" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />}
-                </div>
-              ))}
 
-              <div className="adm-field">
-                <label className="adm-label">Credits</label>
-                <p className="adm-hint">Add a row for each role — Director, DOP, Editor, and so on.</p>
-                <div className="adm-credits">
-                  {form.credits.map((c, i) => (
-                    <div className="adm-credit-row" key={i}>
-                      <input className="adm-input" placeholder="ROLE (e.g. DIRECTOR)" value={c.role} onChange={(e) => setCredit(i, 'role', e.target.value)} />
-                      <input className="adm-input" placeholder="Name" value={c.name} onChange={(e) => setCredit(i, 'name', e.target.value)} />
-                      <button className="adm-icon-btn" title="Remove" onClick={() => rmCredit(i)}>×</button>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ marginTop: 10 }}><button className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={addCredit}>+ Add credit</button></div>
+          {FIELD_GROUPS.map((g) => (
+            <section key={g.title}>
+              <div className="adm-subhead">{g.title}</div>
+              <div className="adm-fieldgrid">
+                {g.fields.map((f) => (
+                  <div className={'adm-field' + (f.wide ? ' wide' : '')} key={f.key}>
+                    <label className="adm-label">{f.label}</label>
+                    {f.area
+                      ? <textarea className={'adm-textarea' + (f.tall ? ' tall' : '')} value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />
+                      : <input className="adm-input" value={form[f.key] || ''} onChange={(e) => setField(f.key, e.target.value)} />}
+                  </div>
+                ))}
               </div>
+            </section>
+          ))}
 
-              <div className="adm-divider" />
-              <div className="adm-row">
-                <button className="adm-btn" disabled={busy} onClick={save}>{busy ? 'Saving…' : 'Save changes'}</button>
-                {status && <span className={'adm-msg ' + (status.includes('✓') ? 'ok' : 'err')} style={{ marginLeft: 4 }}>{status}</span>}
+          <div className="adm-subhead">Credits</div>
+          <p className="adm-hint">Add a row for each role — Director, DOP, Editor, and so on.</p>
+          <div className="adm-credits">
+            {form.credits.map((c, i) => (
+              <div className="adm-credit-row" key={i}>
+                <input className="adm-input" placeholder="ROLE (e.g. DIRECTOR)" value={c.role} onChange={(e) => setCredit(i, 'role', e.target.value)} />
+                <input className="adm-input" placeholder="Name" value={c.name} onChange={(e) => setCredit(i, 'name', e.target.value)} />
+                <button className="adm-icon-btn" title="Remove" onClick={() => rmCredit(i)}>×</button>
               </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 12 }}><button className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={addCredit}>+ Add credit</button></div>
+
+          <div className="adm-divider" />
+          <div className="adm-row">
+            <button className="adm-btn" style={{ flex: '0 0 auto', minWidth: 200 }} disabled={busy} onClick={save}>{busy ? 'Saving…' : 'Save changes'}</button>
+            {status && <span className={'adm-msg ' + (status.includes('✓') ? 'ok' : 'err')} style={{ marginLeft: 4 }}>{status}</span>}
+          </div>
         </>
       ))}
     </div>
@@ -489,8 +497,8 @@ function CareersAdmin() {
           <span className="adm-sechead-c">{openN} open · {roles.length} total</span>
         </div>
         <div className="adm-grid">
-          {roles.map((r, i) => (
-            <button className="adm-pick" key={r.id} style={{ '--c': cardColor(i) } as React.CSSProperties} onClick={() => openRole(r.id)}>
+          {roles.map((r) => (
+            <button className="adm-pick" key={r.id} onClick={() => openRole(r.id)}>
               <span className="adm-pick-tag">{r.category}</span>
               <span className="adm-pick-title">{r.title}</span>
               <span className={'adm-pick-badge ' + (r.open ? 'open' : 'closed')}>{r.open ? 'Open' : 'Closed'}</span>
@@ -511,60 +519,70 @@ function CareersAdmin() {
 
       {form && (
         <>
-          <div className="adm-field">
-            <label className="adm-label">Status</label>
-            <div className="cr-adm-pills">
-              <button type="button" className={'adm-pill' + (form.open ? ' on' : '')} onClick={() => set('open', true)}>Open</button>
-              <button type="button" className={'adm-pill' + (!form.open ? ' off' : '')} onClick={() => set('open', false)}>Closed</button>
+          <div className="adm-subhead">Status &amp; category</div>
+          <div className="adm-fieldgrid">
+            <div className="adm-field">
+              <label className="adm-label">Status</label>
+              <div className="cr-adm-pills">
+                <button type="button" className={'adm-pill' + (form.open ? ' on' : '')} onClick={() => set('open', true)}>Open</button>
+                <button type="button" className={'adm-pill' + (!form.open ? ' off' : '')} onClick={() => set('open', false)}>Closed</button>
+              </div>
             </div>
-            <p className="adm-hint">Closed listings drop off the careers page and stop accepting applications.</p>
+            <div className="adm-field">
+              <label className="adm-label">Category</label>
+              <select className="adm-select" value={form.category} onChange={(e) => set('category', e.target.value)}>
+                <option value="creative">Creative</option>
+                <option value="operations">Operations</option>
+              </select>
+            </div>
           </div>
-          <div className="adm-field">
-            <label className="adm-label">Category</label>
-            <select className="adm-select" value={form.category} onChange={(e) => set('category', e.target.value)}>
-              <option value="creative">Creative</option>
-              <option value="operations">Operations</option>
-            </select>
+          <p className="adm-hint">Closed listings drop off the careers page and stop accepting applications.</p>
+
+          <div className="adm-subhead">The basics</div>
+          <div className="adm-fieldgrid">
+            {TEXT_ROWS.map(([k, l]) => (
+              <div className={'adm-field' + (k === 'lede' ? ' wide' : '')} key={k}>
+                <label className="adm-label">{l}</label>
+                <input className="adm-input" value={(form[k] as string) || ''} onChange={(e) => set(k, e.target.value)} />
+              </div>
+            ))}
           </div>
 
-          {TEXT_ROWS.map(([k, l]) => (
-            <div className="adm-field" key={k}>
-              <label className="adm-label">{l}</label>
-              <input className="adm-input" value={(form[k] as string) || ''} onChange={(e) => set(k, e.target.value)} />
-            </div>
-          ))}
-          <div className="adm-field">
+          <div className="adm-subhead">The role</div>
+          <div className="adm-field wide">
             <label className="adm-label">Description</label>
-            <textarea className="adm-textarea" rows={5} value={form.description} onChange={(e) => set('description', e.target.value)} />
+            <textarea className="adm-textarea tall" rows={5} value={form.description} onChange={(e) => set('description', e.target.value)} />
           </div>
-          {LIST_ROWS.map(([k, l]) => (
-            <div className="adm-field" key={k}>
-              <label className="adm-label">{l}</label>
-              <textarea className="adm-textarea" rows={4} value={listVal(form[k] as string[])} onChange={(e) => setList(k, e.target.value)} />
-            </div>
-          ))}
-          <div className="adm-field">
+          <div className="adm-fieldgrid">
+            {LIST_ROWS.map(([k, l]) => (
+              <div className="adm-field" key={k}>
+                <label className="adm-label">{l}</label>
+                <textarea className="adm-textarea" rows={4} value={listVal(form[k] as string[])} onChange={(e) => setList(k, e.target.value)} />
+              </div>
+            ))}
+          </div>
+          <div className="adm-field" style={{ marginTop: 14 }}>
             <label className="adm-label" style={{ display: 'flex', alignItems: 'center', gap: 8, textTransform: 'none', letterSpacing: 0, fontSize: 14 }}>
               <input type="checkbox" checked={form.tools} onChange={(e) => set('tools', e.target.checked)} />
               Show the AI-model stack chips on this role
             </label>
           </div>
 
-          <div className="adm-divider" />
-          <div className="adm-field">
-            <label className="adm-label">Budget — revealed only when someone applies</label>
-            <input className="adm-input" placeholder="₹25,000 – ₹30,000 / month   (blank = “on discussion”)" value={form.salary || ''} onChange={(e) => set('salary', e.target.value)} />
-          </div>
-          <div className="adm-field">
-            <label className="adm-label">Budget note</label>
-            <input className="adm-input" placeholder="Contract engagement, paid monthly." value={form.salaryNote} onChange={(e) => set('salaryNote', e.target.value)} />
+          <div className="adm-subhead">Budget</div>
+          <div className="adm-fieldgrid">
+            <div className="adm-field">
+              <label className="adm-label">Revealed only when someone applies</label>
+              <input className="adm-input" placeholder="₹25,000 – ₹30,000 / month   (blank = “on discussion”)" value={form.salary || ''} onChange={(e) => set('salary', e.target.value)} />
+            </div>
+            <div className="adm-field">
+              <label className="adm-label">Budget note</label>
+              <input className="adm-input" placeholder="Contract engagement, paid monthly." value={form.salaryNote} onChange={(e) => set('salaryNote', e.target.value)} />
+            </div>
           </div>
 
-          <div className="adm-divider" />
-          <div className="adm-field">
-            <label className="adm-label">Screening questions</label>
-            <p className="adm-hint">Asked as the candidate applies. “Years” questions can set a minimum bar that blocks under-qualified applicants.</p>
-            <div className="cr-adm-qs">
+          <div className="adm-subhead">Screening questions</div>
+          <p className="adm-hint">Asked as the candidate applies. “Years” questions can set a minimum bar that blocks under-qualified applicants.</p>
+          <div className="cr-adm-qs">
               {form.questions.map((q, i) => (
                 <div className="cr-adm-q" key={i}>
                   <input className="adm-input" placeholder="Question…" value={q.label} onChange={(e) => setQ(i, { label: e.target.value })} />
@@ -584,7 +602,6 @@ function CareersAdmin() {
               ))}
             </div>
             <div style={{ marginTop: 10 }}><button type="button" className="adm-btn ghost" style={{ width: 'auto', padding: '9px 16px' }} onClick={addQ}>+ Add question</button></div>
-          </div>
 
           <div className="adm-divider" />
           <div className="adm-row" style={{ justifyContent: 'space-between' }}>
