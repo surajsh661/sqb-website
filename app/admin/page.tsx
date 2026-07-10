@@ -12,6 +12,11 @@ const MIN_PW = 10;
 // public gets shaped. (Rename in one place if you ever want to.)
 const CONSOLE_NAME = 'The Cutting Room';
 
+// Bright comic palette — pick cards cycle through these by index so the grid
+// reads like a Gumroad / sticker wall of colored boxes.
+const CARD_COLORS = ['#FFC93C', '#FF7EB6', '#A98BFF', '#2FD3B6', '#FF6A3D', '#9BE870', '#5AA9FF'];
+const cardColor = (i: number) => CARD_COLORS[i % CARD_COLORS.length];
+
 const FIELDS: { key: string; label: string; area?: boolean }[] = [
   { key: 'title', label: 'Title' },
   { key: 'category', label: 'Category' },
@@ -201,24 +206,24 @@ function Reset({ post, busy, err, onDone, onBack }: any) {
 // ── Dashboard / case-study editor ─────────────────────────────────────────────
 function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [items, setItems] = useState<Item[]>([]);
-  const [sel, setSel] = useState<string>('');
   const [form, setForm] = useState<Item | null>(null);
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [store, setStore] = useState<string>('');
   const [section, setSection] = useState<'overview' | 'cases' | 'careers'>('overview');
+  const [caseView, setCaseView] = useState<'grid' | 'edit'>('grid');
 
   useEffect(() => {
     fetch('/api/admin/session').then((r) => r.json()).then((d) => setStore(d.store || ''));
     fetch('/api/admin/content')
       .then((r) => r.json())
-      .then((d) => { setItems(d.items || []); if (d.items?.[0]) { setSel(d.items[0].id); setForm(structuredClone(d.items[0])); } });
+      .then((d) => { setItems(d.items || []); });
   }, []);
 
   const pick = (id: string) => {
     setStatus('');
     const it = items.find((x) => x.id === id);
-    setSel(id); setForm(it ? structuredClone(it) : null);
+    setForm(it ? structuredClone(it) : null);
   };
   const setField = (k: string, v: string) => setForm((f) => (f ? { ...f, [k]: v } : f));
   const setCredit = (i: number, k: 'role' | 'name', v: string) =>
@@ -244,13 +249,16 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const logout = async () => { await fetch('/api/admin/logout', { method: 'POST' }); onLogout(); };
 
+  // Entering a section always lands on its card grid, not a stale open editor.
+  const go = (s: 'overview' | 'cases' | 'careers') => { if (s === 'cases') setCaseView('grid'); setSection(s); };
+
   return (
     <div className="adm-card wide">
       <div className="adm-head">
         <div className="adm-nav">
-          <button className={'adm-tab' + (section === 'overview' ? ' on' : '')} onClick={() => setSection('overview')}>Overview</button>
-          <button className={'adm-tab' + (section === 'cases' ? ' on' : '')} onClick={() => setSection('cases')}>Case Studies</button>
-          <button className={'adm-tab' + (section === 'careers' ? ' on' : '')} onClick={() => setSection('careers')}>Careers</button>
+          <button className={'adm-tab' + (section === 'overview' ? ' on' : '')} onClick={() => go('overview')}>Overview</button>
+          <button className={'adm-tab' + (section === 'cases' ? ' on' : '')} onClick={() => go('cases')}>Case Studies</button>
+          <button className={'adm-tab' + (section === 'careers' ? ' on' : '')} onClick={() => go('careers')}>Careers</button>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span className={'adm-badge ' + (store === 'kv' ? 'live' : 'draft')}>{store === 'kv' ? 'Live DB' : 'Local draft'}</span>
@@ -258,21 +266,34 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         </div>
       </div>
 
-      {section === 'overview' && <Overview items={items} store={store} onGo={setSection} />}
+      {section === 'overview' && <Overview items={items} store={store} onGo={go} />}
       {section === 'careers' && <CareersAdmin />}
-      {section === 'cases' && (
+      {section === 'cases' && (caseView === 'grid' ? (
         <>
-          <div className="adm-field">
-            <label className="adm-label">Choose a case study</label>
-            <select className="adm-select" value={sel} onChange={(e) => pick(e.target.value)}>
-              {items.map((it) => <option key={it.id} value={it.id}>{it.title}{it.edited ? '  •  edited' : ''}</option>)}
-            </select>
+          <div className="adm-sechead">
+            <h2 className="adm-sechead-t">Case <em>studies</em></h2>
+            <span className="adm-sechead-c">{items.length} in the reel · tap one to edit</span>
           </div>
-
-          {form && (
-            <>
-              <div className="adm-divider" />
-              {FIELDS.map((f) => (
+          {items.length === 0
+            ? <p className="adm-sub">No case studies loaded yet.</p>
+            : (
+              <div className="adm-grid">
+                {items.map((it, i) => (
+                  <button className="adm-pick" key={it.id} style={{ '--c': cardColor(i) } as React.CSSProperties}
+                    onClick={() => { pick(it.id); setCaseView('edit'); }}>
+                    <span className="adm-pick-tag">{it.category || 'Case study'}</span>
+                    <span className="adm-pick-title">{it.title}</span>
+                    {it.edited && <span className="adm-pick-badge edited">edited</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+        </>
+      ) : form && (
+        <>
+          <button className="adm-back" onClick={() => setCaseView('grid')}>← All case studies</button>
+          <h2 className="adm-editing-title">Editing <em>{form.title || 'case study'}</em></h2>
+          {FIELDS.map((f) => (
                 <div className="adm-field" key={f.key}>
                   <label className="adm-label">{f.label}</label>
                   {f.area
@@ -301,10 +322,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                 <button className="adm-btn" disabled={busy} onClick={save}>{busy ? 'Saving…' : 'Save changes'}</button>
                 {status && <span className={'adm-msg ' + (status.includes('✓') ? 'ok' : 'err')} style={{ marginLeft: 4 }}>{status}</span>}
               </div>
-            </>
-          )}
         </>
-      )}
+      ))}
     </div>
   );
 }
@@ -408,26 +427,26 @@ const LIST_ROWS: [keyof AdminRole, string][] = [
 
 function CareersAdmin() {
   const [roles, setRoles] = useState<AdminRole[]>([]);
-  const [sel, setSel] = useState<string>('');
   const [form, setForm] = useState<AdminRole | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
+  const [view, setView] = useState<'grid' | 'edit'>('grid');
 
   const load = async () => {
     const d = await fetch('/api/admin/careers').then((r) => r.json()).catch(() => ({}));
     const rs: AdminRole[] = (d.roles || []).map((r: any) => ({ ...r, salary: r.salary ?? '' }));
     setRoles(rs);
-    if (rs[0]) { setSel(rs[0].id); setForm(structuredClone(rs[0])); setIsNew(false); }
   };
   useEffect(() => { load(); }, []);
 
-  const pick = (id: string) => {
+  const openRole = (id: string) => {
     setStatus('');
-    if (id === '__new__') { setSel('__new__'); setForm(blankRole()); setIsNew(true); return; }
+    if (id === '__new__') { setForm(blankRole()); setIsNew(true); setView('edit'); return; }
     const r = roles.find((x) => x.id === id);
-    setSel(id); setForm(r ? structuredClone(r) : null); setIsNew(false);
+    setForm(r ? structuredClone(r) : null); setIsNew(false); setView('edit');
   };
+  const backToGrid = () => { setView('grid'); setStatus(''); load(); };
   const set = (k: keyof AdminRole, v: any) => setForm((f) => (f ? { ...f, [k]: v } : f));
   const listVal = (arr?: string[]) => (arr || []).join('\n');
   const setList = (k: keyof AdminRole, text: string) =>
@@ -445,35 +464,53 @@ function CareersAdmin() {
     try {
       const res = await fetch('/api/admin/careers', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role, isNew }) });
       const d = await res.json().catch(() => ({}));
-      if (res.ok) { setStatus('Saved ✓'); await load(); if (d.role) { setSel(d.role.id); setForm(structuredClone({ ...d.role, salary: d.role.salary ?? '' })); setIsNew(false); } }
+      if (res.ok) { setStatus('Saved ✓'); await load(); if (d.role) { setForm(structuredClone({ ...d.role, salary: d.role.salary ?? '' })); setIsNew(false); } }
       else setStatus(d.error || 'Save failed');
     } catch { setStatus('Network error'); }
     finally { setBusy(false); }
   };
   const del = async () => {
-    if (!form || isNew) { pick(roles[0]?.id || '__new__'); return; }
+    if (!form || isNew) { backToGrid(); return; }
     if (!window.confirm(`Delete “${form.title}”? This removes the listing from the site for good.`)) return;
     setBusy(true); setStatus('');
     try {
       const res = await fetch('/api/admin/careers?id=' + encodeURIComponent(form.id), { method: 'DELETE' });
-      if (res.ok) { setStatus('Deleted'); await load(); } else setStatus('Delete failed');
+      if (res.ok) { await load(); setView('grid'); } else setStatus('Delete failed');
     } catch { setStatus('Network error'); }
     finally { setBusy(false); }
   };
 
+  if (view === 'grid') {
+    const openN = roles.filter((r) => r.open).length;
+    return (
+      <>
+        <div className="adm-sechead">
+          <h2 className="adm-sechead-t">Job <em>listings</em></h2>
+          <span className="adm-sechead-c">{openN} open · {roles.length} total</span>
+        </div>
+        <div className="adm-grid">
+          {roles.map((r, i) => (
+            <button className="adm-pick" key={r.id} style={{ '--c': cardColor(i) } as React.CSSProperties} onClick={() => openRole(r.id)}>
+              <span className="adm-pick-tag">{r.category}</span>
+              <span className="adm-pick-title">{r.title}</span>
+              <span className={'adm-pick-badge ' + (r.open ? 'open' : 'closed')}>{r.open ? 'Open' : 'Closed'}</span>
+            </button>
+          ))}
+          <button className="adm-pick new" onClick={() => openRole('__new__')}>
+            <span className="adm-pick-title">＋ New job</span>
+          </button>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-      <div className="adm-field">
-        <label className="adm-label">Job listing</label>
-        <select className="adm-select" value={sel} onChange={(e) => pick(e.target.value)}>
-          {roles.map((r) => <option key={r.id} value={r.id}>{r.title}{r.open ? '' : '  •  closed'}</option>)}
-          <option value="__new__">+ New job…</option>
-        </select>
-      </div>
+      <button className="adm-back" onClick={backToGrid}>← All jobs</button>
+      <h2 className="adm-editing-title">{isNew ? <>New <em>job</em></> : <>Editing <em>{form?.title || 'job'}</em></>}</h2>
 
       {form && (
         <>
-          <div className="adm-divider" />
           <div className="adm-field">
             <label className="adm-label">Status</label>
             <div className="cr-adm-pills">
