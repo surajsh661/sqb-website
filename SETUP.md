@@ -62,10 +62,15 @@ This is what makes the contact form actually send you emails.
    That opens it in TextEdit. Replace the placeholder values:
 
    ```
-   RESEND_API_KEY=re_paste_your_real_key_here
+   RESEND_API_KEY=re_your_api_key_here
    CONTACT_TO=hello@sqbpictures.com
    CONTACT_FROM=S'QB Site <hello@sqbpictures.com>
    ```
+
+   > ⚠️ **Never paste a real key into this file.** `SETUP.md` is committed to a
+   > public repo — anything written here is visible to the world (and to bots
+   > that scan GitHub for API keys). Real values belong only in `.env.local`
+   > (which is gitignored) and in the Vercel dashboard.
 
    (If your domain isn't verified in Resend yet, leave `CONTACT_FROM` as `S'QB Site <onboarding@resend.dev>`.)
 
