@@ -124,6 +124,7 @@ export const COPY = {
     video: `VIDEO`,
     aiLab: `AI LAB`,
     social: `SOCIAL`,
+    careers: `CAREERS`,
     reachOut: `REACH OUT`,
   },
 

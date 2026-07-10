@@ -11,6 +11,7 @@ const NAV: [string, string][] = [
   ['VIDEO', '/work'],
   ['AI LAB', '/ai-lab'],
   ['SOCIAL', '/social'],
+  ['CAREERS', '/careers'],
 ];
 
 export default function TicketMenu({ open, onClose, onReachOut }: Props) {

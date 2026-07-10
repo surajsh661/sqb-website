@@ -24,7 +24,10 @@ export async function POST(req: Request) {
   if (apiKey) {
     try {
       const from = process.env.CONTACT_FROM || "S'QB Site <onboarding@resend.dev>";
-      await new Resend(apiKey).emails.send({
+      // Resend RETURNS { error } on failure (e.g. a bad API key) rather than
+      // throwing — without this check a dead key silently swallows the reset
+      // code and the owner waits forever for an email that never left.
+      const result = await new Resend(apiKey).emails.send({
         from,
         to: ADMIN_EMAIL,
         subject: `S'QB Admin — password reset code ${code}`,
@@ -36,8 +39,19 @@ export async function POST(req: Request) {
           <p style="color:#6f6a5f;font-size:12px;margin:20px 0 0">If you didn't request this, ignore this email — your password is unchanged.</p>
         </div>`,
       });
+      if (result.error) {
+        console.error('[admin reset] resend rejected:', JSON.stringify(result.error));
+        return NextResponse.json(
+          { error: 'Could not send the reset email. Check the mail configuration.' },
+          { status: 502 },
+        );
+      }
     } catch (e) {
       console.error('[admin reset] email send failed:', e);
+      return NextResponse.json(
+        { error: 'Could not send the reset email. Try again in a moment.' },
+        { status: 502 },
+      );
     }
   } else {
     console.warn('[admin reset] no RESEND_API_KEY set — reset code:', code);

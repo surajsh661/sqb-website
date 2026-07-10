@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { COPY } from '@/lib/copy';
 
 interface Props {
-  active?: 'home' | 'work' | 'ai-lab' | 'social';
+  active?: 'home' | 'work' | 'ai-lab' | 'social' | 'careers';
   /** Retained for API compatibility; the hamburger menu has been removed. */
   onOpenMenu?: () => void;
   /** Opens the Get-a-Quote form. */
@@ -59,6 +59,7 @@ export default function Topbar({
           <Link href="/work" className={active === 'work' ? 'active' : ''}>{COPY.nav.video}</Link>
           <Link href="/ai-lab" className={active === 'ai-lab' ? 'active' : ''}>{COPY.nav.aiLab}</Link>
           <Link href="/social" className={active === 'social' ? 'active' : ''}>{COPY.nav.social}</Link>
+          <Link href="/careers" className={active === 'careers' ? 'active' : ''}>{COPY.nav.careers}</Link>
         </div>
         <div className="right">
           <a className="reach-out-btn" href="#contact" onClick={reachOut}>
@@ -88,6 +89,7 @@ export default function Topbar({
         <Link href="/work" className={active === 'work' ? 'active' : ''}>{COPY.nav.video}</Link>
         <Link href="/ai-lab" className={active === 'ai-lab' ? 'active' : ''}>{COPY.nav.aiLab}</Link>
         <Link href="/social" className={active === 'social' ? 'active' : ''}>{COPY.nav.social}</Link>
+          <Link href="/careers" className={active === 'careers' ? 'active' : ''}>{COPY.nav.careers}</Link>
       </nav>
       <div className="top-right">
         <a className="reach-out-btn" href="#contact" onClick={reachOut}>

@@ -28,6 +28,7 @@ export default function Footer() {
           <a href={COPY.footer.hqUrl} target="_blank" rel="noopener noreferrer">
             {COPY.footer.hqLabel} ↗
           </a>
+          <a href="/careers">CAREERS — WE&apos;RE HIRING</a>
         </div>
         <div>
           <h4>{COPY.footer.foundersHeading}</h4>
