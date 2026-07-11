@@ -12,6 +12,11 @@ const MIN_PW = 10;
 // public gets shaped. (Rename in one place if you ever want to.)
 const CONSOLE_NAME = 'The Cutting Room';
 
+// Bright comic palette — cards cycle through these so the grid reads like a
+// sticker wall of colored tiles on the dark studio backdrop.
+const CARD_COLORS = ['#FFC93C', '#FF7EB6', '#A98BFF', '#2FD3B6', '#FF6A3D', '#9BE870', '#5AA9FF'];
+const cardColor = (i: number) => CARD_COLORS[i % CARD_COLORS.length];
+
 type CaseField = { key: string; label: string; area?: boolean; wide?: boolean; tall?: boolean };
 const FIELD_GROUPS: { title: string; fields: CaseField[] }[] = [
   { title: 'The basics', fields: [
@@ -72,6 +77,12 @@ export default function AdminPage() {
       .then((d) => setView(!d.isSetup ? 'setup' : d.isAuthed ? 'dash' : 'login'))
       .catch(() => setView('login'));
   }, []);
+
+  // Let the shell (logo gear) know whether we're signed in.
+  useEffect(() => {
+    if (view === 'loading') return;
+    window.dispatchEvent(new CustomEvent('sqb-admin-auth', { detail: { authed: view === 'dash' } }));
+  }, [view]);
 
   if (view === 'loading') {
     return <div className="adm-card"><div className="adm-brand"><b>S'QB</b> · {CONSOLE_NAME}</div><p className="adm-sub">Rolling…</p></div>;
@@ -280,8 +291,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             ? <p className="adm-sub">No case studies loaded yet.</p>
             : (
               <div className="adm-grid">
-                {items.map((it) => (
-                  <button className="adm-pick" key={it.id}
+                {items.map((it, i) => (
+                  <button className="adm-pick" key={it.id} style={{ '--c': cardColor(i) } as React.CSSProperties}
                     onClick={() => { pick(it.id); setCaseView('edit'); }}>
                     <span className="adm-pick-tag">{it.category || 'Case study'}</span>
                     <span className="adm-pick-title">{it.title}</span>
@@ -497,8 +508,8 @@ function CareersAdmin() {
           <span className="adm-sechead-c">{openN} open · {roles.length} total</span>
         </div>
         <div className="adm-grid">
-          {roles.map((r) => (
-            <button className="adm-pick" key={r.id} onClick={() => openRole(r.id)}>
+          {roles.map((r, i) => (
+            <button className="adm-pick" key={r.id} style={{ '--c': cardColor(i) } as React.CSSProperties} onClick={() => openRole(r.id)}>
               <span className="adm-pick-tag">{r.category}</span>
               <span className="adm-pick-title">{r.title}</span>
               <span className={'adm-pick-badge ' + (r.open ? 'open' : 'closed')}>{r.open ? 'Open' : 'Closed'}</span>
