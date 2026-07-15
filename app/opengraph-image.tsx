@@ -38,7 +38,10 @@ async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuff
 }
 
 export default async function OpengraphImage() {
-  const logo = readFileSync(join(process.cwd(), 'public/logo-dark.png'));
+  // The tight square "S'QB" mark (same crop as the favicon) — logo-dark.png
+  // is a full wordmark with a lot of dead vertical padding baked in, which
+  // read as a tiny smudge at card size.
+  const logo = readFileSync(join(process.cwd(), 'public/logo-mark-square.png'));
   const logoSrc = `data:image/png;base64,${logo.toString('base64')}`;
   const grain = readFileSync(join(process.cwd(), 'public/sqb-grain.jpg'));
   const grainSrc = `data:image/jpeg;base64,${grain.toString('base64')}`;
@@ -93,22 +96,28 @@ export default async function OpengraphImage() {
         />
 
         {/* top: wordmark */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={logoSrc} width={64} height={64} alt="" style={{ objectFit: 'contain' }} />
+          <img
+            src={logoSrc}
+            width={92}
+            height={92}
+            alt=""
+            style={{ objectFit: 'contain', borderRadius: 16 }}
+          />
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               fontFamily: F_MONO,
-              fontSize: 15,
+              fontSize: 17,
               letterSpacing: 6,
               textTransform: 'uppercase',
               color: FG_DIM,
             }}
           >
             <span style={{ color: FG, fontWeight: 700 }}>S&apos;QB PICTURES</span>
-            <span style={{ color: GOLD, marginTop: 4 }}>DELHI NCR &amp; MUMBAI</span>
+            <span style={{ color: GOLD, marginTop: 5 }}>DELHI NCR &amp; MUMBAI</span>
           </div>
         </div>
 
