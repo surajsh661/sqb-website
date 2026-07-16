@@ -3,10 +3,14 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 // The real 1200×630 social card — built to match the site's actual brand
-// system (Anton display, Inter body, JetBrains Mono labels; ink/gold palette;
-// film-grain texture) and its actual positioning: filmmakers first, AI
-// second, across ad films, documentaries, web shows, music videos and AI
-// film production — not a narrow "AI production house" pitch.
+// system (Anton display, Inter body; ink/gold palette; film-grain texture)
+// and its actual positioning: filmmakers first, AI second, across ad films,
+// documentaries, web shows, music videos and AI film production — not a
+// narrow "AI production house" pitch.
+//
+// Layout: the full "S'QB pictures" lockup, big and centered, is the hero —
+// no repeated brand text beside it. The tagline + capability index sit below
+// it. No footer URL/rule — the logo carries the brand on its own.
 
 export const runtime = 'nodejs';
 export const alt = "S'QB Pictures — Tell Your Story Today";
@@ -25,7 +29,7 @@ async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuff
   try {
     const css = await fetch(
       `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@${weight}&text=${encodeURIComponent(
-        "S'QB PICTURES TELL YOUR STORY TODAY.,·ADFILMSTVCUMENTARIESWBHOSMICVQ FX DELHI NCR & MUMBAI SQBPICTURESCOM0123456789",
+        "TELL YOUR STORY TODAY.,·ADFILMSTVCUMENTARIESWBHOSMICVQ FX",
       )}`,
       { headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1' } },
     ).then((r) => r.text());
@@ -38,30 +42,27 @@ async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuff
 }
 
 export default async function OpengraphImage() {
-  // The tight square "S'QB" mark (same crop as the favicon) — logo-dark.png
-  // is a full wordmark with a lot of dead vertical padding baked in, which
-  // read as a tiny smudge at card size.
-  const logo = readFileSync(join(process.cwd(), 'public/logo-mark-square.png'));
+  // The FULL lockup — "S'QB" + "pictures" — not the square monogram-only
+  // crop used for the favicon. That crop deliberately drops "pictures" to
+  // fit a tiny square icon; here we have room, and the word should read.
+  const logo = readFileSync(join(process.cwd(), 'public/logo-mark-full.png'));
   const logoSrc = `data:image/png;base64,${logo.toString('base64')}`;
   const grain = readFileSync(join(process.cwd(), 'public/sqb-grain.jpg'));
   const grainSrc = `data:image/jpeg;base64,${grain.toString('base64')}`;
 
-  const [anton, interReg, interBold, mono] = await Promise.all([
+  const [anton, interReg, interBold] = await Promise.all([
     loadGoogleFont('Anton', 400),
     loadGoogleFont('Inter', 400),
     loadGoogleFont('Inter', 700),
-    loadGoogleFont('JetBrains+Mono', 600),
   ]);
   const fonts = [
     anton && { name: 'Anton', data: anton, weight: 400 as const, style: 'normal' as const },
     interReg && { name: 'Inter', data: interReg, weight: 400 as const, style: 'normal' as const },
     interBold && { name: 'Inter', data: interBold, weight: 700 as const, style: 'normal' as const },
-    mono && { name: 'JetBrains Mono', data: mono, weight: 600 as const, style: 'normal' as const },
   ].filter(Boolean) as { name: string; data: ArrayBuffer; weight: 400 | 700; style: 'normal' }[];
 
   const F_DISPLAY = anton ? 'Anton' : 'sans-serif';
   const F_BODY = interReg || interBold ? 'Inter' : 'sans-serif';
-  const F_MONO = mono ? 'JetBrains Mono' : 'monospace';
 
   return new ImageResponse(
     (
@@ -71,9 +72,8 @@ export default async function OpengraphImage() {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
           background: INK,
-          padding: '64px 72px',
+          padding: '56px 72px',
           position: 'relative',
         }}
       >
@@ -86,36 +86,32 @@ export default async function OpengraphImage() {
           alt=""
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.06 }}
         />
-        {/* faint warm glow, low and off-center — not the whole story like before */}
+        {/* faint warm glow behind the mark */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(46% 60% at 82% 100%, rgba(245,197,24,0.14), transparent 70%)',
+            background: 'radial-gradient(50% 55% at 50% 38%, rgba(245,197,24,0.14), transparent 70%)',
           }}
         />
 
-        {/* top: the mark, on its own — big enough to actually read, no
-           redundant "S'QB Pictures" text beside it (the mark already says it) */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={logoSrc}
-          width={188}
-          height={188}
-          alt=""
-          style={{ objectFit: 'contain', borderRadius: 28 }}
-        />
+        {/* the mark — big, centered, carrying the brand on its own */}
+        <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logoSrc} width={520} height={282} alt="" style={{ objectFit: 'contain' }} />
+        </div>
 
-        {/* middle: the real headline + real capability index */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {/* the tagline + capability index, anchored to the bottom */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div
             style={{
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'baseline',
-              gap: 22,
+              justifyContent: 'center',
+              gap: 18,
               fontFamily: F_DISPLAY,
-              fontSize: 96,
+              fontSize: 66,
               lineHeight: 0.98,
               letterSpacing: '0.005em',
               textTransform: 'uppercase',
@@ -131,13 +127,15 @@ export default async function OpengraphImage() {
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'baseline',
+              justifyContent: 'center',
               gap: 14,
-              marginTop: 26,
+              marginTop: 18,
               fontFamily: F_BODY,
               fontWeight: 400,
-              fontSize: 25,
+              fontSize: 22,
               color: FG_DIM,
               maxWidth: 1050,
+              textAlign: 'center',
             }}
           >
             {['Ad Films & TVCs', 'Documentaries', 'Web Shows', 'Music Videos', 'AI Films', 'VFX'].map((tag, i, arr) => (
@@ -146,22 +144,6 @@ export default async function OpengraphImage() {
                 {i < arr.length - 1 ? <span style={{ color: GOLD, marginLeft: 14 }}>·</span> : null}
               </span>
             ))}
-          </div>
-        </div>
-
-        {/* bottom: gold rule + url, same footer language as the site's own emails */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: 4, width: 120, background: GOLD, borderRadius: 2, marginBottom: 20 }} />
-          <div
-            style={{
-              fontFamily: F_MONO,
-              fontSize: 15,
-              letterSpacing: 3,
-              textTransform: 'uppercase',
-              color: FG_DIM,
-            }}
-          >
-            SQBPICTURES.COM
           </div>
         </div>
       </div>
