@@ -95,31 +95,16 @@ export default async function OpengraphImage() {
           }}
         />
 
-        {/* top: wordmark */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={logoSrc}
-            width={92}
-            height={92}
-            alt=""
-            style={{ objectFit: 'contain', borderRadius: 16 }}
-          />
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              fontFamily: F_MONO,
-              fontSize: 17,
-              letterSpacing: 6,
-              textTransform: 'uppercase',
-              color: FG_DIM,
-            }}
-          >
-            <span style={{ color: FG, fontWeight: 700 }}>S&apos;QB PICTURES</span>
-            <span style={{ color: GOLD, marginTop: 5 }}>DELHI NCR &amp; MUMBAI</span>
-          </div>
-        </div>
+        {/* top: the mark, on its own — big enough to actually read, no
+           redundant "S'QB Pictures" text beside it (the mark already says it) */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={logoSrc}
+          width={188}
+          height={188}
+          alt=""
+          style={{ objectFit: 'contain', borderRadius: 28 }}
+        />
 
         {/* middle: the real headline + real capability index */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
