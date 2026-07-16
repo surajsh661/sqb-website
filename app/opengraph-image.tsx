@@ -72,7 +72,7 @@ export default async function OpengraphImage() {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          background: INK,
+          background: 'linear-gradient(160deg, #16120a 0%, #0E0E0E 45%, #0a0a0c 100%)',
           padding: '56px 72px',
           position: 'relative',
         }}
@@ -84,16 +84,54 @@ export default async function OpengraphImage() {
           width={1200}
           height={630}
           alt=""
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.06 }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.14 }}
         />
-        {/* faint warm glow behind the mark */}
+        {/* warm spotlight behind the mark, cinematic vignette at the corners */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(50% 55% at 50% 38%, rgba(245,197,24,0.14), transparent 70%)',
+            background: 'radial-gradient(46% 50% at 50% 36%, rgba(245,197,24,0.24), transparent 68%)',
           }}
         />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(0,0,0,0.55) 100%)',
+          }}
+        />
+
+        {/* corner brackets — a viewfinder / camera-frame motif, gold, thin.
+           Satori needs exactly the relevant position keys present (no
+           'auto', and no explicit undefined) — so build each corner's
+           style as its own plain object rather than toggling a shared one. */}
+        {(['tl', 'tr', 'bl', 'br'] as const).map((corner) => {
+          const BORDER = `3px solid ${GOLD}`;
+          const NONE = '3px solid transparent';
+          const isTop = corner === 'tl' || corner === 'tr';
+          const isLeft = corner === 'tl' || corner === 'bl';
+          const vertical = isTop ? { top: 34 } : { bottom: 34 };
+          const horizontal = isLeft ? { left: 34 } : { right: 34 };
+          return (
+            <div
+              key={corner}
+              style={{
+                position: 'absolute',
+                ...vertical,
+                ...horizontal,
+                width: 40,
+                height: 40,
+                borderTop: isTop ? BORDER : NONE,
+                borderBottom: isTop ? NONE : BORDER,
+                borderLeft: isLeft ? BORDER : NONE,
+                borderRight: isLeft ? NONE : BORDER,
+                opacity: 0.55,
+              }}
+            />
+          );
+        })}
 
         {/* the mark — big, centered, carrying the brand on its own */}
         <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
