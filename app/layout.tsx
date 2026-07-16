@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ['latin'], style: ['normal', 'italic'], variable:
 const jbMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
 const SITE = 'https://sqbpictures.com';
-const TITLE = "S'QB Pictures — Tell Your Story Today! | AI + Video Production";
+const TITLE = "S'QB Pictures — Tell Your Story Today! | Film & AI Production House";
 
 // ── Google Search Console verification ───────────────────────────────────────
 // 1. Go to https://search.google.com/search-console → add property
@@ -25,7 +25,7 @@ const TITLE = "S'QB Pictures — Tell Your Story Today! | AI + Video Production"
 //    then commit/deploy and click "Verify" in Search Console.
 const GOOGLE_SITE_VERIFICATION = ''; // e.g. 'AbC123_paste_your_code_here_xyz'
 const DESCRIPTION =
-  "S'QB Pictures is an AI-first video production house in Delhi NCR and Mumbai — ad films, TVCs, AI films, music videos and branded series for India's biggest brands. Filmmakers first, AI operators second.";
+  "S'QB Pictures is a video production house in Delhi NCR and Mumbai — ad films, TVCs, documentaries, web shows, music videos, AI films and branded series for India's biggest brands. Filmmakers first, AI second.";
 const SAME_AS = [
   'https://www.instagram.com/sqbpictures/',
   'https://www.linkedin.com/company/sqbpictures/',

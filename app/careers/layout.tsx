@@ -7,11 +7,11 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Careers — Join the Crew',
   description:
-    "We're hiring at S'QB Pictures — an AI-first film and production house in Delhi NCR. Creative and operations roles building AI films, commercials and original content.",
+    "We're hiring at S'QB Pictures — a film and video production house in Delhi NCR making ad films, documentaries, web shows, music videos and AI films. Creative and operations roles building original content.",
   alternates: { canonical: '/careers' },
   openGraph: {
     title: "Careers — S'QB Pictures",
-    description: 'Open roles at an AI-first film and production house in Delhi NCR.',
+    description: 'Open roles at a full-service film & video production house in Delhi NCR.',
     url: 'https://sqbpictures.com/careers',
   },
 };
