@@ -2,22 +2,19 @@ import { ImageResponse } from 'next/og';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-// The real 1200×630 social card — built to match the site's actual brand
-// system (Anton display, Inter body; ink/gold palette; film-grain texture)
-// and its actual positioning: filmmakers first, AI second, across ad films,
-// documentaries, web shows, music videos and AI film production — not a
-// narrow "AI production house" pitch.
-//
-// Layout: the full "S'QB pictures" lockup, big and centered, is the hero —
-// no repeated brand text beside it. The tagline + capability index sit below
-// it. No footer URL/rule — the logo carries the brand on its own.
+// The real 1200×630 social card — skeuomorphic: the brand's own embossed
+// metal-plate lockup (public/logo-embossed.png, a genuine debossed/engraved
+// treatment with a beveled highlight and a gold ink glint) mounted as a
+// physical plaque, with an engraved tagline beneath it. Positioning: real
+// service list (ad films, documentaries, web shows, music videos, AI films,
+// VFX) — filmmakers first, AI second, not a narrow "AI production house"
+// pitch.
 
 export const runtime = 'nodejs';
 export const alt = "S'QB Pictures — Tell Your Story Today";
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const INK = '#0E0E0E';
 const FG = '#F4ECDB';
 const FG_DIM = '#B5AE9F';
 const GOLD = '#F5C518';
@@ -42,10 +39,11 @@ async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuff
 }
 
 export default async function OpengraphImage() {
-  // The FULL lockup — "S'QB" + "pictures" — not the square monogram-only
-  // crop used for the favicon. That crop deliberately drops "pictures" to
-  // fit a tiny square icon; here we have room, and the word should read.
-  const logo = readFileSync(join(process.cwd(), 'public/logo-mark-full.png'));
+  // The genuine embossed treatment of the mark — debossed into a textured
+  // dark plate with a real bevel highlight, not a flat logo recolored to
+  // fake depth. Cropped tight around "S'QB pictures" with a generous
+  // texture margin so it reads as a mounted plaque, not a cutout.
+  const logo = readFileSync(join(process.cwd(), 'public/logo-embossed.png'));
   const logoSrc = `data:image/png;base64,${logo.toString('base64')}`;
   const grain = readFileSync(join(process.cwd(), 'public/sqb-grain.jpg'));
   const grainSrc = `data:image/jpeg;base64,${grain.toString('base64')}`;
@@ -64,6 +62,10 @@ export default async function OpengraphImage() {
   const F_DISPLAY = anton ? 'Anton' : 'sans-serif';
   const F_BODY = interReg || interBold ? 'Inter' : 'sans-serif';
 
+  // Source plate is 1650×920 (~1.7935:1) — hold that ratio at display size.
+  const PLATE_W = 680;
+  const PLATE_H = Math.round(PLATE_W * (920 / 1650));
+
   return new ImageResponse(
     (
       <div
@@ -72,48 +74,45 @@ export default async function OpengraphImage() {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          background: 'linear-gradient(160deg, #16120a 0%, #0E0E0E 45%, #0a0a0c 100%)',
-          padding: '56px 72px',
+          alignItems: 'center',
+          background: 'linear-gradient(160deg, #1c1a17 0%, #121110 45%, #0a0a0a 100%)',
+          padding: '26px 70px 22px',
           position: 'relative',
         }}
       >
-        {/* film-grain texture, matching the rest of the brand system */}
+        {/* film-grain texture — same material as the plate itself */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={grainSrc}
           width={1200}
           height={630}
           alt=""
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.14 }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.16 }}
         />
-        {/* warm spotlight behind the mark, cinematic vignette at the corners */}
+        {/* warm spotlight behind the plate, vignette at the corners */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(46% 50% at 50% 36%, rgba(245,197,24,0.24), transparent 68%)',
+            background: 'radial-gradient(50% 55% at 50% 34%, rgba(245,197,24,0.16), transparent 70%)',
           }}
         />
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background:
-              'radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(0,0,0,0.55) 100%)',
+            background: 'radial-gradient(120% 95% at 50% 50%, transparent 55%, rgba(0,0,0,0.6) 100%)',
           }}
         />
 
-        {/* corner brackets — a viewfinder / camera-frame motif, gold, thin.
-           Satori needs exactly the relevant position keys present (no
-           'auto', and no explicit undefined) — so build each corner's
-           style as its own plain object rather than toggling a shared one. */}
+        {/* corner brackets — viewfinder / camera-frame marks, gold, thin */}
         {(['tl', 'tr', 'bl', 'br'] as const).map((corner) => {
           const BORDER = `3px solid ${GOLD}`;
           const NONE = '3px solid transparent';
           const isTop = corner === 'tl' || corner === 'tr';
           const isLeft = corner === 'tl' || corner === 'bl';
-          const vertical = isTop ? { top: 34 } : { bottom: 34 };
-          const horizontal = isLeft ? { left: 34 } : { right: 34 };
+          const vertical = isTop ? { top: 30 } : { bottom: 30 };
+          const horizontal = isLeft ? { left: 30 } : { right: 30 };
           return (
             <div
               key={corner}
@@ -121,35 +120,44 @@ export default async function OpengraphImage() {
                 position: 'absolute',
                 ...vertical,
                 ...horizontal,
-                width: 40,
-                height: 40,
+                width: 36,
+                height: 36,
                 borderTop: isTop ? BORDER : NONE,
                 borderBottom: isTop ? NONE : BORDER,
                 borderLeft: isLeft ? BORDER : NONE,
                 borderRight: isLeft ? NONE : BORDER,
-                opacity: 0.55,
+                opacity: 0.45,
               }}
             />
           );
         })}
 
-        {/* the mark — big, centered, carrying the brand on its own */}
-        <div style={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        {/* the plate — mounted like a real plaque: bevel frame + drop shadow */}
+        <div
+          style={{
+            display: 'flex',
+            marginTop: 16,
+            borderRadius: 16,
+            border: '2px solid rgba(245,197,24,0.32)',
+            boxShadow: '0 26px 46px rgba(0,0,0,0.55)',
+            overflow: 'hidden',
+          }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={logoSrc} width={520} height={282} alt="" style={{ objectFit: 'contain' }} />
+          <img src={logoSrc} width={PLATE_W} height={PLATE_H} alt="" style={{ objectFit: 'cover', display: 'block' }} />
         </div>
 
-        {/* the tagline + capability index, anchored to the bottom */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* the tagline, sitting on the same textured material as the plate */}
+        <div style={{ display: 'flex', marginTop: 20 }}>
           <div
             style={{
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'baseline',
               justifyContent: 'center',
-              gap: 18,
+              gap: 16,
               fontFamily: F_DISPLAY,
-              fontSize: 66,
+              fontSize: 50,
               lineHeight: 0.98,
               letterSpacing: '0.005em',
               textTransform: 'uppercase',
@@ -160,29 +168,30 @@ export default async function OpengraphImage() {
             <span style={{ display: 'flex', color: GOLD }}>STORY</span>
             <span style={{ display: 'flex' }}>TODAY.</span>
           </div>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'baseline',
-              justifyContent: 'center',
-              gap: 14,
-              marginTop: 18,
-              fontFamily: F_BODY,
-              fontWeight: 400,
-              fontSize: 22,
-              color: FG_DIM,
-              maxWidth: 1050,
-              textAlign: 'center',
-            }}
-          >
-            {['Ad Films & TVCs', 'Documentaries', 'Web Shows', 'Music Videos', 'AI Films', 'VFX'].map((tag, i, arr) => (
-              <span key={tag} style={{ display: 'flex' }}>
-                {tag}
-                {i < arr.length - 1 ? <span style={{ color: GOLD, marginLeft: 14 }}>·</span> : null}
-              </span>
-            ))}
-          </div>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'baseline',
+            justifyContent: 'center',
+            gap: 12,
+            marginTop: 12,
+            fontFamily: F_BODY,
+            fontWeight: 400,
+            fontSize: 19,
+            color: FG_DIM,
+            maxWidth: 1050,
+            textAlign: 'center',
+          }}
+        >
+          {['Ad Films & TVCs', 'Documentaries', 'Web Shows', 'Music Videos', 'AI Films', 'VFX'].map((tag, i, arr) => (
+            <span key={tag} style={{ display: 'flex' }}>
+              {tag}
+              {i < arr.length - 1 ? <span style={{ color: GOLD, marginLeft: 12 }}>·</span> : null}
+            </span>
+          ))}
         </div>
       </div>
     ),
