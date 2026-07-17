@@ -105,41 +105,17 @@ export default async function OpengraphImage() {
           }}
         />
 
-        {/* corner brackets — viewfinder / camera-frame marks, gold, thin */}
-        {(['tl', 'tr', 'bl', 'br'] as const).map((corner) => {
-          const BORDER = `3px solid ${GOLD}`;
-          const NONE = '3px solid transparent';
-          const isTop = corner === 'tl' || corner === 'tr';
-          const isLeft = corner === 'tl' || corner === 'bl';
-          const vertical = isTop ? { top: 30 } : { bottom: 30 };
-          const horizontal = isLeft ? { left: 30 } : { right: 30 };
-          return (
-            <div
-              key={corner}
-              style={{
-                position: 'absolute',
-                ...vertical,
-                ...horizontal,
-                width: 36,
-                height: 36,
-                borderTop: isTop ? BORDER : NONE,
-                borderBottom: isTop ? NONE : BORDER,
-                borderLeft: isLeft ? BORDER : NONE,
-                borderRight: isLeft ? NONE : BORDER,
-                opacity: 0.45,
-              }}
-            />
-          );
-        })}
-
-        {/* the plate — mounted like a real plaque: bevel frame + drop shadow */}
+        {/* the plate — mounted like a real plaque: gold bezel that actually
+           glows against the dark card, plus a real drop shadow lifting it
+           off the page. No corner brackets — they read as clutter, not
+           frame. */}
         <div
           style={{
             display: 'flex',
-            marginTop: 16,
+            marginTop: 20,
             borderRadius: 16,
-            border: '2px solid rgba(245,197,24,0.32)',
-            boxShadow: '0 26px 46px rgba(0,0,0,0.55)',
+            border: '2px solid rgba(245,197,24,0.55)',
+            boxShadow: '0 0 0 1px rgba(245,197,24,0.12), 0 0 60px rgba(245,197,24,0.18), 0 26px 50px rgba(0,0,0,0.6)',
             overflow: 'hidden',
           }}
         >
