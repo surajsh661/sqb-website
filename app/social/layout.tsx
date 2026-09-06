@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { breadcrumbJsonLd } from '@/lib/breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'Social & Creator Content — CAAS',
@@ -14,5 +15,15 @@ export const metadata: Metadata = {
 };
 
 export default function SocialLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd({ name: 'Social', path: '/social' })),
+        }}
+      />
+      {children}
+    </>
+  );
 }

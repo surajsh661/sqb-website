@@ -31,4 +31,10 @@ export const ROLE_BRIEF: Record<string, RoleBrief> = {
     salary: '₹3,00,000 – ₹4,20,000 / year',
     note: 'No equity. Full-time role.',
   },
+  'open-application': {
+    // An open application spans every craft and seniority — quoting one band
+    // would be misleading, so we say plainly what decides it.
+    salary: null,
+    note: 'Set against the craft, the scope and your experience — we discuss it on the first call.',
+  },
 };

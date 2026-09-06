@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { breadcrumbJsonLd } from '@/lib/breadcrumbs';
 import { SQB_FILMS, HERO_POSTERS } from '@/lib/data';
 import { thumbSources } from '@/lib/video-utils';
 import type { Film } from '@/lib/types';
@@ -87,6 +88,12 @@ export default function WorkLayout({ children }: { children: React.ReactNode }) 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FILMS_JSONLD) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd({ name: 'Video', path: '/work' })),
+        }}
       />
       {children}
     </>

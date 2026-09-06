@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { breadcrumbJsonLd } from '@/lib/breadcrumbs';
 import { getPublicRoles } from '@/lib/careers-store';
 import './careers.css';
 
@@ -21,7 +22,9 @@ export const metadata: Metadata = {
 // revealed only when a candidate proceeds to apply.
 export default async function CareersLayout({ children }: { children: React.ReactNode }) {
   const roles = await getPublicRoles().catch(() => []);
-  const jobs = roles.map((r) => ({
+  // The standing open application is excluded: Google requires a JobPosting to
+  // describe one concrete opening, and "pitch yourself for any craft" isn't one.
+  const jobs = roles.filter((r) => !r.openApplication).map((r) => ({
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
     identifier: { '@type': 'PropertyValue', name: "S'QB Pictures", value: r.id },
@@ -57,6 +60,12 @@ export default async function CareersLayout({ children }: { children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jobs) }}
         />
       )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd({ name: 'Careers', path: '/careers' })),
+        }}
+      />
       {children}
     </>
   );

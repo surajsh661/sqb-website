@@ -27,6 +27,11 @@ export interface Role {
   title: string;
   subtitle?: string;
   category: RoleCategory;     // powers the Creative / Operations filter
+  /** True for the standing "pitch yourself" listing — not a specific vacancy.
+   *  It always shows (whatever the filter), is styled apart from the real
+   *  slates, and is deliberately kept OUT of JobPosting structured data:
+   *  Google requires a JobPosting to be one concrete opening. */
+  openApplication?: boolean;
   dept: string;
   type: string;              // Contract · Full Time
   location: string;
@@ -194,5 +199,71 @@ export const SQB_ROLES: Role[] = [
     validThrough: '2026-10-31',
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The standing open application. A production house needs crafts that are
+// never all listed at once — production designers, executive and line
+// producers, DOPs, art directors, colourists, sound, writers, ADs. This listing
+// lets them pitch themselves through the same flow (screening → résumé → email
+// to hr@), so the studio builds a bench instead of losing them to a mailto.
+//
+// It is NOT part of SQB_ROLES: that array is the real vacancies. The store
+// (lib/careers-store.ts) merges this in so it is always present, and
+// app/careers/layout.tsx keeps it out of JobPosting structured data.
+// ─────────────────────────────────────────────────────────────────────────────
+export const OPEN_APPLICATION_ID = 'open-application';
+
+export const OPEN_APPLICATION_ROLE: Role = {
+  id: OPEN_APPLICATION_ID,
+  category: 'creative',
+  openApplication: true,
+  title: 'Pitch Yourself',
+  subtitle: 'Open application · any craft',
+  dept: 'Any Department',
+  type: 'Contract or Full Time',
+  location: 'Delhi NCR (project-dependent)',
+  onsite: 'On-site, hybrid or per-project',
+  experience: '2+ yrs in film or video production',
+  lede: "Your craft isn't on the list? Make your case anyway.",
+  description:
+    "We don't list every seat we hire for. If you're a production designer, executive or line producer, DOP, art director, colourist, sound designer, writer, assistant director — or anything else a production house runs on — pitch yourself here. Tell us what you do, show us the work, and we'll keep you on the bench for the projects that need you. We hire on the work, not the résumé.",
+  qualifications: [
+    'At least 2 years of professional experience in film, video or content production',
+    'A body of work you can show — reel, portfolio, credits or shipped projects',
+    'Clarity about the craft you own and the role you want to play on a set or in post',
+    'Comfortable working to a brief, a deadline and a production schedule',
+  ],
+  bonus: [
+    'Experience across both live-action shoots and post-production',
+    'Credits on ad films, TVCs, documentaries, web shows or music videos',
+    'Curiosity about where AI tools fit into a real production pipeline',
+  ],
+  tools: false,
+  questions: [
+    {
+      id: 'craft',
+      kind: 'text',
+      required: true,
+      placeholder: 'Production Designer, Executive Producer, DOP…',
+      label: 'Which craft or role are you pitching for?',
+    },
+    yrs('production', 'How many years of film or video production experience do you have?'),
+    {
+      id: 'pitch',
+      kind: 'text',
+      required: true,
+      placeholder: 'The one project that proves it…',
+      label: 'In a line — what would you bring to S’QB?',
+    },
+    {
+      id: 'ncr',
+      kind: 'boolean',
+      required: true,
+      label: 'Are you able to work on projects based in Delhi NCR?',
+    },
+  ],
+  datePosted: '2026-07-01',
+  validThrough: '2027-06-30',
+};
 
 export const roleById = (id: string) => SQB_ROLES.find((r) => r.id === id) || null;

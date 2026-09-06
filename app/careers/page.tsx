@@ -8,7 +8,7 @@ import QuoteForm from '@/components/QuoteForm';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { IconX } from '@/components/Icons';
-import { SQB_ROLES, AI_MODELS, type Role } from '@/lib/careers';
+import { SQB_ROLES, OPEN_APPLICATION_ROLE, AI_MODELS, type Role } from '@/lib/careers';
 import { isValidEmail, isDisposableEmail } from '@/lib/spam';
 import { setupReveal } from '@/lib/video-utils';
 
@@ -61,7 +61,7 @@ export default function CareersPage() {
   const [filter, setFilter] = useState<'all' | 'creative' | 'operations'>('all');
   // Live roles from the admin-managed store. Seeded with the code roles so the
   // page renders instantly and never breaks if the store is unavailable.
-  const [roles, setRoles] = useState<Role[]>(SQB_ROLES);
+  const [roles, setRoles] = useState<Role[]>([...SQB_ROLES, OPEN_APPLICATION_ROLE]);
 
   useEffect(() => {
     let alive = true;
@@ -77,7 +77,11 @@ export default function CareersPage() {
     { key: 'creative', label: 'Creative' },
     { key: 'operations', label: 'Operations' },
   ];
-  const shownRoles = filter === 'all' ? roles : roles.filter((r) => r.category === filter);
+  // The open application isn't a vacancy: it's kept out of the counts and the
+  // filters, and pinned after the real slates so it's always reachable.
+  const vacancies = roles.filter((r) => !r.openApplication);
+  const openApp = roles.find((r) => r.openApplication) || null;
+  const shownRoles = filter === 'all' ? vacancies : vacancies.filter((r) => r.category === filter);
 
   useEffect(() => { setupReveal(); }, [roles]);
 
@@ -108,9 +112,9 @@ export default function CareersPage() {
         <div className="cr-rec"><span className="cr-rec-dot" />REC · NOW CASTING</div>
         <h1 className="cr-title">JOIN THE <em>CREW</em></h1>
         <p className="cr-blurb">
-          We&apos;re an AI-first film house in Delhi NCR. Filmmakers who happen to be very good with AI —
-          generating and cutting at a pace the old pipeline can&apos;t hold.
-          We hire on the work, not the r&eacute;sum&eacute;.
+          We&apos;re a film house in Delhi NCR — ad films, documentaries, web shows, music videos and AI film.
+          Filmmakers who happen to be very good with AI, shooting and generating at a pace the old
+          pipeline can&apos;t hold. We hire on the work, not the r&eacute;sum&eacute;.
         </p>
       </section>
 
@@ -123,7 +127,7 @@ export default function CareersPage() {
 
         <div className="cr-filter" role="tablist" aria-label="Filter roles">
           {TABS.map((t) => {
-            const n = t.key === 'all' ? roles.length : roles.filter((r) => r.category === t.key).length;
+            const n = t.key === 'all' ? vacancies.length : vacancies.filter((r) => r.category === t.key).length;
             return (
               <button
                 key={t.key}
@@ -171,9 +175,34 @@ export default function CareersPage() {
           ))}
         </div>
 
+        {/* The standing open application — always here, whatever the filter. */}
+        {openApp && (
+          <article
+            className="cr-pitch"
+            role="button"
+            tabIndex={0}
+            onClick={() => openRole(openApp)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRole(openApp); } }}
+            aria-label={`${openApp.title} — open application, pitch yourself for any craft`}
+          >
+            <div className="cr-pitch-tag">OFF SCRIPT · OPEN APPLICATION</div>
+            <h3 className="cr-pitch-title">
+              Don&apos;t see your <em>seat</em>?
+            </h3>
+            <p className="cr-pitch-copy">
+              Production designers, executive and line producers, DOPs, art directors, colourists,
+              sound, writers, ADs — we don&apos;t list every seat we hire for. Pitch yourself and
+              we&apos;ll keep you on the bench for the projects that need you.
+            </p>
+            <span className="cr-open">
+              Pitch yourself <span aria-hidden="true">→</span>
+            </span>
+          </article>
+        )}
+
         <p className="cr-nofit">
-          Don&apos;t see your seat? Send your reel to{' '}
-          <a href="mailto:hr@sqbpictures.com?subject=Open%20application">hr@sqbpictures.com</a> anyway.
+          Prefer email? Send your reel to{' '}
+          <a href="mailto:hr@sqbpictures.com?subject=Open%20application">hr@sqbpictures.com</a>.
         </p>
       </section>
 

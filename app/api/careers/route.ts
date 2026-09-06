@@ -109,6 +109,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'The résumé link doesn’t look like a valid URL.' }, { status: 400 });
   }
 
+  // Every question marked `required` must actually carry an answer. The apply
+  // form already gates on this, but the check has to exist server-side too —
+  // otherwise a direct POST yields an application with the screening answers
+  // blank, which for the open application means no craft and no pitch: the
+  // only two fields that make it worth reading.
+  for (const q of role.questions) {
+    if (!q.required) continue;
+    if (String((payload.answers || {})[q.id] ?? '').trim() === '') {
+      return NextResponse.json(
+        { error: `Please answer: ${q.label}` },
+        { status: 400 },
+      );
+    }
+  }
+
   // Enforce the hiring bar: every numeric question with a `min` must be met.
   for (const q of role.questions) {
     if (q.kind !== 'number' || q.min == null) continue;

@@ -64,6 +64,10 @@ function sanitizeRole(input: unknown, existingIds: string[], isNew: boolean): St
     title,
     subtitle: str(o.subtitle, 80).trim() || undefined,
     category: o.category === 'operations' ? 'operations' : 'creative',
+    // Preserved so editing the standing open application in the admin doesn't
+    // silently demote it into a normal vacancy (which would then be emitted as
+    // JobPosting structured data and lose its distinct card).
+    ...(o.openApplication ? { openApplication: true as const } : {}),
     dept: str(o.dept, 60).trim() || 'Team',
     type: str(o.type, 40).trim() || 'Full Time',
     location: str(o.location, 100).trim() || 'Delhi NCR',

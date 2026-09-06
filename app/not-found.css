@@ -1,0 +1,130 @@
+/* 404 — same ink/gold system as the rest of the site, no new tokens. */
+
+.nf-wrap {
+  min-height: 78vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 22px 80px;
+}
+
+.nf-slate {
+  width: 100%;
+  max-width: 760px;
+}
+
+.nf-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 20px;
+}
+.nf-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.nf-title {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(38px, 7.5vw, 74px);
+  line-height: 0.98;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin: 0 0 20px;
+}
+.nf-title em { font-style: normal; color: var(--accent); }
+
+.nf-copy {
+  color: var(--fg-dim);
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 58ch;
+  margin: 0 0 38px;
+}
+
+.nf-links {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.nf-link {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 17px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  text-decoration: none;
+  color: var(--fg);
+  transition: padding-left 0.22s ease, color 0.22s, border-color 0.22s;
+}
+.nf-link:hover {
+  padding-left: 16px;
+  color: var(--accent);
+  border-color: rgba(245, 197, 24, 0.35);
+}
+.nf-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.nf-link-label {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: 21px;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  min-width: 118px;
+}
+.nf-link-hint {
+  flex: 1;
+  font-size: 14px;
+  color: var(--fg-dim);
+}
+.nf-link-arrow {
+  color: var(--accent);
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+.nf-link:hover .nf-link-arrow { opacity: 1; }
+
+/* Actions — used by the crash boundary (app/error.tsx). */
+.nf-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 26px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: #0e0e0e;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 0.18s, transform 0.12s;
+}
+.nf-btn:hover { filter: brightness(1.07); }
+.nf-btn:active { transform: translateY(1px); }
+.nf-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nf-btn.ghost {
+  background: transparent;
+  color: var(--fg);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.nf-btn.ghost:hover { border-color: var(--accent); color: var(--accent); filter: none; }
+
+@media (max-width: 620px) {
+  .nf-wrap { padding: 96px 18px 60px; }
+  .nf-link { flex-direction: column; gap: 4px; align-items: flex-start; }
+  .nf-link-hint { font-size: 13px; }
+  .nf-link-arrow { display: none; }
+}

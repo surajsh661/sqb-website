@@ -3,6 +3,7 @@ import Script from 'next/script';
 import { Anton, Inter, JetBrains_Mono } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
+import CrashReporter from '@/components/CrashReporter';
 import './styles.css';
 import './page-styles.css';
 
@@ -122,14 +123,26 @@ const JSONLD = {
       inLanguage: 'en-IN',
     },
     {
-      '@type': 'ProfessionalService',
+      // ProfessionalService is a LocalBusiness subtype; both are declared so the
+      // local-business intent is explicit to parsers that don't walk the
+      // schema.org hierarchy. Address + phone are what actually earn the local
+      // rich result — geo/openingHours are omitted rather than invented.
+      '@type': ['ProfessionalService', 'LocalBusiness'],
       '@id': `${SITE}/#service`,
-      name: "S'QB Pictures — AI & Video Production House",
+      name: "S'QB Pictures — Film & Video Production House",
       url: SITE,
       image: `${SITE}/logo-dark.png`,
       description: DESCRIPTION,
       parentOrganization: { '@id': `${SITE}/#org` },
       email: 'surajsharma@sqbpictures.com',
+      telephone: '+91-90130-82883',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Sector 4',
+        addressLocality: 'Noida',
+        addressRegion: 'Uttar Pradesh',
+        addressCountry: 'IN',
+      },
       areaServed: [
         { '@type': 'City', name: 'Delhi NCR' },
         { '@type': 'City', name: 'New Delhi' },
@@ -152,7 +165,7 @@ const JSONLD = {
         {
           '@type': 'Question',
           name: 'Is S’QB Pictures an AI production house?',
-          acceptedAnswer: { '@type': 'Answer', text: "Yes. S'QB Pictures is an AI-first video and AI production house — it pairs cinematic, filmmaker-led craft with generative-AI pipelines to make ad films, TVCs, AI films, music videos and branded series." },
+          acceptedAnswer: { '@type': 'Answer', text: "Yes — AI production is one of the things we do. S'QB Pictures is a film and video production house that pairs cinematic, filmmaker-led craft with generative-AI pipelines, across ad films, TVCs, documentaries, web shows, music videos, AI films and branded series." },
         },
         {
           '@type': 'Question',
@@ -204,6 +217,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Real-user performance (LCP/CLS/INP) + traffic — active on Vercel. */}
         <SpeedInsights />
         <Analytics />
+        {/* Reports JS crashes to /api/client-error → Vercel logs. */}
+        <CrashReporter />
       </body>
     </html>
   );
