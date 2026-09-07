@@ -62,6 +62,7 @@ export const COPY = {
     eyebrowLabel: `BY THE NUMBERS · GLOBAL REACH`,
     clientsLabel: `CLIENTS // INDIAN + GLOBAL`,
     filmsLabel: `FILMS DELIVERED`,
+    minutesLabel: `MINUTES OF PRODUCTION // EVERY MONTH`,
     roasLabel: `RETURN ON AD SPEND`,
   },
 
@@ -199,7 +200,7 @@ export const COPY = {
       { name: `Documentary & Long-Form`, desc: `Long-form stories people actually finish.` },
     ],
 
-    // The big "150 → 500+" number is set in code; edit the words around it.
+    // The big "300 → 1000+" number is set in code; edit the words around it.
     scaleTitle: `MINUTES / MONTH`,
     scaleSub: `Real volume, without ever dropping the grade.`,
     scaleFine: `Short-form digital, animated explainers, launch videos, high-fidelity commercial spots — delivered every month for India's biggest brands.`,

@@ -211,7 +211,7 @@ function WorkInner() {
 
       <section className="work-scale">
         <div className="ws-left">
-          <div className="ws-num"><CountUp from={150} to={500} suffix="+" /></div>
+          <div className="ws-num"><CountUp from={300} to={1000} suffix="+" /></div>
           <h2 className="ws-title">{rich(COPY.work.scaleTitle)}</h2>
           <p className="ws-sub">{COPY.work.scaleSub}</p>
           <p className="ws-fine">{COPY.work.scaleFine}</p>

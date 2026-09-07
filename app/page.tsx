@@ -104,6 +104,10 @@ export default function HomePage() {
                 <div className="num"><CountUp end={10000} suffix="+" /></div>
                 <div className="label">{COPY.stats.filmsLabel}</div>
               </div>
+              <div className="stat">
+                <div className="num"><CountUp end={1000} suffix="+" /></div>
+                <div className="label">{COPY.stats.minutesLabel}</div>
+              </div>
             </div>
           </div>
           <div className="sm-grid-map">

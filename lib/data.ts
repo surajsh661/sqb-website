@@ -577,4 +577,11 @@ export const SQB_LOGOS: ClientLogo[] = [
   { name: 'SpeakIn',            src: '/clients/speakin.png',   size: 1.06 },
   { name: 'S&F',                src: '/clients/snf.png',       size: 1.20, tone: 'invert' },
   { name: 'TEDx',               src: '/clients/tedx.png',      size: 1.10 },
+  // Banking. Artwork is supplied as white-on-transparent so the default
+  // silhouette filter reads correctly in both themes; for HSBC the hexagon's
+  // white counterform is knocked out of the alpha, otherwise brightness(0)
+  // flattens it into a solid diamond and the mark stops being HSBC.
+  { name: 'Wells Fargo',        src: '/clients/wellsfargo.png', size: 1.15 },
+  { name: 'Citi',               src: '/clients/citi.png',       size: 1.20 },
+  { name: 'HSBC',               src: '/clients/hsbc.png',       size: 1.00 },
 ];
