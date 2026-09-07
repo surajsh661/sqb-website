@@ -2965,10 +2965,13 @@ textarea:focus-visible,
 
 .ff-inner {
   position: relative;
-  max-width: 1240px; margin: 0 auto;
+  max-width: 1340px; margin: 0 auto;
   display: grid;
-  grid-template-columns: 330px minmax(0, 1fr);
-  gap: 64px;
+  /* The one-sheet is the hero — it scales with the viewport instead of sitting
+     at a fixed width, so it stays a poster on a laptop and gets properly big
+     on a wide display. */
+  grid-template-columns: clamp(320px, 32vw, 500px) minmax(0, 1fr);
+  gap: 72px;
   align-items: center;
 }
 
@@ -3123,7 +3126,7 @@ textarea:focus-visible,
 @media (max-width: 940px) {
   .ff, .ff-compact { padding: 78px 20px 74px; }
   .ff-inner { grid-template-columns: 1fr; gap: 34px; justify-items: start; }
-  .ff-poster { max-width: 268px; }
+  .ff-poster { max-width: 340px; }
   .ff-lede { max-width: none; }
   .ff-lb { padding: 0 16px; }
   .ff-lb-x { top: 14px; right: 16px; }
