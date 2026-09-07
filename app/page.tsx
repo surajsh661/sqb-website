@@ -13,6 +13,7 @@ import TicketMenu from '@/components/TicketMenu';
 import QuoteForm from '@/components/QuoteForm';
 import CaseStudy from '@/components/CaseStudy';
 import ClientLogos from '@/components/ClientLogos';
+import FeatureFilm from '@/components/FeatureFilm';
 import CountUp from '@/components/CountUp';
 import ManifestoHeadline from '@/components/ManifestoHeadline';
 import CameraFilm from '@/components/CameraFilm';
@@ -91,6 +92,10 @@ export default function HomePage() {
         </div>
       </section>
       <ClientLogos />
+
+      {/* Our first theatrical credit — the single biggest proof point, so it
+          sits right after the client wall and ahead of the numbers. */}
+      <FeatureFilm compact />
 
       <section className="section stats-map-section" data-screen-label="04 Numbers + Reach">
         <div className="sm-grid">

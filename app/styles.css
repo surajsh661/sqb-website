@@ -2938,3 +2938,142 @@ textarea:focus-visible,
     animation: none !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Theatrical feature band (components/FeatureFilm.tsx)
+   A cinema release is the biggest single credential on the site, so it gets a
+   full-width band with the key art at the top of the visual hierarchy — not a
+   tile in the film grid.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.ff {
+  padding: 110px 32px 100px;
+  max-width: 1500px;
+  margin: 0 auto;
+  border-top: 1px solid var(--rule);
+  position: relative;
+}
+.ff-compact { padding: 90px 32px 90px; }
+
+.ff-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 30px;
+}
+.ff-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.ff-grid {
+  display: grid;
+  /* Copy leads, key art supports. The art is also hard-capped below — at full
+     column width it swamped the band and read like a banner ad. */
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 56px;
+  align-items: center;
+}
+.ff-compact .ff-grid { align-items: center; }
+
+/* ── key art / trailer ── */
+.ff-media { position: relative; max-width: 430px; width: 100%; }
+.ff-play {
+  position: relative; display: block; width: 100%;
+  padding: 0; border: 1px solid var(--rule); border-radius: 8px;
+  overflow: hidden; cursor: pointer; background: #0b0b0b;
+  transition: border-color .3s, transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s;
+}
+.ff-play:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 30px 70px rgba(0,0,0,.55);
+}
+.ff-play:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.ff-play img { display: block; width: 100%; height: auto; }
+.ff-play-btn {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 58px; height: 58px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(245,197,24,.94); color: #1a1410;
+  font-size: 18px; padding-left: 4px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+  transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+.ff-play:hover .ff-play-btn { transform: translate(-50%, -50%) scale(1.08); }
+.ff-play-label {
+  position: absolute; left: 16px; bottom: 14px;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px; letter-spacing: .22em; color: var(--fg);
+  background: rgba(0,0,0,.6); padding: 6px 10px; border-radius: 3px;
+}
+.ff-frame {
+  width: 100%; aspect-ratio: 2 / 1; border: 0; border-radius: 8px;
+  display: block; background: #000;
+}
+
+/* ── copy ── */
+.ff-title {
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(48px, 6.4vw, 96px);
+  line-height: .9; letter-spacing: -0.015em;
+  text-transform: uppercase; color: var(--fg);
+  margin: 0 0 18px;
+}
+.ff-title em {
+  display: block; font-style: normal;
+  font-size: 0.34em; letter-spacing: .16em;
+  color: var(--accent); margin-top: 12px;
+}
+.ff-credit {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 8px;
+}
+.ff-studios {
+  font-size: 13px; color: var(--fg-dim); margin: 0 0 22px; line-height: 1.5;
+}
+.ff-lede {
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(20px, 2.2vw, 27px); line-height: 1.2;
+  text-transform: uppercase; color: var(--fg);
+  margin: 0 0 16px; max-width: 22ch;
+}
+.ff-body {
+  color: var(--fg-dim); font-size: 15.5px; line-height: 1.65;
+  max-width: 58ch; margin: 0 0 26px;
+}
+
+.ff-meta {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 18px 22px; margin: 0 0 30px;
+  padding-top: 22px; border-top: 1px solid var(--rule);
+}
+.ff-meta dt {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--fg-dim); margin-bottom: 6px;
+}
+.ff-meta dd { margin: 0; font-size: 14px; color: var(--fg); }
+
+.ff-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.ff-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 24px; border-radius: 4px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px; font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; text-decoration: none;
+  border: 1px solid var(--fg-dim); color: var(--fg);
+  transition: transform .25s, border-color .25s, background .25s;
+}
+.ff-btn:hover { transform: translateY(-2px); border-color: var(--fg); }
+.ff-btn.primary { background: var(--accent); color: #1a1410; border-color: var(--accent); }
+.ff-btn.primary:hover { background: var(--accent-2); border-color: var(--accent-2); }
+
+@media (max-width: 900px) {
+  .ff, .ff-compact { padding: 76px 20px 70px; }
+  .ff-grid { grid-template-columns: 1fr; gap: 34px; }
+  .ff-lede { max-width: none; }
+  .ff-play-btn { width: 60px; height: 60px; font-size: 19px; }
+}

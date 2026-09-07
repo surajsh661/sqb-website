@@ -1,6 +1,6 @@
 import type {
   Film, AILabData, Vertical, TeamData, Testimonial,
-  BTS, GenreOption, ClientLogo, Creator, Cocoon,
+  BTS, GenreOption, ClientLogo, Creator, Cocoon, FeatureFilm,
 } from './types';
 
 // type: "vm" Vimeo · "gd" Google Drive · "yt" YouTube · "ig" Instagram
@@ -585,3 +585,34 @@ export const SQB_LOGOS: ClientLogo[] = [
   { name: 'Citi',               src: '/clients/citi.png',       size: 1.20 },
   { name: 'HSBC',               src: '/clients/hsbc.png',       size: 1.00 },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Theatrical feature. Our first cinema release — a different format from the
+// rest of the reel, so it gets its own band on the home and Video pages rather
+// than a tile in the library grid.
+//
+// The credit below is taken verbatim from the film's own poster ("ANIMATION —
+// S'QB PICTURES"). VFX on this film is credited to ASR VFX, so we deliberately
+// do NOT claim it: overstating a credit on a released feature is the fastest
+// way to lose the next one.
+// ─────────────────────────────────────────────────────────────────────────────
+export const SQB_FEATURE: FeatureFilm = {
+  id: 'navya-chakra',
+  title: 'NAVYA CHAKRA',
+  subtitle: 'PSYCON WORLD',
+  credit: 'AI ANIMATION BY S’QB PICTURES',
+  studios: 'First Film Studios LLP · Low Agers Production & Cine Arts (LAPCA)',
+  status: 'IN CINEMAS · 26 JUNE 2026',
+  year: '2026',
+  runtime: '1H 40M',
+  language: 'HINDI',
+  genre: 'PSYCHOLOGICAL THRILLER',
+  director: 'Amit Dixit',
+  imdb: 'https://www.imdb.com/title/tt41475167/',
+  trailerId: 'Y11Zsw6DzZU',
+  poster: '/posters/navya-chakra.jpg',
+  wide: '/posters/navya-chakra-wide.jpg',
+  lede: 'Our animation went to the big screen.',
+  body:
+    'A Hindi psychological thriller about a chain of killings with no visible thread between them — and the investigation that follows the pattern into somewhere stranger. Released nationwide in cinemas on 26 June 2026. S’QB Pictures built the AI animation for the film: our first theatrical credit, and proof the pipeline holds at feature length and cinema scale.',
+};

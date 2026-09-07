@@ -13,6 +13,7 @@ import TrustedBlock from '@/components/TrustedBlock';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import CountUp from '@/components/CountUp';
+import FeatureFilm from '@/components/FeatureFilm';
 import { IconX } from '@/components/Icons';
 import {
   SQB_FILMS, SQB_GENRES, SQB_FEATURED_DEFAULT, SQB_COCOON,
@@ -208,6 +209,9 @@ function WorkInner() {
           })}
         </div>
       </section>
+
+      {/* Capabilities → the marquee proof of them → volume → the library. */}
+      <FeatureFilm />
 
       <section className="work-scale">
         <div className="ws-left">

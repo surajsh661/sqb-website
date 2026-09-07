@@ -104,3 +104,30 @@ export interface Cocoon {
   blurb: string;
   music: { id: string; title: string; role: string; type: VideoType; videoId: string }[];
 }
+
+/** A theatrical feature. Kept separate from `Film` (the reel library) because a
+ *  cinema release is a different format with different proof points — a release
+ *  date, a certification, an IMDb page, a studio credit — and it earns its own
+ *  band rather than a tile in the grid. */
+export interface FeatureFilm {
+  id: string;
+  title: string;
+  subtitle?: string;
+  /** Our credit on the film, exactly as it reads on the poster. */
+  credit: string;
+  /** Whose film it is — the producing studios. */
+  studios: string;
+  status: string;          // e.g. "IN CINEMAS · 26 JUNE 2026"
+  year: string;
+  runtime: string;
+  language: string;
+  genre: string;
+  director: string;
+  imdb: string;
+  /** YouTube id for the official trailer. */
+  trailerId: string;
+  poster: string;          // portrait key art
+  wide: string;            // 2:1 banner
+  lede: string;
+  body: string;
+}
