@@ -2941,139 +2941,190 @@ textarea:focus-visible,
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Theatrical feature band (components/FeatureFilm.tsx)
-   A cinema release is the biggest single credential on the site, so it gets a
-   full-width band with the key art at the top of the visual hierarchy — not a
-   tile in the film grid.
+
+   Poster-led: the one-sheet is the hero, framed like a physical print, with
+   the copy set beside it. A cinema release is the biggest credential on the
+   site, so it reads as a film card — not another content tile.
    ═══════════════════════════════════════════════════════════════════════════ */
 .ff {
-  padding: 110px 32px 100px;
-  max-width: 1500px;
-  margin: 0 auto;
+  padding: 116px 32px 106px;
   border-top: 1px solid var(--rule);
   position: relative;
+  overflow: hidden;
 }
-.ff-compact { padding: 90px 32px 90px; }
+.ff-compact { padding: 96px 32px 92px; }
 
+/* A slow warm wash bleeding off the poster, so the band feels lit rather than
+   pasted onto the page. Decorative only. */
+.ff::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(58% 70% at 22% 45%, rgba(245,197,24,.11), transparent 68%);
+  pointer-events: none;
+}
+
+.ff-inner {
+  position: relative;
+  max-width: 1240px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+}
+
+/* ── the one-sheet ── */
+.ff-poster {
+  position: relative; display: block; width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 0; border: 0; cursor: pointer; background: #0b0b0b;
+  border-radius: 10px; overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.10),
+    0 40px 90px rgba(0,0,0,.66);
+  transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s;
+}
+.ff-poster img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .7s cubic-bezier(.22,1,.36,1);
+}
+.ff-poster:hover { transform: translateY(-6px); box-shadow: 0 0 0 1px rgba(245,197,24,.5), 0 52px 110px rgba(0,0,0,.72); }
+.ff-poster:hover img { transform: scale(1.035); }
+.ff-poster:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.ff-poster-veil {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,0) 42%);
+}
+.ff-poster-play {
+  position: absolute; left: 0; right: 0; bottom: 18px;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px; letter-spacing: .26em; color: var(--fg);
+  pointer-events: none;
+}
+.ff-poster-tri {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: inline-grid; place-items: center;
+  background: var(--accent);
+  box-shadow: 0 6px 18px rgba(0,0,0,.5);
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+}
+.ff-poster-tri::after {
+  content: ''; margin-left: 2px;
+  border-left: 8px solid #1a1410;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+.ff-poster:hover .ff-poster-tri { transform: scale(1.14); }
+
+/* ── the copy ── */
 .ff-eyebrow {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--font-mono), monospace;
-  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 30px;
+  font-size: 11px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 18px;
 }
 .ff-dot {
   width: 8px; height: 8px; border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
+  background: var(--accent); box-shadow: 0 0 12px var(--accent);
 }
 
-.ff-grid {
-  display: grid;
-  /* Copy leads, key art supports. The art is also hard-capped below — at full
-     column width it swamped the band and read like a banner ad. */
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: 56px;
-  align-items: center;
-}
-.ff-compact .ff-grid { align-items: center; }
-
-/* ── key art / trailer ── */
-.ff-media { position: relative; max-width: 430px; width: 100%; }
-.ff-play {
-  position: relative; display: block; width: 100%;
-  padding: 0; border: 1px solid var(--rule); border-radius: 8px;
-  overflow: hidden; cursor: pointer; background: #0b0b0b;
-  transition: border-color .3s, transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s;
-}
-.ff-play:hover {
-  border-color: var(--accent);
-  transform: translateY(-4px);
-  box-shadow: 0 30px 70px rgba(0,0,0,.55);
-}
-.ff-play:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.ff-play img { display: block; width: 100%; height: auto; }
-.ff-play-btn {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 58px; height: 58px; border-radius: 50%;
-  display: grid; place-items: center;
-  background: rgba(245,197,24,.94); color: #1a1410;
-  font-size: 18px; padding-left: 4px;
-  box-shadow: 0 10px 40px rgba(0,0,0,.5);
-  transition: transform .3s cubic-bezier(.22,1,.36,1);
-}
-.ff-play:hover .ff-play-btn { transform: translate(-50%, -50%) scale(1.08); }
-.ff-play-label {
-  position: absolute; left: 16px; bottom: 14px;
-  font-family: var(--font-mono), monospace;
-  font-size: 10px; letter-spacing: .22em; color: var(--fg);
-  background: rgba(0,0,0,.6); padding: 6px 10px; border-radius: 3px;
-}
-.ff-frame {
-  width: 100%; aspect-ratio: 2 / 1; border: 0; border-radius: 8px;
-  display: block; background: #000;
-}
-
-/* ── copy ── */
 .ff-title {
   font-family: var(--font-anton), sans-serif;
-  font-size: clamp(48px, 6.4vw, 96px);
-  line-height: .9; letter-spacing: -0.015em;
+  font-size: clamp(46px, 6vw, 86px);
+  line-height: .88; letter-spacing: -0.015em;
   text-transform: uppercase; color: var(--fg);
-  margin: 0 0 18px;
+  margin: 0;
 }
-.ff-title em {
-  display: block; font-style: normal;
-  font-size: 0.34em; letter-spacing: .16em;
-  color: var(--accent); margin-top: 12px;
+.ff-sub {
+  font-family: var(--font-anton), sans-serif;
+  font-size: clamp(17px, 1.7vw, 24px);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--accent); margin-top: 10px;
 }
+.ff-rule {
+  width: 64px; height: 2px; background: var(--accent);
+  margin: 26px 0 22px; border-radius: 2px;
+}
+
 .ff-credit {
   font-family: var(--font-mono), monospace;
   font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--accent); margin: 0 0 8px;
+  color: var(--fg); margin: 0 0 7px;
 }
-.ff-studios {
-  font-size: 13px; color: var(--fg-dim); margin: 0 0 22px; line-height: 1.5;
-}
+.ff-studios { font-size: 13px; color: var(--fg-dim); margin: 0 0 24px; line-height: 1.55; }
+
 .ff-lede {
   font-family: var(--font-anton), sans-serif;
-  font-size: clamp(20px, 2.2vw, 27px); line-height: 1.2;
+  font-size: clamp(21px, 2.1vw, 30px); line-height: 1.16;
   text-transform: uppercase; color: var(--fg);
-  margin: 0 0 16px; max-width: 22ch;
+  margin: 0 0 16px; max-width: 20ch;
 }
 .ff-body {
-  color: var(--fg-dim); font-size: 15.5px; line-height: 1.65;
-  max-width: 58ch; margin: 0 0 26px;
+  color: var(--fg-dim); font-size: 15.5px; line-height: 1.68;
+  max-width: 60ch; margin: 0 0 24px;
 }
 
-.ff-meta {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 18px 22px; margin: 0 0 30px;
-  padding-top: 22px; border-top: 1px solid var(--rule);
-}
-.ff-meta dt {
+/* Spec line — reads like a title card, not a data table. */
+.ff-spec {
+  list-style: none; margin: 0 0 28px; padding: 20px 0 0;
+  border-top: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 10px 0;
   font-family: var(--font-mono), monospace;
-  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--fg-dim); margin-bottom: 6px;
+  font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--fg-dim);
 }
-.ff-meta dd { margin: 0; font-size: 14px; color: var(--fg); }
+.ff-spec li { display: inline-flex; align-items: center; }
+.ff-spec li + li::before {
+  content: '·'; color: var(--accent);
+  margin: 0 14px; font-size: 13px;
+}
 
 .ff-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 .ff-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 13px 24px; border-radius: 4px;
+  padding: 14px 26px; border-radius: 4px; cursor: pointer;
   font-family: var(--font-mono), monospace;
   font-size: 11px; font-weight: 700; letter-spacing: .2em;
   text-transform: uppercase; text-decoration: none;
-  border: 1px solid var(--fg-dim); color: var(--fg);
-  transition: transform .25s, border-color .25s, background .25s;
+  border: 1px solid var(--fg-dim); color: var(--fg); background: transparent;
+  transition: transform .25s, border-color .25s, background .25s, color .25s;
 }
 .ff-btn:hover { transform: translateY(-2px); border-color: var(--fg); }
 .ff-btn.primary { background: var(--accent); color: #1a1410; border-color: var(--accent); }
 .ff-btn.primary:hover { background: var(--accent-2); border-color: var(--accent-2); }
 
-@media (max-width: 900px) {
-  .ff, .ff-compact { padding: 76px 20px 70px; }
-  .ff-grid { grid-template-columns: 1fr; gap: 34px; }
+/* ── trailer lightbox ── */
+.ff-lb {
+  position: fixed; inset: 0; z-index: 100001;
+  display: grid; place-items: center; padding: 5vh 5vw;
+  background: rgba(0,0,0,.9);
+  animation: ffLbIn .22s ease;
+}
+@keyframes ffLbIn { from { opacity: 0 } to { opacity: 1 } }
+.ff-lb-frame {
+  width: 100%; max-width: 1180px; aspect-ratio: 16 / 9;
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,.7);
+  background: #000;
+}
+.ff-lb-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.ff-lb-x {
+  position: absolute; top: 22px; right: 26px;
+  width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+  background: rgba(255,255,255,.09); color: var(--fg);
+  border: 1px solid rgba(255,255,255,.22);
+  font-size: 24px; line-height: 1;
+  transition: background .2s, transform .2s;
+}
+.ff-lb-x:hover { background: rgba(255,255,255,.18); transform: scale(1.06); }
+
+@media (max-width: 940px) {
+  .ff, .ff-compact { padding: 78px 20px 74px; }
+  .ff-inner { grid-template-columns: 1fr; gap: 34px; justify-items: start; }
+  .ff-poster { max-width: 268px; }
   .ff-lede { max-width: none; }
-  .ff-play-btn { width: 60px; height: 60px; font-size: 19px; }
+  .ff-lb { padding: 0 16px; }
+  .ff-lb-x { top: 14px; right: 16px; }
 }
