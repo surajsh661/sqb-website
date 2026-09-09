@@ -581,6 +581,10 @@ export const SQB_LOGOS: ClientLogo[] = [
   // silhouette filter reads correctly in both themes; for HSBC the hexagon's
   // white counterform is knocked out of the alpha, otherwise brightness(0)
   // flattens it into a solid diamond and the mark stops being HSBC.
+  // Diagnostics. Supplied as the dark-background lockup (white wordmark, red
+  // helix) — the alpha already traces the mark, so the default silhouette
+  // filter renders it correctly without any knockout work.
+  { name: 'Redcliffe Labs',     src: '/clients/redcliffe.png',  size: 1.10 },
   { name: 'Wells Fargo',        src: '/clients/wellsfargo.png', size: 1.15 },
   { name: 'Citi',               src: '/clients/citi.png',       size: 1.20 },
   { name: 'HSBC',               src: '/clients/hsbc.png',       size: 1.00 },
