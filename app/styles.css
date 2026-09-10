@@ -1460,14 +1460,15 @@ body.no-grain::before { display: none; }
 }
 .client-logo:hover { opacity: 1; }
 .client-logo img {
-  height: 100%;
-  /* Explicit max-height too: `height:100%` resolves against the flex parent's
-     height, which can collapse on mobile and let a huge source image (e.g. an
-     8334px PNG) render at full natural size — that blew the page width to
-     ~9700px and caused horizontal scroll. max-height caps it unconditionally. */
-  max-height: 56px;
-  width: auto;
-  max-width: 200px;
+  /* Every logo is contained in an IDENTICAL box, so the wall reads evenly:
+     wide wordmarks fill the width, square marks fill the height, and nothing
+     depends on how much padding a given source file happened to ship with.
+     (The files are ink-cropped to a uniform margin for the same reason — the
+     old spread came from gfg.png being 14% ink while viralo.png was 100%.)
+     Fixed dimensions also mean a huge source PNG can never render at natural
+     size if the flex parent collapses, which once blew the page to ~9700px. */
+  width: 190px;
+  height: 54px;
   object-fit: contain;
   transform-origin: center;
   /* Default: flatten to a uniform silhouette (white on dark, black on light). */

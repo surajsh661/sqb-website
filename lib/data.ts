@@ -556,27 +556,27 @@ export const SQB_TEDX: string[] = [
 // flattening to a silhouette. Use for illustrative/detailed marks.
 export const SQB_LOGOS: ClientLogo[] = [
   { name: 'Muthoot Finance',    src: '/clients/muthoot.png',   size: 1.00, keepDetails: true },
-  { name: 'RedFM',              src: '/clients/redfm.png',     size: 1.10 },
+  { name: 'RedFM',              src: '/clients/redfm.png',     size: 1.06 },
   { name: 'Haldiram’s',         src: '/clients/haldiram.png',  size: 1.00 },
-  { name: 'Subway',             src: '/clients/subway.png',    size: 1.10 },
-  { name: 'T-Series',           src: '/clients/tseries.png',   size: 1.25 },
-  { name: 'PhysicsWallah',      src: '/clients/pw.png',        size: 1.54 },
-  { name: 'Sunstone',           src: '/clients/sunstone.png',  size: 0.98 },
-  { name: 'GeeksforGeeks',      src: '/clients/gfg.png',       size: 1.77 },
-  { name: 'Unacademy',          src: '/clients/unacademy.png', size: 1.76 },
-  { name: 'Vahaflix',           src: '/clients/vahaflix.png',  size: 1.05 },
-  { name: 'Dashtoon',           src: '/clients/dashtoon.png',  size: 1.10, keepDetails: true },
-  { name: 'Indiefolio',         src: '/clients/indiefolio.png',size: 1.10 },
-  { name: 'Industree',          src: '/clients/industree.png', size: 1.10, keepDetails: true },
-  { name: 'LAPCA',              src: '/clients/lapca.png',     size: 1.33 },
-  { name: 'ViralO',             src: '/clients/viralo.png',    size: 0.99, tone: 'mono' },
-  { name: 'Appx',               src: '/clients/appx.png',      size: 1.20 },
-  { name: 'Ayush',              src: '/clients/ayush.png',     size: 1.21 },
-  { name: 'CAC',                src: '/clients/cac.png',       size: 1.08 },
-  { name: 'DCC',                src: '/clients/dcc.png',       size: 0.96 },
-  { name: 'SpeakIn',            src: '/clients/speakin.png',   size: 1.06 },
-  { name: 'S&F',                src: '/clients/snf.png',       size: 1.20, tone: 'invert' },
-  { name: 'TEDx',               src: '/clients/tedx.png',      size: 1.10 },
+  { name: 'Subway',             src: '/clients/subway.png',    size: 0.94 },
+  { name: 'T-Series',           src: '/clients/tseries.png',   size: 1.06 },
+  { name: 'PhysicsWallah',      src: '/clients/pw.png',        size: 0.94 },
+  { name: 'Sunstone',           src: '/clients/sunstone.png',  size: 0.94 },
+  { name: 'GeeksforGeeks',      src: '/clients/gfg.png',       size: 0.94 },
+  { name: 'Unacademy',          src: '/clients/unacademy.png', size: 0.94 },
+  { name: 'Vahaflix',           src: '/clients/vahaflix.png',  size: 1.06 },
+  { name: 'Dashtoon',           src: '/clients/dashtoon.png',  size: 0.94, keepDetails: true },
+  { name: 'Indiefolio',         src: '/clients/indiefolio.png',size: 0.94 },
+  { name: 'Industree',          src: '/clients/industree.png', size: 1.06, keepDetails: true },
+  { name: 'LAPCA',              src: '/clients/lapca.png',     size: 1.00 },
+  { name: 'ViralO',             src: '/clients/viralo.png',    size: 1.06, tone: 'mono' },
+  { name: 'Appx',               src: '/clients/appx.png',      size: 1.00 },
+  { name: 'Ayush',              src: '/clients/ayush.png',     size: 1.00 },
+  { name: 'CAC',                src: '/clients/cac.png',       size: 1.06 },
+  { name: 'DCC',                src: '/clients/dcc.png',       size: 1.00 },
+  { name: 'SpeakIn',            src: '/clients/speakin.png',   size: 0.94 },
+  { name: 'S&F',                src: '/clients/snf.png',       size: 1.06, tone: 'invert' },
+  { name: 'TEDx',               src: '/clients/tedx.png',      size: 0.94 },
   // Banking. Artwork is supplied as white-on-transparent so the default
   // silhouette filter reads correctly in both themes; for HSBC the hexagon's
   // white counterform is knocked out of the alpha, otherwise brightness(0)
@@ -584,10 +584,10 @@ export const SQB_LOGOS: ClientLogo[] = [
   // Diagnostics. Supplied as the dark-background lockup (white wordmark, red
   // helix) — the alpha already traces the mark, so the default silhouette
   // filter renders it correctly without any knockout work.
-  { name: 'Redcliffe Labs',     src: '/clients/redcliffe.png',  size: 1.10 },
-  { name: 'Wells Fargo',        src: '/clients/wellsfargo.png', size: 1.15 },
-  { name: 'Citi',               src: '/clients/citi.png',       size: 1.20 },
-  { name: 'HSBC',               src: '/clients/hsbc.png',       size: 1.00 },
+  { name: 'Redcliffe Labs',     src: '/clients/redcliffe.png',  size: 1.00 },
+  { name: 'Wells Fargo',        src: '/clients/wellsfargo.png', size: 1.00 },
+  { name: 'Citi',               src: '/clients/citi.png',       size: 1.00 },
+  { name: 'HSBC',               src: '/clients/hsbc.png',       size: 0.94 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

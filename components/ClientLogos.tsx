@@ -3,9 +3,13 @@ import { SQB_LOGOS } from '@/lib/data';
 
 export default function ClientLogos() {
   const logos = SQB_LOGOS;
-  const rotate = <T,>(arr: T[], n: number): T[] => arr.slice(n).concat(arr.slice(0, n));
-  const logosA = logos;
-  const logosB = rotate(logos, Math.floor(logos.length / 2));
+  // Each row gets its OWN half of the roster, alternating down the list, so the
+  // two rows never show the same brand at once and each still carries a mix of
+  // the big names rather than one row taking them all. (Rotating a single
+  // shared list only offset the start — the same logo still surfaced twice on
+  // screen as the rows drifted past each other.)
+  const logosA = logos.filter((_, i) => i % 2 === 0);
+  const logosB = logos.filter((_, i) => i % 2 === 1);
 
   const Row = ({ reverse, list }: { reverse?: boolean; list: typeof logos }) => (
     <div className={'logo-marquee' + (reverse ? ' rev' : '')}>
