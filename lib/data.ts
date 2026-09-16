@@ -566,6 +566,12 @@ export const SQB_LOGOS: ClientLogo[] = [
   { name: 'Unacademy',          src: '/clients/unacademy.png', size: 0.94 },
   { name: 'Vahaflix',           src: '/clients/vahaflix.png',  size: 1.06 },
   { name: 'Dashtoon',           src: '/clients/dashtoon.png',  size: 0.94, keepDetails: true },
+  // Audio + comics. Both marks are app tiles whose inner shape is painted
+  // WHITE over the brand colour, so the silhouette filter would flatten them
+  // into solid blocks - the counterforms (Pocket FM's radio bubble, Pocket
+  // Toons' bolt) are knocked out of the alpha, same treatment as HSBC.
+  { name: 'Pocket FM',          src: '/clients/pocketfm.png',  size: 0.94 },
+  { name: 'Pocket Toons',       src: '/clients/pockettoons.png',size: 1.06 },
   { name: 'Indiefolio',         src: '/clients/indiefolio.png',size: 0.94 },
   { name: 'Industree',          src: '/clients/industree.png', size: 1.06, keepDetails: true },
   { name: 'LAPCA',              src: '/clients/lapca.png',     size: 1.00 },
