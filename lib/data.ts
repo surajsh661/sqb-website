@@ -15,13 +15,13 @@ export const SQB_FILMS: Film[] = [
     type: 'vm', videoId: '1190975373',
     client: 'Muthoot Finance × RedFM', talent: 'Real Customers (AI-rendered)',
     lede:
-      "A nine-month, twenty-two-episode docu-AI series that turned real Muthoot customers into cinema — running in lockstep with RedFM's radio version of the same campaign.",
+      "A nine-month, twenty-two-episode docu-AI series about real Muthoot customers, running alongside RedFM's radio version of the same campaign.",
     body:
-      'Sunheri Soch Season 4 — Garv Ka Parv — reimagined real customer testimonials as premium Generative AI cinema. Hindi-language stories spanning Punjab, Rajasthan, Madhya Pradesh, Assam, Haryana, Gujarat — every one of them visualised, art-directed and rendered to feel indistinguishable from a documentary shoot. Real customers became natural on-screen performers, holding the frame the way a trained actor would. Two episodes a month, for nine months.',
+      'Sunheri Soch Season 4 (Garv Ka Parv) retold real customer testimonials as generative AI films. Hindi-language stories spanning Punjab, Rajasthan, Madhya Pradesh, Assam, Haryana and Gujarat. We visualised, art-directed and rendered each one to look like a documentary shoot. Real customers became natural on-screen performers, holding the frame the way a trained actor would. Two episodes a month, for nine months.',
     brief:
-      "Build a year-long visual companion to RedFM's radio testimonial campaign — at scale, with cinema-grade fidelity, without flying a unit to every state in India.",
+      "Build a year-long visual companion to RedFM's radio testimonial campaign, at cinema quality, without flying a crew to every state in India.",
     solution:
-      "A generative AI pipeline that preserves the real customer's face and voice while staging them inside fully art-directed worlds. Every episode researched and storyboarded by hand — Muthoot signage on real branch facades, employee uniforms accurate to regional roles, regional dress and home interiors true to each customer's state and culture. Screenplay visualisation by Suraj; AI creation by S'QB Labs. RedFM aired the audio side; we owned the visual.",
+      "A generative AI pipeline that preserves the real customer's face and voice while staging them inside fully art-directed worlds. We researched and storyboarded every episode by hand: Muthoot signage on real branch facades, employee uniforms accurate to regional roles, regional dress and home interiors true to each customer's state and culture. Screenplay visualisation by Suraj; AI creation by S'QB Labs. RedFM aired the audio, and we made the films.",
     timeline: '9 months · 2 episodes/month · 22 episodes total',
     release: 'YouTube + RedFM linear · 2025–26',
     impact:
@@ -67,10 +67,10 @@ export const SQB_FILMS: Film[] = [
     genres: ['ad', 'film'],
     type: 'vm', videoId: '954302482',
     client: 'Naturaltein', talent: 'Jasprit Bumrah',
-    lede: 'A high-velocity brand film that turned a protein launch into a national conversation.',
-    body: 'Filmmaking first. We built a visual language as relentless as the bowler himself — slow-burn close-ups, sound design that hits like a yorker, every frame composed on set.',
-    brief: 'Launch Naturaltein with credibility — own the gym-supplement category against incumbents 10× our budget.',
-    solution: 'Cast the most disciplined fast bowler on earth and shot a film about discipline.',
+    lede: 'A brand film that launched Naturaltein protein with Jasprit Bumrah during IPL 2025.',
+    body: 'We built the film around the bowler himself: slow-burn close-ups, sound design that hits like a yorker, and every frame composed on set.',
+    brief: 'Launch Naturaltein with credibility and take on gym-supplement brands with ten times its budget.',
+    solution: 'We cast Jasprit Bumrah and made a film about the discipline behind his bowling.',
     timeline: '5 weeks · script to air', release: 'National TV + Digital — IPL 2025',
     impact: '5.2X ROAS · 38% top-of-mind recall',
     credits: [
@@ -86,8 +86,8 @@ export const SQB_FILMS: Film[] = [
     genres: ['show', 'docu'],
     type: 'vm', videoId: '1082489881',
     client: 'Sunstone × LSG', talent: 'LSG Backroom',
-    lede: 'A remote-infrastructure talk show that continued the Sunstone × Lucknow Super Giants collaboration — hosts in Delhi, guests inside the LSG camp.',
-    body: "Suraj show-ran the series end to end, coordinating teams across Delhi and Mumbai to pull off a fully remote shoot — hosts in Delhi interviewing the people who actually build an IPL side: managers, physiotherapists and the backroom staff who get the Lucknow Super Giants ready for IPL 2022. He also led the edit alongside two more editors and handled the VFX and motion. Five episodes, ten minutes each, aired on Sunstone's YouTube alongside the TVC launch.",
+    lede: 'A remote-infrastructure talk show that continued the Sunstone × Lucknow Super Giants collaboration, with hosts in Delhi and guests inside the LSG camp.',
+    body: "Suraj show-ran the series end to end, coordinating teams across Delhi and Mumbai to pull off a fully remote shoot. Hosts in Delhi interviewed the people who build an IPL side: managers, physiotherapists and the backroom staff who get the Lucknow Super Giants ready for IPL 2022. He also led the edit alongside two more editors and handled the VFX and motion. Five episodes, ten minutes each, aired on Sunstone's YouTube alongside the TVC launch.",
     timeline: '—', release: 'Sunstone YouTube — 2022',
     impact: 'A five-episode series timed to the Sunstone × LSG TVC launch',
     credits: [
@@ -103,8 +103,8 @@ export const SQB_FILMS: Film[] = [
     genres: ['ad', 'docu'],
     type: 'vm', videoId: '935827293',
     client: 'Sunstone × Lucknow Super Giants', talent: 'LSG Players',
-    lede: 'A co-branded TVC for edtech brand Sunstone, made with IPL franchise Lucknow Super Giants — the lecture hall and the locker room in one frame.',
-    body: "Sunstone reinvents the campus experience for India's college students. We partnered them with the newly-launched Lucknow Super Giants and built the spot around that crossover energy — the discipline of a pro dressing room meeting the ambition of a campus — cut for maximum recall across the IPL window.",
+    lede: 'A co-branded TVC for edtech brand Sunstone, made with IPL franchise Lucknow Super Giants. The lecture hall and the locker room share one frame.',
+    body: "Sunstone reinvents the campus experience for India's college students. We partnered them with the newly-launched Lucknow Super Giants and built the spot around that crossover: the discipline of a pro dressing room meets the ambition of a campus. We cut it for recall across the IPL window.",
     timeline: '—', release: 'IPL 2022',
     impact: 'Drove a wave of brand awareness for Sunstone through the IPL season',
     credits: [
@@ -119,8 +119,8 @@ export const SQB_FILMS: Film[] = [
     genres: ['ad'],
     type: 'vm', videoId: '1083481304',
     client: 'PhysicsWallah × Knowledge Planet', talent: 'Ensemble',
-    lede: "A co-branded DVC for India's biggest edtech, PhysicsWallah, with UAE edtech startup Knowledge Planet — produced under S'QB Pictures.",
-    body: "PhysicsWallah built its name making world-class learning affordable for millions. We carried that promise across borders in a co-branded film with UAE-based Knowledge Planet — grounded performances, practical light, and the single emotional truth every student recognises.",
+    lede: "A co-branded DVC for India's biggest edtech, PhysicsWallah, with UAE edtech startup Knowledge Planet, produced by S'QB Pictures.",
+    body: "PhysicsWallah built its name making good teaching affordable for millions of students. We carried that promise across borders in a co-branded film with UAE-based Knowledge Planet, using grounded performances and practical light.",
     timeline: '—', release: 'Digital + Broadcast — 2023',
     impact: 'A cross-border edtech collaboration delivered as one seamless film',
     credits: [
@@ -137,8 +137,8 @@ export const SQB_FILMS: Film[] = [
     genres: ['music'],
     type: 'vm', videoId: '1083477570',
     client: 'T-Series', talent: 'Featured Artists',
-    lede: "A special Teachers' Day music film for T-Series — a poem, sung as Kabir ke Dohe, about the quiet importance of a teacher.",
-    body: "Made for T-Series to mark Teachers' Day, the film follows students who only realise what their teacher truly means to them through a beautiful poem the teacher sings — Kabir ke Dohe. Devotional poetry treated like a cinema text, shot with a small unit and practical light.",
+    lede: "A Teachers' Day music film for T-Series: a poem, sung as Kabir ke Dohe, about what a teacher means to their students.",
+    body: "Made for T-Series to mark Teachers' Day, the film follows students who realise what their teacher means to them when the teacher sings Kabir ke Dohe. We shot the devotional poetry like cinema, with a small unit and practical light.",
     timeline: '—', release: 'T-Series — 2022',
     impact: "A Teachers' Day release for one of the world's largest music labels",
     credits: [
@@ -159,6 +159,19 @@ export const SQB_FILMS: Film[] = [
     timeline: '4 weeks', release: 'YouTube — 2021',
     impact: 'Indie staple',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }],
+  },
+  // Latest AI micro drama (Oct 2026) leads the vertical films. Client and
+  // production stats aren't confirmed, so client is left blank and no
+  // timeline/impact claims are made. ("When Love Breaks Through" joins here
+  // once its link is in.)
+  {
+    id: 'vertical-ladaku-nanny', title: 'LADAKU NANNY',
+    category: 'AI VERTICAL DRAMA', year: '2026', runtime: '2:37',
+    genres: ['vertical', 'ai', 'show'], aspect: '9:16',
+    type: 'vm', videoId: '1225563087',
+    client: '', talent: 'AI Ensemble',
+    lede: 'AI micro drama in Hindi, made vertical-first for the phone.',
+    credits: [{ role: 'AI PRODUCTION', name: "S'QB PICTURES" }, { role: 'FORMAT', name: '9:16' }],
   },
   {
     id: 'vertical-dhokebaaz', title: 'DHOKEBAAZ DILRUBA',
@@ -189,7 +202,7 @@ export const SQB_FILMS: Film[] = [
     type: 'gd', videoId: '1Rlu8IlJdnLYbQdj4Rh0lnrfI7uddA2qd',
     client: "S'QB Originals", talent: 'AI Ensemble',
     lede: 'AI micro drama: vertical action with full VFX scale shots.',
-    body: 'Generative pipeline for action, set extensions, and VFX — directed, not prompted.',
+    body: 'A generative pipeline for action, set extensions and VFX, with a director calling every shot.',
     timeline: '6 weeks', release: 'Vertical — 2026', impact: 'Spec piece',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'AI SUPERVISOR', name: "S'QB LABS" }],
   },
@@ -205,24 +218,13 @@ export const SQB_FILMS: Film[] = [
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'FORMAT', name: '9:16' }],
   },
   {
-    id: 'vertical-woh-aa-gayi', title: 'WOH AA GAYI — HORROR',
-    category: 'AI VERTICAL HORROR', year: '2026', runtime: 'Pilot',
-    genres: ['vertical', 'ai', 'show'], aspect: '9:16',
-    type: 'vm', videoId: '1127752962',
-    client: "S'QB Originals", talent: 'AI Ensemble',
-    lede: 'AI micro drama in vertical horror — atmosphere over jump-scare.',
-    body: 'Practical sound design fused with synthetic visuals.',
-    timeline: '5 weeks', release: 'Vertical — 2026', impact: 'Genre opener',
-    credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'AI SUPERVISOR', name: "S'QB LABS" }],
-  },
-  {
     id: 'gfg-aparshakti-2',
     title: 'APARSHAKTI × GFG — 02',
     category: 'TVC', year: '2025', runtime: '0:40',
     genres: ['ad', 'film'],
     type: 'yt', videoId: 'tqP_qiuoYtE',
     client: 'GeeksforGeeks', talent: 'Aparshakti Khurana',
-    lede: 'Second beat in the Aparshakti × GFG campaign — same comic timing, sharper twist.',
+    lede: 'The second film in the Aparshakti × GFG campaign, with the same comic timing and a sharper twist.',
     body: 'We extended the campaign world with a second TVC. Same character voice, fresh blocking.',
     timeline: '2 weeks', release: 'TV + Digital — 2025', impact: 'Campaign extension',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'TALENT', name: 'A. KHURANA' }, { role: 'CLIENT', name: 'GEEKSFORGEEKS' }],
@@ -246,7 +248,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['ad', 'film'],
     type: 'gd', videoId: '1WchSsUa3aSmwAO4AYcRBZIUyKNT9t0M9',
     client: 'C.Vox', talent: 'Brand Talent',
-    lede: "A B2B explainer that doesn't feel like a B2B explainer.",
+    lede: 'A B2B explainer for C.Vox, written to hold an enterprise audience.',
     body: "We built a clear narrative arc for C.Vox's enterprise audience.",
     timeline: '3 weeks', release: 'B2B Sales — 2025', impact: 'Lead-gen film',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'CLIENT', name: 'C.VOX' }],
@@ -270,7 +272,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['ad'],
     type: 'yt', videoId: 'qsBo7AMl-uo',
     client: 'Aironet Holidays', talent: 'Ensemble',
-    lede: "Travel advertising that doesn't lean on drone shots and stock vistas.",
+    lede: 'A travel ad built on people and performance, with no stock vistas.',
     body: 'Performance-led, character-first travel ad.',
     timeline: '3 weeks', release: 'Digital + OOH — 2025', impact: 'Brand launch',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'CLIENT', name: 'AIRONET HOLIDAYS' }],
@@ -282,8 +284,8 @@ export const SQB_FILMS: Film[] = [
     genres: ['show', 'docu', 'film'],
     type: 'vm', videoId: '964882350',
     client: "S'QB Originals", talent: 'Hiten Tejwani · Rakesh Bedi · Hemant Pandey · Mimoh Chakraborty · Bijendra Kala',
-    lede: 'A long-form drama web series — a vigilante out to bust the country\'s edtech scams while keeping his identity hidden. Shot in Mumbai; what you see here is the making-of.',
-    body: "Seven episodes of 35–40 minutes each (≈4h 30m total). A character-led thriller following a masked vigilante who exposes the education-industry scams bleeding India's students dry — without ever revealing who he is. Featuring Hiten Tejwani, Rakesh Bedi, Hemant Pandey, Mimoh Chakraborty and Bijendra Kala. Currently in distribution, premiering on a leading OTT platform soon.",
+    lede: 'A long-form drama web series about a vigilante out to bust the country\'s edtech scams while keeping his identity hidden. Shot in Mumbai; what you see here is the making-of.',
+    body: "Seven episodes of 35–40 minutes each (≈4h 30m total). A character-led thriller following a masked vigilante who exposes the education-industry scams bleeding India's students dry, without revealing who he is. Featuring Hiten Tejwani, Rakesh Bedi, Hemant Pandey, Mimoh Chakraborty and Bijendra Kala. Currently in distribution, premiering on a leading OTT platform soon.",
     timeline: '7 episodes', release: 'OTT — coming soon', impact: 'In distribution — premiering on a leading OTT platform',
     credits: [
       { role: 'DIRECTORS', name: 'SURAJ SHARMA · SALAR SHEIKH' },
@@ -301,7 +303,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['film'],
     type: 'yt', videoId: 'cuL888d7nuw',
     client: "S'QB Originals", talent: 'Ensemble',
-    lede: 'A 12-minute short film — quiet, observational, performance-led.',
+    lede: 'A quiet, observational 12-minute short film, led by its performances.',
     body: 'Independent short. Shot on a small unit. Festival-ready cut.',
     timeline: '6 weeks', release: 'YouTube — 2024', impact: 'Festival short',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }],
@@ -313,7 +315,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['music'],
     type: 'vm', videoId: '735189733',
     client: 'Independent', talent: 'Featured Artists',
-    lede: 'A student-life music video built around a single emotional truth.',
+    lede: 'A music video about student life.',
     body: 'Practical lighting, location shoot, instinctive cuts.',
     timeline: '4 weeks', release: 'Vimeo — 2023', impact: 'Indie music',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }],
@@ -325,8 +327,8 @@ export const SQB_FILMS: Film[] = [
     genres: ['music'],
     type: 'yt', videoId: 'sxhzbRs9OII',
     client: 'Independent', talent: 'Featured Artists',
-    lede: 'A romance music video — mood-first, performance-driven.',
-    body: 'Single-location shoot. Cuts obey the song, not the metronome.',
+    lede: 'A romance music video driven by mood and performance.',
+    body: 'Single-location shoot, with every cut timed to the song.',
     timeline: '4 weeks', release: 'YouTube — 2023', impact: 'Music video',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }],
   },
@@ -337,7 +339,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['ad', 'film'],
     type: 'gd', videoId: '1Z2IL1rpXu1UKxPuiSCPs9eTaRuBnnA89',
     client: 'C.Vox', talent: 'Ensemble',
-    lede: 'A taut brand film for C.Vox — cinematic identity for an emerging voice tech brand.',
+    lede: 'A taut brand film that gave voice-tech brand C.Vox a cinematic identity.',
     body: 'Crisp narrative, restrained palette, performance-driven blocking.',
     timeline: '4 weeks', release: 'Digital — 2025',
     impact: 'Brand launch film',
@@ -350,7 +352,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['ai', 'film'],
     type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J',
     client: "S'QB Labs", talent: 'Generative ensemble',
-    lede: 'Generative cinema indistinguishable from a shot film.',
+    lede: 'Generative cinema that plays like a shot film.',
     body: 'Real-reference performances staged inside fully art-directed worlds. Built end-to-end inside our AI pipeline.',
     timeline: '6 weeks', release: 'OTT-grade reel — 2026',
     impact: 'Flagship AI reel',
@@ -399,6 +401,14 @@ export const HERO_POSTERS: Record<string, string> = {
   '1127747874': '/posters/1127747874.jpg',
   '1127751934': '/posters/1127751934.jpg',
   '1127752962': '/posters/1127752962.jpg',
+  '1225563087': '/posters/ladaku-nanny-v.jpg',
+  '1225563757': '/posters/ceo-mommy-v.jpg',
+  '1225572842': '/posters/dream.jpg',
+  // AI micro dramas on Drive: frames chosen from the episodes themselves.
+  '1Rlu8IlJdnLYbQdj4Rh0lnrfI7uddA2qd': '/posters/antim-yudh-v.jpg',
+  '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5': '/posters/win-the-lottery-v.jpg',
+  '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS': '/posters/unexpected-pregnancy-v.jpg',
+  '1jPnV_9_NouWKvbg1doiaBgdIkgOt-s9j': '/posters/vidya-aur-vidhata-v.jpg',
   '735189733':  '/posters/735189733.jpg',
   '954302482':  'https://i.vimeocdn.com/video/1866562858-4f75ceb49f7b97850b0472ab318e4466d5c60b1ebc9ea89a353d832b185ca873-d_960x540',
   '1190975373': 'https://i.vimeocdn.com/video/2155874827-363a94edd140326e3e63ad56ef607c490ecc3bc483d15ceee6c9d1ee8e215dbf-d_960x540',
@@ -418,7 +428,6 @@ export const SQB_VERTICALS: Vertical[] = [
       type: f.type, videoId: f.videoId, genres: f.genres,
     })),
   // Additional AI-show verticals hosted on Google Drive.
-  { id: 'hit-the-jackpot', title: 'WIN THE LOTTERY', tag: 'AI SHOW', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', genres: ['vertical'] },
   { id: 'unexpected-pregnancy', title: 'UNEXPECTED PREGNANCY', tag: 'AI SHOW', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS', genres: ['vertical'] },
 ];
 
@@ -441,6 +450,8 @@ export const SQB_AI_LAB: AILabData = {
     { id: 'a2', title: 'ANIM REEL 02', type: 'gd', videoId: '14G6XsrS2aj9nQrugnFb593xMwdWmCh_F' },
   ],
   realistic: [
+    // Newest first. Dream is ~2.33:1, so the grid gives the first card a wide row.
+    { id: 'r-dream', title: 'DREAM', type: 'vm', videoId: '1225572842' },
     { id: 'r1', title: 'REAL REEL 01', type: 'gd', videoId: '1F-iqYy4IoBWw9tZSn3krZqEXf-vYxsKJ' },
     { id: 'r2', title: 'REAL REEL 02', type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J' },
     { id: 'r3', title: 'REAL REEL 03', type: 'gd', videoId: '1N_Ia4SnPfNbhOd4n1RAvhJeW8fXXaN-a' },
@@ -449,6 +460,10 @@ export const SQB_AI_LAB: AILabData = {
   // reels. Woh Aa Gayi carries its own poster: the baked 16:9 Vimeo still crops
   // the title off, so this is the title-card frame (0:50) from the trailer.
   microDramas: [
+    // Latest (Oct 2026) first — better quality, so they lead.
+    { id: 'md-ladaku-nanny', title: 'LADAKU NANNY', type: 'vm', videoId: '1225563087', vertical: true },
+    { id: 'md-ceo-mommy', title: 'BEWARE MY CEO MOMMY', type: 'vm', videoId: '1225563757', vertical: true },
+    { id: 'md-vidya-aur-vidhata', title: 'VIDYA AUR VIDHATA', type: 'gd', videoId: '1jPnV_9_NouWKvbg1doiaBgdIkgOt-s9j', vertical: true },
     { id: 'md-antim-yudh', title: 'ANTIM YUDH', type: 'gd', videoId: '1Rlu8IlJdnLYbQdj4Rh0lnrfI7uddA2qd', vertical: true },
     { id: 'md-woh-aa-gayi', title: 'WOH AA GAYI', type: 'vm', videoId: '1127752962', vertical: true, poster: '/posters/woh-aa-gayi-v.jpg' },
     { id: 'md-win-the-lottery', title: 'WIN THE LOTTERY', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', vertical: true },
@@ -514,7 +529,7 @@ export const SQB_COCOON: Cocoon = {
   watch: 'https://www.hungama.com/tv-show/cocoon/78799046/',
   platform: 'HUNGAMA',
   blurb:
-    'Our ten-episode coming-of-age drama. One of our defining IPs — written, directed, shot and graded entirely in-house. Streaming on Hungama.',
+    'Our ten-episode coming-of-age drama. One of our defining IPs: we wrote, directed, shot and graded it in-house. Streaming on Hungama.',
   music: [
     { id: 'behne-do',      title: 'BEHNE DO',          role: 'MUSIC VIDEO', type: 'vm', videoId: '1083476755' },
     { id: 'padh-hi-lenge', title: 'PADH HI LENGE HUM', role: 'MUSIC VIDEO', type: 'vm', videoId: '735189733'  },
@@ -524,7 +539,7 @@ export const SQB_COCOON: Cocoon = {
 export const SQB_CREATORS: Creator[] = [
   {
     id: 'harkirat', name: 'HARKIRAT SINGH', subs: '608K',
-    blurb: "Tech & systems creator. Long-form cinematic explainers we shot, cut, and graded — including the viral 'I Resigned Microsoft' film.",
+    blurb: "Tech & systems creator. Long-form cinematic explainers we shot, cut and graded, including the viral 'I Resigned Microsoft' film.",
     videos: ['wioAFuHzcao', 'zKd_kxcxGbo', 'aCaTUryjWrw', 'blaGGsFpxN4', 'ldAV_bixqaw', 'ZXCpGpxFYJI'],
   },
   {
@@ -539,7 +554,7 @@ export const SQB_CREATORS: Creator[] = [
   },
   {
     id: 'sunstone-yt', name: 'SUNSTONE', subs: '69K',
-    blurb: "S'QB-built IP — channel, format, story spine, the whole engine from scratch.",
+    blurb: "An IP S'QB built from scratch: the channel, the format and the story behind it.",
     videos: ['8LncvPjq_6c', 'gZDn828tk6M', '-oKf9dw7T-A', 'y23PX1MooUM', 'wbGzXIrFHTY'],
     flagship: true,
   },
@@ -630,5 +645,5 @@ export const SQB_FEATURE: FeatureFilm = {
   wide: '/posters/navya-chakra-wide.jpg',
   lede: 'Our AI animation and VFX went to the big screen.',
   body:
-    'A Hindi psychological thriller about a chain of killings with no visible thread between them — and the investigation that follows the pattern into somewhere stranger. Released nationwide in cinemas on 26 June 2026. S’QB Pictures delivered the AI animation, VFX and AI VFX for the film: our first theatrical credit, and proof the pipeline holds at feature length and cinema scale.',
+    'A Hindi psychological thriller about a chain of killings with no visible thread between them, and the investigation that follows the pattern somewhere stranger. Released nationwide in cinemas on 26 June 2026. S’QB Pictures delivered the AI animation, VFX and AI VFX for the film: our first theatrical credit, and our first work at feature length on a cinema screen.',
 };

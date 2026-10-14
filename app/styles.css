@@ -306,6 +306,10 @@ body.no-grain::before { display: none; }
      comes from .hero-zone. */
   transform-style: preserve-3d;
 }
+/* Hero cell width: min(width share, 60% of the height at 16:9). Mirrors cellW
+   in components/Hero.tsx, which uses the same numbers for the drum radius. */
+.video-track { --hero-cell-w: min(64vw, 106.667vh); }
+@media (max-width: 699.98px) { .video-track { --hero-cell-w: min(92vw, 106.667vh); } }
 .cell-slot {
   position: absolute;
   left: 50%; top: 50%;
@@ -1795,9 +1799,11 @@ body.no-grain::before { display: none; }
   transition: opacity .6s ease;
   animation: ambBreathe 9s ease-in-out infinite alternate;
 }
+/* Breathes with transform + opacity only. The blur is fixed on .ambient-glow:
+   animating a 100px+ blur re-rasterised the whole glow every frame. */
 @keyframes ambBreathe {
-  from { transform: translate(-50%, -50%) scale(1.12); filter: blur(100px) saturate(1.35) brightness(0.88); }
-  to   { transform: translate(-50%, -50%) scale(1.18); filter: blur(130px) saturate(1.5)  brightness(0.95); }
+  from { transform: translate(-50%, -50%) scale(1.12); opacity: 0.9; }
+  to   { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
 }
 .ambient-glow .ambient-img {
   width: 100%; height: 100%;
@@ -2427,12 +2433,17 @@ video.frame-video {
 .sp-land path { vector-effect: non-scaling-stroke; }
 
 /* Radar pulse rings: three concentric circles per location, expanding
-   outward from r=4 to r=R with the stroke fading out. Staggered start so
-   the pulses feel continuous rather than synchronised. */
+   outward with the stroke fading out. Staggered start so the pulses feel
+   continuous rather than synchronised. Each ring is drawn at its FULL radius
+   (r=28, hub r=50) and grown with transform: scale + opacity, which the GPU
+   composites. (Animating `r` / stroke-opacity repainted all 24 rings on the
+   main thread every frame.) non-scaling-stroke keeps the 1.4px line constant. */
 .sp-pulse circle {
   animation: spPulse 3.4s ease-out infinite;
+  transform-box: fill-box;
   transform-origin: center;
-  stroke-opacity: 0;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
 }
 .sp-pulse circle:nth-child(1) { animation-delay: 0s; }
 .sp-pulse circle:nth-child(2) { animation-delay: 1.1s; }
@@ -2441,15 +2452,15 @@ video.frame-video {
 /* India (hub) gets a larger pulse radius — broadcasts further. */
 .sp-pulse.hub circle { animation-name: spPulseHub; animation-duration: 4.2s; }
 
-@keyframes spPulse {
-  0%   { r: 4;  stroke-opacity: 0.55; }
-  70%  { stroke-opacity: 0.08; }
-  100% { r: 28; stroke-opacity: 0; }
+@keyframes spPulse {      /* r 4 → 28 */
+  0%   { transform: scale(0.143); opacity: 0.55; }
+  70%  { opacity: 0.08; }
+  100% { transform: scale(1);     opacity: 0; }
 }
-@keyframes spPulseHub {
-  0%   { r: 6;  stroke-opacity: 0.75; }
-  70%  { stroke-opacity: 0.10; }
-  100% { r: 50; stroke-opacity: 0; }
+@keyframes spPulseHub {   /* r 6 → 50 */
+  0%   { transform: scale(0.12);  opacity: 0.75; }
+  70%  { opacity: 0.10; }
+  100% { transform: scale(1);     opacity: 0; }
 }
 
 /* Static halo behind every dot for body. Also breathes gently. */
@@ -3131,4 +3142,11 @@ textarea:focus-visible,
   .ff-lede { max-width: none; }
   .ff-lb { padding: 0 16px; }
   .ff-lb-x { top: 14px; right: 16px; }
+}
+
+/* Reduced motion: stop the continuous ambient loops too (the hero, map and
+   reveals already respect this). Content stays in place, just still. */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-glow { animation: none; }
+  .logo-track, .vc-marquee-track { animation: none; }
 }

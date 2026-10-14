@@ -131,6 +131,20 @@ function WorkInner() {
     document.body.style.overflow = '';
     setTimeout(() => setActiveFilm(null), 800);
   };
+  // Escape closes the topmost layer: menu, then the vertical player, then the
+  // case study (Home already does this; /work had no handler at all).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (menuOpen) setMenuOpen(false);
+      else if (vertPick) setVertPick(null);
+      else if (caseOpen) closeCase();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menuOpen, vertPick, caseOpen]);
+
   const switchCase = (film: Film) => {
     setCaseOpen(false);
     setTimeout(() => {

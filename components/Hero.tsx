@@ -212,6 +212,8 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
     return () => mq.removeEventListener('change', set);
   }, []);
 
+  // Keep in step with --hero-cell-w in styles.css (it sizes the cells; this
+  // value drives the drum radius for the 3D transforms).
   // Centre film a touch larger now and in 16:9 (was 21:9). The curved
   // neighbours still have room to wrap in from the sides. Mobile: near full
   // width. The height cap keeps the taller 16:9 cell inside the hero-zone.
@@ -530,11 +532,15 @@ export default function Hero({ films, onPick, showCursorHint }: Props) {
               key={film.id}
               ref={(el) => { cellSlotsRef.current[i] = el; }}
               className="cell-slot"
+              // Sized in CSS (--hero-cell-w, same formula as cellW below) so the
+              // server-rendered first paint is already the right size. Sizing
+              // from JS state painted a 1280×720 guess first, then snapped to
+              // the real viewport after hydration: a large layout shift.
               style={{
-                width: cellW,
-                height: cellH,
-                marginLeft: -cellW / 2,
-                marginTop: -cellH / 2,
+                width: 'var(--hero-cell-w)',
+                height: 'calc(var(--hero-cell-w) * 9 / 16)',
+                marginLeft: 'calc(var(--hero-cell-w) / -2)',
+                marginTop: 'calc(var(--hero-cell-w) * -9 / 32)',
               }}
             >
               <div

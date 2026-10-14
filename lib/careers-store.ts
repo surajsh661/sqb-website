@@ -46,13 +46,43 @@ function withOpenApplication(roles: StoredRole[]): StoredRole[] {
   return [...roles, withBudget(OPEN_APPLICATION_ROLE)];
 }
 
+/**
+ * Copy fixes for listings already seeded into KV. The seed is copied into KV
+ * once, so later wording changes in lib/careers.ts never reach the live site on
+ * their own. These swap ONLY the exact old default phrases; any field the owner
+ * has edited in /admin no longer contains them and is left untouched.
+ */
+const COPY_FIXES: [string, string][] = [
+  ['Cut raw footage — and raw generation — into films that hold.', 'Cut raw footage and AI generations into films that hold together.'],
+  ['Generate worlds that look shot, not rendered.', 'Generate AI footage that looks like it was shot on a real set.'],
+  ['Own the vision. Direct the machine.', 'Own the creative vision and direct the AI pipeline.'],
+  ["This is not a traditional HR desk role. You'll actively handle", "You'll handle"],
+  ['across a whole film — art-directing prompts, references and passes until the frame is indistinguishable from a shot one, then finishing it with motion graphics and design.',
+   'across a whole film. You will art-direct prompts, references and passes until the frame looks shot, then finish it with motion graphics and design.'],
+  ['We hire on the work, not the résumé.', 'We judge you on the work you show us.'],
+  ['A body of work you can show — reel, portfolio, credits or shipped projects', 'A body of work you can show: reel, portfolio, credits or released projects'],
+  ['In a line — what would you bring to S’QB?', 'In one line, what would you bring to S’QB?'],
+];
+function fixCopy<T>(v: T): T {
+  if (typeof v === 'string') {
+    let out: string = v;
+    for (const [from, to] of COPY_FIXES) if (out.includes(from)) out = out.split(from).join(to);
+    return out as T;
+  }
+  if (Array.isArray(v)) return v.map(fixCopy) as T;
+  if (v && typeof v === 'object') {
+    return Object.fromEntries(Object.entries(v as Record<string, unknown>).map(([k, x]) => [k, fixCopy(x)])) as T;
+  }
+  return v;
+}
+
 /** All roles — KV if present, else the code seed (no write; safe on public paths). */
 export async function getStoredRoles(): Promise<StoredRole[]> {
   try {
     const raw = await adminStore().get(KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length) return withOpenApplication(parsed as StoredRole[]);
+      if (Array.isArray(parsed) && parsed.length) return withOpenApplication(fixCopy(parsed as StoredRole[]));
     }
   } catch { /* KV down → fall back to seed */ }
   return seed();
@@ -71,7 +101,7 @@ export async function seedIfEmpty(): Promise<StoredRole[]> {
       if (Array.isArray(parsed) && parsed.length) {
         // Persist the merged list so the open application becomes editable
         // (and closable) from the admin like any other listing.
-        const merged = withOpenApplication(parsed as StoredRole[]);
+        const merged = withOpenApplication(fixCopy(parsed as StoredRole[]));
         if (merged.length !== parsed.length) {
           try { await saveStoredRoles(merged); } catch { /* best effort */ }
         }

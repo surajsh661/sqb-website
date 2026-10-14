@@ -2,32 +2,48 @@
 import { useEffect, useState } from 'react';
 import type { Film } from './types';
 
-// Case-study edits saved in /admin, applied to the public site. Fetched once
-// per page load and cached in module scope so every component shares one request.
+// Edits saved in /admin, applied to the public site: case-study overrides and
+// custom thumbnails (video ID → image src). Fetched once per page load and
+// cached in module scope so every component shares one request.
 type Overrides = Record<string, Partial<Film>>;
+type Thumbs = Record<string, string>;
+type Content = { overrides: Overrides; thumbs: Thumbs };
 
-let cache: Overrides | null = null;
-let inflight: Promise<Overrides> | null = null;
+const EMPTY: Content = { overrides: {}, thumbs: {} };
+let cache: Content | null = null;
+let inflight: Promise<Content> | null = null;
 
-async function load(): Promise<Overrides> {
+async function load(): Promise<Content> {
   if (cache) return cache;
   if (!inflight) {
     inflight = fetch('/api/public/content')
-      .then((r) => (r.ok ? r.json() : { overrides: {} }))
-      .then((d) => { cache = (d.overrides || {}) as Overrides; return cache; })
-      .catch(() => ({} as Overrides));
+      .then((r) => (r.ok ? r.json() : EMPTY))
+      .then((d) => {
+        cache = { overrides: (d.overrides || {}) as Overrides, thumbs: (d.thumbs || {}) as Thumbs };
+        return cache;
+      })
+      .catch(() => EMPTY);
   }
   return inflight;
 }
 
-export function useOverrides(): Overrides {
-  const [ov, setOv] = useState<Overrides>(cache || {});
+function useContent(): Content {
+  const [c, setC] = useState<Content>(cache || EMPTY);
   useEffect(() => {
     let alive = true;
-    load().then((o) => { if (alive) setOv(o); });
+    load().then((v) => { if (alive) setC(v); });
     return () => { alive = false; };
   }, []);
-  return ov;
+  return c;
+}
+
+export function useOverrides(): Overrides {
+  return useContent().overrides;
+}
+
+/** Custom thumbnails set in /admin → Thumbnails, keyed by video ID. */
+export function useThumbs(): Thumbs {
+  return useContent().thumbs;
 }
 
 /** Overlay a film's saved edits onto its base data (id-matched). */

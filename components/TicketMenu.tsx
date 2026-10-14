@@ -1,4 +1,5 @@
 'use client';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { COPY } from '@/lib/copy';
 import { IconX } from './Icons';
@@ -15,6 +16,14 @@ const NAV: [string, string][] = [
 ];
 
 export default function TicketMenu({ open, onClose, onReachOut }: Props) {
+  // Escape closes the menu on every page (only Home and /work handled it).
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
   const reachOut = () => {
     onClose();
     if (onReachOut) { setTimeout(onReachOut, 180); return; }

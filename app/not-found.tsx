@@ -33,8 +33,8 @@ export default function NotFound() {
             THIS SHOT ISN&apos;T <em>IN THE CUT</em>.
           </h1>
           <p className="nf-copy">
-            The page you asked for doesn&apos;t exist — it may have been moved, renamed, or never
-            made it past the edit. Here&apos;s where everything else lives.
+            We moved, renamed or never published the page you asked for. You&apos;ll find
+            everything else below.
           </p>
 
           <nav className="nf-links" aria-label="Main pages">

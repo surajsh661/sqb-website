@@ -565,10 +565,14 @@
    edge with no letterbox bars and no cropping. */
 .ai-track-section .ai-clip { aspect-ratio: 16 / 9; }
 
-/* Realistic section: three landscape reels in one row. (The two vertical AI
-   shows that used to sit here moved to #section-micro.) */
+/* AI Cinematic Films: the newest film (Dream, ~2.33:1 scope) takes a full-width
+   row at its native ratio; the three reels sit in one row beneath it. */
 #section-real .ai-track-grid { grid-template-columns: repeat(3, 1fr); gap: 24px 26px; }
 #section-real .ai-clip { aspect-ratio: 1600 / 843; }
+#section-real .ai-clip:first-child { grid-column: 1 / -1; aspect-ratio: 2206 / 946; }
+/* The Muthoot flagship sits inside this section (between the sub-line and the
+   reels), so it drops the page-level padding it had as a standalone section. */
+.ai-track-section .ai-feature { max-width: none; padding: 4px 0 56px; }
 
 /* AI micro dramas — their own section: four 9:16 posters in a row, capped so
    portrait cards don't grow taller than a screen on wide monitors. */
@@ -2001,7 +2005,8 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   /* ids beat the class rule above, so these grids need their own tablet
      overrides. Realistic: 2-up, the third reel spans the row. */
   #section-real .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  #section-real .ai-clip:nth-child(3) { grid-column: 1 / -1; }
+  #section-real .ai-clip:nth-child(4) { grid-column: 1 / -1; }
+  .ai-track-section .ai-feature { padding: 0 0 36px; }
   #section-micro .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; }
 
   /* SOCIAL */

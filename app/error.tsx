@@ -34,7 +34,7 @@ export default function Error({
             WE DROPPED <em>THE FRAME</em>.
           </h1>
           <p className="nf-copy">
-            Something on this page failed to load. The fault is logged on our side — try it again,
+            Something on this page failed to load, and we&apos;ve logged it on our side. Try again,
             or head back to the reel.
           </p>
 

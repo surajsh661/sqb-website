@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Topbar from '@/components/Topbar';
@@ -13,6 +13,7 @@ import { SQB_AI_LAB, HERO_POSTERS } from '@/lib/data';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
 import { videoSrc, thumbSources, setupReveal } from '@/lib/video-utils';
+import { useThumbs } from '@/lib/useOverrides';
 import type { AILabItem } from '@/lib/types';
 
 const LAB = SQB_AI_LAB;
@@ -23,7 +24,9 @@ const PANES = [
     bg: LAB.animated[0], anchor: 'section-anim' },
   { key: 'real' as const, cls: 'real', num: '02', name: 'CINEMATIC',
     desc: COPY.aiLab.paneReal,
-    bg: LAB.realistic[0], anchor: 'section-real' },
+    // First Drive reel, not realistic[0]: the newest film (Dream) is ultra-wide
+    // Vimeo with no still, and would play letterboxed in the panel.
+    bg: LAB.realistic.find((it) => it.type === 'gd') || LAB.realistic[0], anchor: 'section-real' },
   { key: 'vfx' as const, cls: 'vfx', num: '03', name: 'VFX & 3D',
     desc: COPY.aiLab.paneVfx,
     bg: LAB.vfx[0], anchor: 'section-vfx' },
@@ -45,15 +48,18 @@ function reelSrc(item: AILabItem) {
 }
 
 function AISection({
-  id, eyebrow, title, blurb, items, onOpen,
+  id, eyebrow, title, blurb, items, onOpen, lead,
 }: {
   id: string;
   eyebrow?: string;
+  /** Optional block shown between the sub-line and the reel grid. */
+  lead?: ReactNode;
   title: string;
   blurb: string;
   items: AILabItem[];
   onOpen: (item: AILabItem, title: string) => void;
 }) {
+  const thumbs = useThumbs(); // custom posters set in /admin → Thumbnails
   return (
     <section className="ai-track-section" id={id} data-screen-label={id}>
       {eyebrow && <div className="ats-eyebrow">{eyebrow}</div>}
@@ -64,6 +70,7 @@ function AISection({
           .map((w, i) => (i % 2 ? <em key={i}>{w} </em> : <span key={i}>{w} </span>))}
       </h2>
       <p className="ats-blurb">{blurb}</p>
+      {lead}
       <div className="ai-track-grid">
         {items.map((it) => (
           <div
@@ -80,18 +87,25 @@ function AISection({
               // lightbox on click.
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="ai-clip-poster" src={it.poster || thumbSources(it)[1] || thumbSources(it)[0]} alt={it.title} referrerPolicy="no-referrer" loading="lazy" />
+                <img className="ai-clip-poster" src={thumbs[it.videoId] || it.poster || HERO_POSTERS[it.videoId] || thumbSources(it)[1] || thumbSources(it)[0]} alt={it.title} referrerPolicy="no-referrer" loading="lazy" />
                 <span className="ai-clip-play" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
                 </span>
               </>
             ) : (
-              <iframe
-                src={bgSrc(it)}
-                title={it.title}
-                allow="autoplay; encrypted-media"
-                loading="lazy"
-              />
+              <>
+                {/* A custom poster shows until the clip loads over it. */}
+                {thumbs[it.videoId] && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="ai-clip-poster" src={thumbs[it.videoId]} alt="" aria-hidden="true" referrerPolicy="no-referrer" loading="lazy" />
+                )}
+                <iframe
+                  src={bgSrc(it)}
+                  title={it.title}
+                  allow="autoplay; encrypted-media"
+                  loading="lazy"
+                />
+              </>
             )}
             <span className="ac-label">{it.title}</span>
           </div>
@@ -101,12 +115,13 @@ function AISection({
   );
 }
 
-// Flagship original IP — its own dedicated section: the film on one side, a
-// short summary beside it. The whole frame (and the CTA) opens the case study.
+// Flagship original IP (Muthoot "Sunheri Soch") — shown INSIDE the AI Cinematic
+// Films section, above its reels: the film on one side, a short summary beside it. The whole frame (and the CTA) opens the case study.
 function FeaturedIP({ item, onOpen }: { item: AILabItem; onOpen: () => void }) {
   const c = COPY.aiLab;
+  const poster = useThumbs()[item.videoId];
   return (
-    <section className="ai-feature" id="section-featured" data-screen-label="section-featured">
+    <div className="ai-feature" id="section-featured">
       <div
         className="aif-media"
         role="button"
@@ -115,6 +130,10 @@ function FeaturedIP({ item, onOpen }: { item: AILabItem; onOpen: () => void }) {
         onClick={onOpen}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); } }}
       >
+        {poster && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="ai-clip-poster" src={poster} alt="" aria-hidden="true" referrerPolicy="no-referrer" loading="lazy" />
+        )}
         <iframe src={bgSrc(item)} title={item.title} allow="autoplay; encrypted-media" loading="lazy" />
         <span className="aif-play" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
@@ -135,12 +154,13 @@ function FeaturedIP({ item, onOpen }: { item: AILabItem; onOpen: () => void }) {
           {c.featCta} <span aria-hidden="true">→</span>
         </button>
       </div>
-    </section>
+    </div>
   );
 }
 
 export default function AILabPage() {
   const router = useRouter();
+  const thumbs = useThumbs(); // custom posters set in /admin → Thumbnails
   const [hover, setHover] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
@@ -193,7 +213,7 @@ export default function AILabPage() {
             // panes visually consistent and avoids a lone live-loading iframe
             // when the lead item is Vimeo (e.g. Muthoot in Realistic). Uses the
             // baked Vimeo-CDN poster for vm, the Drive thumbnail for gd.
-            const poster = HERO_POSTERS[p.bg.videoId] || (p.bg.type === 'gd' ? thumbSources(p.bg)[0] : null);
+            const poster = thumbs[p.bg.videoId] || HERO_POSTERS[p.bg.videoId] || (p.bg.type === 'gd' ? thumbSources(p.bg)[0] : null);
             return (
               <div
                 key={p.key}
@@ -237,7 +257,6 @@ export default function AILabPage() {
         onOpen={openReel}
       />
 
-      <FeaturedIP item={LAB.featured} onOpen={() => openReel(LAB.featured, 'Featured IP')} />
 
       <AISection
         id="section-anim"
@@ -248,6 +267,7 @@ export default function AILabPage() {
       />
       <AISection
         id="section-real"
+        lead={<FeaturedIP item={LAB.featured} onOpen={() => openReel(LAB.featured, 'Featured IP')} />}
         title={COPY.aiLab.realTitle}
         items={LAB.realistic}
         blurb={COPY.aiLab.realBlurb}

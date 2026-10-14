@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
-import { SQB_VERTICALS } from '@/lib/data';
+import { SQB_VERTICALS, HERO_POSTERS } from '@/lib/data';
+import { useThumbs } from '@/lib/useOverrides';
 import { COPY } from '@/lib/copy';
 import { rich } from '@/lib/rich';
 import { videoSrc, thumbSources } from '@/lib/video-utils';
@@ -43,6 +44,7 @@ function slotPlacement(slot: number, N: number) {
 }
 
 export default function Verticals() {
+  const thumbs = useThumbs(); // custom posters set in /admin → Thumbnails
   const N = SQB_VERTICALS.length;
   const [rotation, setRotation] = useState(0);
   const [active, setActive] = useState<Vertical | null>(null);
@@ -273,18 +275,32 @@ export default function Verticals() {
                     // the clean 9:16 poster; click opens the case study to play.
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={thumbSources({ type: v.type, videoId: v.videoId })[1] || thumbSources({ type: v.type, videoId: v.videoId })[0]}
+                      src={thumbs[v.videoId] || HERO_POSTERS[v.videoId] || thumbSources({ type: v.type, videoId: v.videoId })[1] || thumbSources({ type: v.type, videoId: v.videoId })[0]}
                       alt={v.title}
                       referrerPolicy="no-referrer"
                       loading={i === 2 ? 'eager' : 'lazy'}
                     />
                   ) : (
+                    <>
+                    {/* Poster under the autoplaying clip: shows while it loads, or
+                        if the phone blocks autoplay (e.g. low-power mode). */}
+                    {(thumbs[v.videoId] || HERO_POSTERS[v.videoId]) && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={thumbs[v.videoId] || HERO_POSTERS[v.videoId]}
+                        alt=""
+                        aria-hidden="true"
+                        referrerPolicy="no-referrer"
+                        loading={i === 2 ? 'eager' : 'lazy'}
+                      />
+                    )}
                     <iframe
                       src={videoSrc({ type: v.type, videoId: v.videoId }, { bg: true })}
                       title={v.title}
                       allow="autoplay; encrypted-media"
                       loading={i === 2 ? 'eager' : 'lazy'}
                     />
+                    </>
                   )
                 )}
                 <div className="vlabel">

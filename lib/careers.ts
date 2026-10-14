@@ -70,7 +70,7 @@ export const SQB_ROLES: Role[] = [
     location: 'Noida Sector 4, Delhi NCR',
     onsite: 'On-site (mandatory)',
     experience: '2+ yrs with Generative AI',
-    lede: 'Cut raw footage — and raw generation — into films that hold.',
+    lede: 'Cut raw footage and AI generations into films that hold together.',
     description:
       "An on-site, contract role for an AI Video Editor (AI Filmmaking). You'll edit and assemble raw footage into finished films: colour grading, motion graphics, and the visual elements that carry a story. You'll work directly with the creative team to hold every project to S'QB standards.",
     qualifications: [
@@ -102,9 +102,9 @@ export const SQB_ROLES: Role[] = [
     location: 'Noida Sector 4, Delhi NCR',
     onsite: 'On-site (mandatory)',
     experience: '2+ yrs with Generative AI',
-    lede: 'Generate worlds that look shot, not rendered.',
+    lede: 'Generate AI footage that looks like it was shot on a real set.',
     description:
-      'An on-site, contract role for an AI Video Creator. You will generate AI video that holds visual consistency and story mood across a whole film — art-directing prompts, references and passes until the frame is indistinguishable from a shot one, then finishing it with motion graphics and design.',
+      'An on-site, contract role for an AI Video Creator. You will generate AI video that holds visual consistency and story mood across a whole film. You will art-direct prompts, references and passes until the frame looks shot, then finish it with motion graphics and design.',
     qualifications: [
       'Experience generating AI video, holding visual consistency and story mood',
       'Knowledge of motion graphics and graphic design for engaging visual elements',
@@ -133,7 +133,7 @@ export const SQB_ROLES: Role[] = [
     location: 'Noida Sector 4, Delhi NCR',
     onsite: 'On-site (mandatory)',
     experience: '4+ yrs filmmaking · 2+ yrs Generative AI',
-    lede: 'Own the vision. Direct the machine.',
+    lede: 'Own the creative vision and direct the AI pipeline.',
     description:
       "A contractual, on-site role for an AI Creative Director. You'll own creative direction across projects — using storytelling and strategy to craft campaigns and content. Day to day: developing creative strategy, collaborating with branding teams, leading art direction, and integrating AI-driven content design into deliverables. You'll guide design and production teams so every deliverable lands the company's vision.",
     qualifications: [
@@ -164,7 +164,7 @@ export const SQB_ROLES: Role[] = [
     experience: '2–4 yrs HR or recruitment',
     lede: 'Build the crew behind the camera.',
     description:
-      "We're looking for an HR Executive who can help us build and manage a fast-growing creative team. This is not a traditional HR desk role. You'll actively handle hiring, onboarding, contracts, people operations, coordination, and day-to-day team management inside a high-speed production environment. You should be comfortable working with creators, editors, AI artists, filmmakers and internet-native teams.",
+      "We're looking for an HR Executive who can help us build and manage a fast-growing creative team. You'll handle hiring, onboarding, contracts, people operations, coordination, and day-to-day team management inside a high-speed production environment. You should be comfortable working with creators, editors, AI artists, filmmakers and internet-native teams.",
     responsibilities: [
       'Source candidates through LinkedIn, Indeed, Naukri, Internshala, referrals and creative communities',
       'Conduct initial screening and coordination calls',
@@ -226,10 +226,10 @@ export const OPEN_APPLICATION_ROLE: Role = {
   experience: '2+ yrs in film or video production',
   lede: "Your craft isn't on the list? Make your case anyway.",
   description:
-    "We don't list every seat we hire for. If you're a production designer, executive or line producer, DOP, art director, colourist, sound designer, writer, assistant director — or anything else a production house runs on — pitch yourself here. Tell us what you do, show us the work, and we'll keep you on the bench for the projects that need you. We hire on the work, not the résumé.",
+    "We don't list every seat we hire for. If you're a production designer, executive or line producer, DOP, art director, colourist, sound designer, writer, assistant director — or anything else a production house runs on — pitch yourself here. Tell us what you do, show us the work, and we'll keep you on the bench for the projects that need you. We judge you on the work you show us.",
   qualifications: [
     'At least 2 years of professional experience in film, video or content production',
-    'A body of work you can show — reel, portfolio, credits or shipped projects',
+    'A body of work you can show: reel, portfolio, credits or released projects',
     'Clarity about the craft you own and the role you want to play on a set or in post',
     'Comfortable working to a brief, a deadline and a production schedule',
   ],
@@ -253,7 +253,7 @@ export const OPEN_APPLICATION_ROLE: Role = {
       kind: 'text',
       required: true,
       placeholder: 'The one project that proves it…',
-      label: 'In a line — what would you bring to S’QB?',
+      label: 'In one line, what would you bring to S’QB?',
     },
     {
       id: 'ncr',

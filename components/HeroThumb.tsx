@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { thumbSources, fetchVimeoThumb } from '@/lib/video-utils';
 import { HERO_POSTERS } from '@/lib/data';
+import { useThumbs } from '@/lib/useOverrides';
 import type { Film } from '@/lib/types';
 
 interface Props {
@@ -10,9 +11,16 @@ interface Props {
   /** Mark the above-the-fold poster (the centred hero film) so the browser
    *  fetches it at top priority — it IS the page's LCP element. */
   priority?: boolean;
+  /** Show the built-in poster only (the admin console previews it this way). */
+  noCustom?: boolean;
 }
 
-export default function HeroThumb({ film, className, priority }: Props) {
+export default function HeroThumb({ film, className, priority, noCustom }: Props) {
+  // A thumbnail set in /admin wins. If it fails to load, fall back to the
+  // built-in poster rather than showing a broken image.
+  const custom = useThumbs()[film.videoId];
+  const [customFailed, setCustomFailed] = useState(false);
+  const useCustom = !noCustom && !!custom && !customFailed;
   const [idx, setIdx] = useState(0);
   // A baked-in official poster (hero films) shows instantly — no oembed fetch,
   // no third-party proxy. Falls back to the deterministic thumbnail sources.
@@ -33,7 +41,7 @@ export default function HeroThumb({ film, className, priority }: Props) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={override || sources[idx]}
+      src={useCustom ? custom : (override || sources[idx])}
       alt={film.title}
       referrerPolicy="no-referrer"
       className={className}
@@ -44,7 +52,8 @@ export default function HeroThumb({ film, className, priority }: Props) {
          and steals the pointer events from the spin/swipe handlers. */
       draggable={false}
       onError={() => {
-        if (override) setOverride(null);
+        if (useCustom) setCustomFailed(true);
+        else if (override) setOverride(null);
         else setIdx((i) => Math.min(i + 1, sources.length - 1));
       }}
     />

@@ -112,9 +112,9 @@ export default function CareersPage() {
         <div className="cr-rec"><span className="cr-rec-dot" />REC · NOW CASTING</div>
         <h1 className="cr-title">JOIN THE <em>CREW</em></h1>
         <p className="cr-blurb">
-          We&apos;re a film house in Delhi NCR — ad films, documentaries, web shows, music videos and AI film.
-          Filmmakers who happen to be very good with AI, shooting and generating at a pace the old
-          pipeline can&apos;t hold. We hire on the work, not the r&eacute;sum&eacute;.
+          We&apos;re a film house in Delhi NCR making ad films, documentaries, web shows, music videos and AI films.
+          We&apos;re filmmakers who happen to be very good with AI, and we shoot and generate faster than a
+          traditional pipeline allows. We judge you on the work you show us.
         </p>
       </section>
 

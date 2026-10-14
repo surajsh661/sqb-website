@@ -77,9 +77,9 @@ export default function ServiceMap() {
               const cls = l.hub ? 'sp-pulse hub' : 'sp-pulse';
               return (
                 <g key={'p' + l.name} transform={`translate(${p.x} ${p.y})`} className={cls}>
-                  <circle cx={0} cy={0} r={0} fill="none" stroke="var(--accent)" strokeWidth="1.4" />
-                  <circle cx={0} cy={0} r={0} fill="none" stroke="var(--accent)" strokeWidth="1.4" />
-                  <circle cx={0} cy={0} r={0} fill="none" stroke="var(--accent)" strokeWidth="1.4" />
+                  <circle cx={0} cy={0} r={l.hub ? 50 : 28} fill="none" stroke="var(--accent)" strokeWidth="1.4" />
+                  <circle cx={0} cy={0} r={l.hub ? 50 : 28} fill="none" stroke="var(--accent)" strokeWidth="1.4" />
+                  <circle cx={0} cy={0} r={l.hub ? 50 : 28} fill="none" stroke="var(--accent)" strokeWidth="1.4" />
                 </g>
               );
             })}

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
+import ThumbsAdmin from './ThumbsAdmin';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -223,7 +224,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [store, setStore] = useState<string>('');
-  const [section, setSection] = useState<'overview' | 'cases' | 'careers'>('overview');
+  const [section, setSection] = useState<'overview' | 'cases' | 'careers' | 'thumbs'>('overview');
   const [caseView, setCaseView] = useState<'grid' | 'edit'>('grid');
 
   useEffect(() => {
@@ -263,7 +264,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const logout = async () => { await fetch('/api/admin/logout', { method: 'POST' }); onLogout(); };
 
   // Entering a section always lands on its card grid, not a stale open editor.
-  const go = (s: 'overview' | 'cases' | 'careers') => { if (s === 'cases') setCaseView('grid'); setSection(s); };
+  const go = (s: 'overview' | 'cases' | 'careers' | 'thumbs') => { if (s === 'cases') setCaseView('grid'); setSection(s); };
 
   return (
     <div className="adm-card wide">
@@ -272,6 +273,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           <button className={'adm-tab' + (section === 'overview' ? ' on' : '')} onClick={() => go('overview')}>Overview</button>
           <button className={'adm-tab' + (section === 'cases' ? ' on' : '')} onClick={() => go('cases')}>Case Studies</button>
           <button className={'adm-tab' + (section === 'careers' ? ' on' : '')} onClick={() => go('careers')}>Careers</button>
+          <button className={'adm-tab' + (section === 'thumbs' ? ' on' : '')} onClick={() => go('thumbs')}>Thumbnails</button>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span className={'adm-badge ' + (store === 'kv' ? 'live' : 'draft')}>{store === 'kv' ? 'Live DB' : 'Local draft'}</span>
@@ -281,6 +283,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
       {section === 'overview' && <Overview items={items} store={store} onGo={go} />}
       {section === 'careers' && <CareersAdmin />}
+      {section === 'thumbs' && <ThumbsAdmin />}
       {section === 'cases' && (caseView === 'grid' ? (
         <>
           <div className="adm-sechead">

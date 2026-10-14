@@ -95,7 +95,7 @@ export default function FeatureFilm({ compact = false }: { compact?: boolean }) 
             <iframe
               src={`https://www.youtube.com/embed/${f.trailerId}?autoplay=1&rel=0&modestbranding=1`}
               title={`${f.title} — official trailer`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
               allowFullScreen
             />
           </div>

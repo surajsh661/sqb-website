@@ -46,7 +46,7 @@ export const COPY = {
     // NOTE: the big animated headline ("We love filmmaking first and AI
     // second…") has moving icons baked in, so it lives in
     // components/ManifestoHeadline.tsx — ask the developer to change that line.
-    paragraph: `We're filmmakers who happen to be very good with AI. S'QB Pictures is an AI-enabled film and video production house in Delhi NCR (Noida) and Mumbai, shooting on locations across the globe. We create ad films, AI ads, music videos and original content for the world's most ambitious brands. With a seasoned crew, world-class film production expertise, and AI-powered creative workflows, we deliver work that is bigger, faster, and louder. But technology is never the story. Story comes first. Performance comes first. Craft comes first.`,
+    paragraph: `We're filmmakers who happen to be very good with AI. S'QB Pictures is an AI-enabled film and video production house in Delhi NCR (Noida) and Mumbai, and we shoot wherever the story needs us. We make ad films, AI ads, music videos and original series for brands like Muthoot Finance, T-Series and PhysicsWallah. Our crew brings years of film production to every set, and our AI workflows let us deliver more in less time. The story leads every project, and the tools serve the performance and the craft.`,
   },
 
   // ── Section 03 · Clients ──────────────────────────────────────────────────
@@ -72,8 +72,8 @@ export const COPY = {
     eyebrowLabel: `THE PEOPLE`,
     heading: `THE *ENGINE*`,
     subline: `FOUNDERS · FILMMAKERS FIRST · AI OPERATORS SECOND`,
-    surajBio: `Suraj Sharma is the Founder and Director of S'QB Pictures. He spearheads the studio's most ambitious films, commercials, and original content. A director, writer, and editor, he combines storytelling, visual craft, and technical expertise to shape every project from the ground up.`,
-    shubhamBio: `Shubham Shah is the Founder and Producer at S'QB Pictures. He turns ideas into finished films, overseeing every step from script and shoot to final delivery. A writer and producer, he leads the production floor, keeps projects on schedule, and ensures nothing gets lost between the brief and the final cut. He believes in small, talented teams, strong execution, and work that truly matters.`,
+    surajBio: `Suraj Sharma is the Founder and Director of S'QB Pictures. He directs, writes and edits, and he leads the studio's films, commercials and original series from the first draft to the final grade.`,
+    shubhamBio: `Shubham Shah is the Founder and Producer at S'QB Pictures. He takes each film from script and shoot through to delivery. A writer and producer, he runs the production floor, keeps projects on schedule and makes sure nothing gets lost between the brief and the final cut. He believes in small, talented teams and strong execution.`,
     footnote: `Two founders. A tight core of operators, writers, editors and AI supervisors who can hold a camera at 6am and a render queue at midnight.`,
   },
 
@@ -81,7 +81,7 @@ export const COPY = {
   contact: {
     eyebrowLabel: `REACH OUT`,
     heading: `LET'S MAKE *SOMETHING*.`,
-    blurb: `Pitch us a brief, a brand, a budget — or just a feeling. We'll come back in 24 hours with a treatment or a "this isn't us".`,
+    blurb: `Pitch us a brief, a brand, a budget or a feeling. We'll come back within 24 hours with a treatment, or an honest "this isn't us".`,
     pullQuote: `We only work with people who are *as hyped as we are*.`,
     studiosValue: `DELHI · MUMBAI`,
     forValue: `ADS · DVCs · MUSIC VIDEOS · AI FILMS · VERTICALS`,
@@ -95,12 +95,12 @@ export const COPY = {
       briefLabel: `BRIEF`,
       briefPlaceholder: `Tell us about the film, the moment, the deadline.`,
       sending: `SENDING…`,
-      sent: `SENT — WE'LL BE IN TOUCH ↗`,
+      sent: `SENT · WE'LL BE IN TOUCH ↗`,
       tryAgain: `TRY AGAIN`,
       submit: `SEND BRIEF →`,
       footIdle: `We read every brief. Replies within 24 hours.`,
       footSent: `Brief received. Reply within 24 hours.`,
-      footError: `Could not send right now — email surajsharma@sqbpictures.com directly.`,
+      footError: `Could not send right now. Email surajsharma@sqbpictures.com directly.`,
     },
   },
 
@@ -157,7 +157,7 @@ export const COPY = {
     eyebrowNumber: `05`,
     eyebrowLabel: `BEHIND THE SCENES`,
     heading: `FROM THE *FLOOR*.`,
-    blurb: `Rigs, blocks, grade rooms, AI lab nights. The work behind the work.`,
+    blurb: `Rigs, blocking, grade rooms and late nights in the AI lab.`,
   },
 
   // ── Home page · Testimonials ("The receipts") ─────────────────────────────
@@ -170,7 +170,7 @@ export const COPY = {
   // ── Home page · Vertical works strip ──────────────────────────────────────
   verticalsHome: {
     heading: `VERTICAL *CINEMA*`,
-    blurb: `Micro dramas and full-blown web shows, built for the phone in your hand. We own every frame — script, cast, shoot, edit, grade, sound, VFX. And for AI micro dramas, we go from a blank page to finished animation without ever leaving the studio.`,
+    blurb: `Micro dramas and full-blown web shows, built for the phone in your hand. We own every frame: script, cast, shoot, edit, grade, sound and VFX. For AI micro dramas, we go from a blank page to finished animation without leaving the studio.`,
   },
 
   // ── "Trusted by global brands" block (shown on Video / AI Lab / Social) ────
@@ -184,7 +184,7 @@ export const COPY = {
   work: {
     visionEyebrow: ``,
     visionTitle: `THE CONTENT *STUDIO*`,
-    visionBlurb: `Bring us a one-line idea or a finished script. We take it to screen — AI films, camera-shot TVCs, vertical micro dramas, long-form documentary.`,
+    visionBlurb: `Bring us a one-line idea or a finished script. We take it to screen: AI films, camera-shot TVCs, vertical micro dramas and long-form documentary.`,
     // The arrow → after the button is added automatically.
     visionCta: `START PROJECT`,
 
@@ -195,15 +195,15 @@ export const COPY = {
       { name: `Ad Films & TVCs`, desc: `Full cinematic script-to-screen production.` },
       { name: `CGI / VFX & 3D`, desc: `Complex visual effects and motion graphics.` },
       { name: `AI Film Production`, desc: `Cinema-grade AI film, from blank page to final cut.` },
-      { name: `Short-Form Digital`, desc: `Shorts built for the feed, not cut down from TV.` },
+      { name: `Short-Form Digital`, desc: `Shorts made for the feed from the first frame.` },
       { name: `Launch & Explainers`, desc: `Launch films that explain it in 90 seconds.` },
-      { name: `Documentary & Long-Form`, desc: `Long-form stories people actually finish.` },
+      { name: `Documentary & Long-Form`, desc: `Long-form stories that hold an audience to the end.` },
     ],
 
     // The big "300 → 1000+" number is set in code; edit the words around it.
     scaleTitle: `MINUTES / MONTH`,
-    scaleSub: `Real volume, without ever dropping the grade.`,
-    scaleFine: `Short-form digital, animated explainers, launch videos, high-fidelity commercial spots — delivered every month for India's biggest brands.`,
+    scaleSub: `High volume, with no drop in the grade.`,
+    scaleFine: `Short-form digital, animated explainers, launch videos and commercial spots, delivered every month for India's biggest brands.`,
 
     filmsTitle: `OUR *FILMS*`,
     filmsSub: `A LIBRARY OF 1000+ PROJECTS`,
@@ -221,7 +221,7 @@ export const COPY = {
 
     vcEyebrow: `9:16 · BUILT FOR PHONES`,
     vcTitle: `VERTICAL *CINEMA*`,
-    vcBlurb: `We make vertical web shows end to end. For an AI micro drama we go from script and storyboard all the way to the final AI animation; for live-action we own ideation, writing, casting and the shoot, then deliver the finished cut with BGM, colour grade and any VFX the OTT needs. Built for OTT platforms and global brands — and delivered straight to the vertical platforms they live on.`,
+    vcBlurb: `We make vertical web shows end to end. For an AI micro drama we go from script and storyboard to the final AI animation. For live action we handle ideation, writing, casting and the shoot, then deliver the finished cut with music, colour grade and any VFX the OTT needs. We make them for OTT platforms and global brands, and deliver them straight to the vertical platforms they run on.`,
     vcTallyLabel: `VERTICAL FILMS`,
   },
 
@@ -233,31 +233,31 @@ export const COPY = {
     heroTitle: `AI BUILT TO *SCALE*`,
     // Capabilities shown under the AI Lab headline as a quiet, boxless index line.
     heroTags: [`AI Creatives`, `AI Ad Films`, `AI Influencers`, `AI Films`, `AI Cinematic Films`, `AI Micro Dramas`, `2D & 3D Animation`, `AI VFX`, `AI IP Creation`],
-    heroBlurb: `We build AI ad films, AI micro dramas, films, and animation series for brands, OTT platforms, theatrical, and broadcast — alongside original YouTube IPs like Sunheri Soch S4: docu-films directed and generated entirely with our AI pipeline. Story first. Generative second. Always cinema-grade.`,
+    heroBlurb: `We build AI ad films, AI micro dramas, films, and animation series for brands, OTT platforms, theatrical and broadcast, plus original YouTube IPs like Sunheri Soch S4, a docu-series we directed and generated end to end with our AI pipeline. We start with the story, then pick the generative tools that serve it.`,
 
     // The 3 hover panels at the top of the page (short descriptions).
-    paneAnim: `Stylised AI animation built like illustration in motion — character, frame and pacing carry the story.`,
-    paneReal: `Generative cinema indistinguishable from a shot film — real-reference performances, art-directed worlds.`,
-    paneVfx: `Action, scale shots, effects. The impossible day on set turned into the inevitable shot in the cut.`,
+    paneAnim: `Stylised AI animation that moves like illustration. Character, framing and pacing carry the story.`,
+    paneReal: `Generative cinema that plays like a shot film, with real-reference performances and art-directed worlds.`,
+    paneVfx: `Action sequences, scale shots and set extensions, built in post instead of on set.`,
 
     // AI micro dramas — their own section, above the reels (9:16 series).
     microEyebrow: `AI Originals · 9:16`,
     microTitle: `AI Micro Dramas`,
-    microBlurb: `AI-generated vertical dramas made for the phone, like Antim Yudh and Woh Aa Gayi.`,
+    microBlurb: `AI-generated vertical dramas made for the phone, like Ladaku Nanny and Beware My CEO Mommy.`,
 
     // The 3 reel sections lower down (a title + a longer blurb each).
     animTitle: `AI Animation`,
-    animBlurb: `Stylised AI animation — illustration in motion. Character, frame, and pacing carry the story.`,
+    animBlurb: `Stylised AI animation that moves like illustration. Character, framing and pacing carry the story.`,
     realTitle: `AI Cinematic Films`,
     realBlurb: `Photoreal AI brand films and docu-series, built on real-reference performances and finished to the standard of a shot film.`,
     vfxTitle: `Visual Effects and\u00A03D`, // \u00A0 keeps "and 3D" together so "3D" never wraps onto a line alone
-    vfxBlurb: `AI-assisted VFX and 3D for action sequences, scale shots and set extensions on films, series and ads — including our theatrical feature Navya Chakra.`,
+    vfxBlurb: `AI-assisted VFX and 3D for action sequences, scale shots and set extensions on films, series and ads, including our theatrical feature Navya Chakra.`,
 
     // Flagship IP section — Muthoot "Sunheri Soch". Video left, summary right.
     featEyebrow: `Flagship Original IP`,
     featTitle: `Muthoot — *Sunheri Soch*`,
     featClient: `Muthoot Finance × RedFM`,
-    featSummary: `A nine-month, twenty-two-episode docu-AI series that turned real Muthoot customers into cinema. Every story researched, storyboarded and rendered to feel indistinguishable from a documentary shoot — RedFM aired the audio, we owned the visual.`,
+    featSummary: `A nine-month, 22-episode docu-AI series about real Muthoot customers. We researched, storyboarded and rendered every story to look like a documentary shoot. RedFM aired the audio, and we made the films.`,
     featStats: [
       { k: `Episodes`, v: `22` },
       { k: `Run`, v: `9 months` },
@@ -272,7 +272,7 @@ export const COPY = {
   social: {
     heroEyebrow: `FROM IDEAS TO VIRALITY`,
     heroTitle: `CAAS · CONTENT AS A *SERVICE*`,
-    heroBlurb: `Original IPs and creator engines we built from scratch — the channels, formats and films behind some of India's biggest YouTube creators.`,
+    heroBlurb: `Original IPs and creator engines we built from scratch: the channels, formats and films behind some of India's biggest YouTube creators.`,
     // The 3 big stats under the headline (value + label each).
     stats: [
       { value: `10M+`, label: `Subscribers Reached` },
@@ -288,7 +288,7 @@ export const COPY = {
     tedxEyebrow: `LIVE · ON STAGE`,
     tedxName: `TEDx`,
     tedxLabel: `TALKS · TEDx STAGE`,
-    tedxBlurb: `TEDx stage talks — filmed live and cut for the screen, end to end.`,
+    tedxBlurb: `TEDx stage talks, filmed live and cut for the screen end to end.`,
   },
 
   // ── Shared bits used in a few places ──────────────────────────────────────
