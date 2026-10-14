@@ -574,16 +574,50 @@
    reels), so it drops the page-level padding it had as a standalone section. */
 .ai-track-section .ai-feature { max-width: none; padding: 4px 0 56px; }
 
-/* AI micro dramas — their own section: four 9:16 posters in a row, capped so
-   portrait cards don't grow taller than a screen on wide monitors. */
+/* Small mono eyebrow above a section heading (AI Micro Dramas). */
 .ats-eyebrow {
   font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .24em;
   text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
 }
-#section-micro .ai-track-grid { grid-template-columns: repeat(4, 1fr); max-width: 1180px; }
-#section-micro .ai-clip { aspect-ratio: 9 / 16; }
-/* VFX reels are also natively ~1.9:1 — match the card so they fill cleanly. */
-#section-vfx .ai-clip { aspect-ratio: 1600 / 843; }
+/* AI micro dramas: an endless, self-running slider (see MicroDramaSlider).
+   The track holds the list twice and slides by -50%; each card's own margin
+   (not a flex gap) keeps that exact. Duration scales with the number of titles
+   so the speed stays the same as titles are added. */
+.md-slider {
+  overflow: hidden;
+  padding: 8px 0 12px;              /* room for the card hover lift */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.md-track {
+  --md-step: 6.5s;
+  display: flex;
+  width: max-content;
+  animation: mdSlide calc(var(--md-count, 7) * var(--md-step)) linear infinite;
+  will-change: transform;
+}
+.md-slider:hover .md-track,
+.md-slider:focus-within .md-track { animation-play-state: paused; }
+#section-micro .md-card {
+  flex: 0 0 auto;
+  width: 230px;
+  aspect-ratio: 9 / 16;
+  margin-right: 20px;
+}
+@keyframes mdSlide {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .md-track { animation: none; }
+  .md-slider { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .md-card[aria-hidden="true"] { display: none; }
+}
+
+/* AI Animation, VFX & 3D: animated reels (16:9) on the first row, the VFX
+   reels (natively ~1.9:1) on the second, sized by position. */
+#section-anim .ai-track-grid { grid-template-columns: repeat(2, 1fr); }
+#section-anim .ai-clip:nth-child(n+3) { aspect-ratio: 1600 / 843; }
 .ai-clip:hover { transform: translateY(-4px); border-color: var(--accent); }
 .ai-clip iframe {
   position: absolute; inset: 0;
@@ -2007,7 +2041,6 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   #section-real .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   #section-real .ai-clip:nth-child(4) { grid-column: 1 / -1; }
   .ai-track-section .ai-feature { padding: 0 0 36px; }
-  #section-micro .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; }
 
   /* SOCIAL */
   .social-hero { padding: 90px 18px 70px; }
@@ -2030,9 +2063,11 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   .wf-grid { grid-template-columns: 1fr; }
   .ai-track-grid { grid-template-columns: 1fr; }
   #section-real .ai-track-grid { grid-template-columns: 1fr; }
-  /* Portrait posters stay 2-up on phones — one per row would be ~2,400px of scroll. */
-  #section-micro .ai-track-grid { grid-template-columns: 1fr 1fr; }
-  /* ~160px-wide cards: tighter labels so the longest title still fits. */
+  /* Phones: smaller slider cards, same speed; one reel per row below. */
+  .md-track { --md-step: 4.2s; }
+  #section-micro .md-card { width: 150px; margin-right: 12px; }
+  #section-anim .ai-track-grid { grid-template-columns: 1fr; }
+  /* ~150px-wide cards: tighter labels so the longest title still fits. */
   #section-micro .ac-label { left: 8px; bottom: 8px; font-size: 9px; letter-spacing: 0.1em; padding: 4px 7px; }
   .ws-barrel-stage.main { height: 260px; }
   .vc-ticket { width: 78vw; }

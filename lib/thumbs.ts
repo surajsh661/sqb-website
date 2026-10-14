@@ -50,8 +50,7 @@ export function thumbCatalog(): ThumbSlot[] {
   const labGroups: [string, typeof lab.animated][] = [
     ['AI Lab · AI Micro Dramas', lab.microDramas],
     ['AI Lab · AI Cinematic Films', [lab.featured, ...lab.realistic]],
-    ['AI Lab · AI Animation', lab.animated],
-    ['AI Lab · Visual Effects and 3D', lab.vfx],
+    ['AI Lab · Animation, VFX & 3D', [...lab.animated, ...lab.vfx]],
   ];
   for (const [where, items] of labGroups) {
     for (const it of items) add(it.videoId, it.type, it.title, where, !!it.vertical, it.poster);

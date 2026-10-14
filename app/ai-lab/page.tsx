@@ -19,17 +19,18 @@ import type { AILabItem } from '@/lib/types';
 const LAB = SQB_AI_LAB;
 
 const PANES = [
-  { key: 'anim' as const, cls: 'anim', num: '01', name: 'ANIMATION',
-    desc: COPY.aiLab.paneAnim,
-    bg: LAB.animated[0], anchor: 'section-anim' },
+  { key: 'micro' as const, cls: 'anim', num: '01', name: 'MICRO DRAMAS',
+    desc: COPY.aiLab.paneMicro,
+    // A strong portrait still (Antim Yudh's action lead) crops well into the wide panel.
+    bg: LAB.microDramas.find((it) => it.id === 'md-antim-yudh') || LAB.microDramas[0], anchor: 'section-micro' },
   { key: 'real' as const, cls: 'real', num: '02', name: 'CINEMATIC',
     desc: COPY.aiLab.paneReal,
     // First Drive reel, not realistic[0]: the newest film (Dream) is ultra-wide
     // Vimeo with no still, and would play letterboxed in the panel.
     bg: LAB.realistic.find((it) => it.type === 'gd') || LAB.realistic[0], anchor: 'section-real' },
-  { key: 'vfx' as const, cls: 'vfx', num: '03', name: 'VFX & 3D',
-    desc: COPY.aiLab.paneVfx,
-    bg: LAB.vfx[0], anchor: 'section-vfx' },
+  { key: 'animvfx' as const, cls: 'vfx', num: '03', name: 'ANIMATION & VFX',
+    desc: COPY.aiLab.paneAnimVfx,
+    bg: LAB.animated[0], anchor: 'section-anim' },
 ];
 
 // Preview (muted, background) source for the grid cards.
@@ -45,6 +46,76 @@ function reelSrc(item: AILabItem) {
     return `https://player.vimeo.com/video/${item.videoId}?autoplay=1&loop=1&muted=0&controls=1&dnt=1&playsinline=1&title=0&byline=0&portrait=0`;
   if (item.type === 'gd') return `https://drive.google.com/file/d/${item.videoId}/preview`;
   return `https://www.youtube.com/embed/${item.videoId}?autoplay=1&mute=0&loop=1&playlist=${item.videoId}&controls=1&modestbranding=1&rel=0&playsinline=1`;
+}
+
+function SplitTitle({ title }: { title: string }) {
+  return (
+    <h2>
+      {title
+        .toUpperCase()
+        .split(' ')
+        .map((w, i) => (i % 2 ? <em key={i}>{w} </em> : <span key={i}>{w} </span>))}
+    </h2>
+  );
+}
+
+/**
+ * AI micro dramas as an endless, self-running slider. The track holds the list
+ * twice and slides left by exactly one copy (-50%), so the loop is seamless.
+ * Each card carries its own right margin (not a flex gap), which keeps the two
+ * copies the same width and the -50% exact. It runs on transform only, so the
+ * GPU composites it; hover or keyboard focus pauses it. Reduced motion: no
+ * animation, the row scrolls by hand instead.
+ */
+function MicroDramaSlider({
+  items, onOpen,
+}: {
+  items: AILabItem[];
+  onOpen: (item: AILabItem, title: string) => void;
+}) {
+  const c = COPY.aiLab;
+  const thumbs = useThumbs(); // custom posters set in /admin → Thumbnails
+  const loop = [...items, ...items];
+  return (
+    <section className="ai-track-section" id="section-micro" data-screen-label="section-micro">
+      <div className="ats-eyebrow">{c.microEyebrow}</div>
+      <SplitTitle title={c.microTitle} />
+      <p className="ats-blurb">{c.microBlurb}</p>
+      <div className="md-slider">
+        <div className="md-track" style={{ '--md-count': items.length } as React.CSSProperties}>
+          {loop.map((it, i) => {
+            const dup = i >= items.length; // second copy: visual only
+            return (
+              <div
+                className="ai-clip vertical md-card"
+                key={it.id + (dup ? '-dup' : '')}
+                onClick={() => onOpen(it, c.microTitle)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(it, c.microTitle); } }}
+                role={dup ? undefined : 'button'}
+                tabIndex={dup ? -1 : 0}
+                aria-hidden={dup ? true : undefined}
+                aria-label={dup ? undefined : `Play ${it.title}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="ai-clip-poster"
+                  src={thumbs[it.videoId] || it.poster || HERO_POSTERS[it.videoId] || thumbSources(it)[1] || thumbSources(it)[0]}
+                  alt={dup ? '' : it.title}
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  draggable={false}
+                />
+                <span className="ai-clip-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
+                </span>
+                <span className="ac-label">{it.title}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function AISection({
@@ -63,12 +134,7 @@ function AISection({
   return (
     <section className="ai-track-section" id={id} data-screen-label={id}>
       {eyebrow && <div className="ats-eyebrow">{eyebrow}</div>}
-      <h2>
-        {title
-          .toUpperCase()
-          .split(' ')
-          .map((w, i) => (i % 2 ? <em key={i}>{w} </em> : <span key={i}>{w} </span>))}
-      </h2>
+      <SplitTitle title={title} />
       <p className="ats-blurb">{blurb}</p>
       {lead}
       <div className="ai-track-grid">
@@ -245,26 +311,10 @@ export default function AILabPage() {
         </div>
       </section>
 
-      {/* AI micro dramas — a format of their own (9:16 series), so they get a
-          section apart from the AI Animation / AI Cinematic Films / AI VFX
-          reels, and lead the page (the strongest search opportunity). */}
-      <AISection
-        id="section-micro"
-        eyebrow={COPY.aiLab.microEyebrow}
-        title={COPY.aiLab.microTitle}
-        items={LAB.microDramas}
-        blurb={COPY.aiLab.microBlurb}
-        onOpen={openReel}
-      />
+      {/* AI micro dramas lead the page (the strongest search opportunity), as
+          their own self-running slider, apart from the reel sections below. */}
+      <MicroDramaSlider items={LAB.microDramas} onOpen={openReel} />
 
-
-      <AISection
-        id="section-anim"
-        title={COPY.aiLab.animTitle}
-        items={LAB.animated}
-        blurb={COPY.aiLab.animBlurb}
-        onOpen={openReel}
-      />
       <AISection
         id="section-real"
         lead={<FeaturedIP item={LAB.featured} onOpen={() => openReel(LAB.featured, 'Featured IP')} />}
@@ -273,11 +323,13 @@ export default function AILabPage() {
         blurb={COPY.aiLab.realBlurb}
         onOpen={openReel}
       />
+      {/* Animation and VFX share one section: the animated reels, then the VFX
+          reels (#section-anim CSS sizes the VFX row by position). */}
       <AISection
-        id="section-vfx"
-        title={COPY.aiLab.vfxTitle}
-        items={LAB.vfx}
-        blurb={COPY.aiLab.vfxBlurb}
+        id="section-anim"
+        title={COPY.aiLab.animVfxTitle}
+        items={[...LAB.animated, ...LAB.vfx]}
+        blurb={COPY.aiLab.animVfxBlurb}
         onOpen={openReel}
       />
 

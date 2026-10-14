@@ -236,22 +236,21 @@ export const COPY = {
     heroBlurb: `We build AI ad films, AI micro dramas, films, and animation series for brands, OTT platforms, theatrical and broadcast, plus original YouTube IPs like Sunheri Soch S4, a docu-series we directed and generated end to end with our AI pipeline. We start with the story, then pick the generative tools that serve it.`,
 
     // The 3 hover panels at the top of the page (short descriptions).
-    paneAnim: `Stylised AI animation that moves like illustration. Character, framing and pacing carry the story.`,
+    paneMicro: `AI-generated vertical dramas, made for the phone.`,
     paneReal: `Generative cinema that plays like a shot film, with real-reference performances and art-directed worlds.`,
-    paneVfx: `Action sequences, scale shots and set extensions, built in post instead of on set.`,
+    paneAnimVfx: `2D and 3D AI animation, plus AI-assisted VFX for action, scale shots and set extensions.`,
 
     // AI micro dramas — their own section, above the reels (9:16 series).
     microEyebrow: `AI Originals · 9:16`,
     microTitle: `AI Micro Dramas`,
     microBlurb: `AI-generated vertical dramas made for the phone, like Ladaku Nanny and Beware My CEO Mommy.`,
 
-    // The 3 reel sections lower down (a title + a longer blurb each).
-    animTitle: `AI Animation`,
-    animBlurb: `Stylised AI animation that moves like illustration. Character, framing and pacing carry the story.`,
+    // The 2 reel sections lower down (a title + a longer blurb each).
     realTitle: `AI Cinematic Films`,
     realBlurb: `Photoreal AI brand films and docu-series, built on real-reference performances and finished to the standard of a shot film.`,
-    vfxTitle: `Visual Effects and\u00A03D`, // \u00A0 keeps "and 3D" together so "3D" never wraps onto a line alone
-    vfxBlurb: `AI-assisted VFX and 3D for action sequences, scale shots and set extensions on films, series and ads, including our theatrical feature Navya Chakra.`,
+    // Animation and VFX share one section. The \u00A0s keep "VFX & 3D" together on one line.
+    animVfxTitle: `AI Animation, VFX\u00A0&\u00A03D`,
+    animVfxBlurb: `Stylised 2D and 3D AI animation that moves like illustration, plus AI-assisted VFX for action sequences, scale shots and set extensions on films, series and ads. That includes the AI animation and VFX on our theatrical feature Navya Chakra.`,
 
     // Flagship IP section — Muthoot "Sunheri Soch". Video left, summary right.
     featEyebrow: `Flagship Original IP`,
