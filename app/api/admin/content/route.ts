@@ -3,6 +3,7 @@ import { verifySession } from '@/lib/admin/auth';
 import { getSessionToken, originAllowed, storeUnavailable } from '@/lib/admin/http';
 import { adminStore } from '@/lib/admin/store';
 import { SQB_FILMS } from '@/lib/data';
+import { applyCaseCopyFixes } from '@/lib/case-copy-fixes';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,7 @@ type Override = Partial<Record<TextField, string>> & { credits?: Credit[] };
 
 async function loadOverrides(): Promise<Record<string, Override>> {
   const raw = await adminStore().get(OVERRIDES_KEY);
-  return raw ? (JSON.parse(raw) as Record<string, Override>) : {};
+  return raw ? applyCaseCopyFixes(JSON.parse(raw) as Record<string, Override>) : {};
 }
 const authed = async (req: Request) => verifySession(getSessionToken(req));
 

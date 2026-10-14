@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminStore } from '@/lib/admin/store';
 import { loadThumbs, resolveThumbs } from '@/lib/admin/thumbs';
+import { applyCaseCopyFixes } from '@/lib/case-copy-fixes';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ export async function GET() {
   let thumbs: Record<string, string> = {};
   try {
     const raw = await adminStore().get('content:overrides');
-    if (raw) overrides = JSON.parse(raw);
+    if (raw) overrides = applyCaseCopyFixes(JSON.parse(raw));
   } catch {
     /* KV unavailable → serve base content (empty overrides) */
   }

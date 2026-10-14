@@ -67,7 +67,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['ad', 'film'],
     type: 'vm', videoId: '954302482',
     client: 'Naturaltein', talent: 'Jasprit Bumrah',
-    lede: 'A brand film that launched Naturaltein protein with Jasprit Bumrah during IPL 2025.',
+    lede: 'A brand film that launched Naturaltein protein with Jasprit Bumrah.',
     body: 'We built the film around the bowler himself: slow-burn close-ups, sound design that hits like a yorker, and every frame composed on set.',
     brief: 'Launch Naturaltein with credibility and take on gym-supplement brands with ten times its budget.',
     solution: 'We cast Jasprit Bumrah and made a film about the discipline behind his bowling.',
