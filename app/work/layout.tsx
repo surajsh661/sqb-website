@@ -7,14 +7,15 @@ import type { Film } from '@/lib/types';
 // page.tsx is a client component (it can't export metadata), so this server
 // layout supplies the per-page SEO for /work.
 export const metadata: Metadata = {
-  title: 'Video Production House — Ad Films, TVCs & AI Films',
+  title: { absolute: "Ad Films, TVCs & Micro Dramas | S'QB Pictures, Delhi NCR" },
+  twitter: { card: 'summary_large_image', title: "Ad Films, TVCs & Micro Dramas | S'QB Pictures, Delhi NCR" },
   description:
-    "S'QB Pictures is a video production house in Delhi NCR & Mumbai — ad films, TVCs, AI films, music videos and branded series delivered for India's biggest brands.",
+    "Film and video production house in Delhi NCR & Mumbai — ad films, AI ad films, TVCs, micro dramas, music videos and branded series for India's biggest brands.",
   alternates: { canonical: '/work' },
   openGraph: {
-    title: "Video Production House — S'QB Pictures",
+    title: "Ad Films, TVCs & Micro Dramas | S'QB Pictures, Delhi NCR",
     description:
-      'Ad films, TVCs, AI films, music videos and branded series from a Delhi NCR & Mumbai video production house.',
+      'Ad films, AI ad films, TVCs, micro dramas, music videos and branded series from a Delhi NCR & Mumbai film and video production house.',
     url: 'https://sqbpictures.com/work',
   },
 };

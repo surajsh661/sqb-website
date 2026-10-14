@@ -18,13 +18,13 @@ import type { AILabItem } from '@/lib/types';
 const LAB = SQB_AI_LAB;
 
 const PANES = [
-  { key: 'anim' as const, cls: 'anim', num: '01', name: 'ANIMATED',
+  { key: 'anim' as const, cls: 'anim', num: '01', name: 'ANIMATION',
     desc: COPY.aiLab.paneAnim,
     bg: LAB.animated[0], anchor: 'section-anim' },
-  { key: 'real' as const, cls: 'real', num: '02', name: 'REALISTIC',
+  { key: 'real' as const, cls: 'real', num: '02', name: 'CINEMATIC',
     desc: COPY.aiLab.paneReal,
     bg: LAB.realistic[0], anchor: 'section-real' },
-  { key: 'vfx' as const, cls: 'vfx', num: '03', name: 'VFX',
+  { key: 'vfx' as const, cls: 'vfx', num: '03', name: 'VFX & 3D',
     desc: COPY.aiLab.paneVfx,
     bg: LAB.vfx[0], anchor: 'section-vfx' },
 ];
@@ -45,9 +45,10 @@ function reelSrc(item: AILabItem) {
 }
 
 function AISection({
-  id, title, blurb, items, onOpen,
+  id, eyebrow, title, blurb, items, onOpen,
 }: {
   id: string;
+  eyebrow?: string;
   title: string;
   blurb: string;
   items: AILabItem[];
@@ -55,6 +56,7 @@ function AISection({
 }) {
   return (
     <section className="ai-track-section" id={id} data-screen-label={id}>
+      {eyebrow && <div className="ats-eyebrow">{eyebrow}</div>}
       <h2>
         {title
           .toUpperCase()
@@ -78,7 +80,7 @@ function AISection({
               // lightbox on click.
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="ai-clip-poster" src={thumbSources(it)[1] || thumbSources(it)[0]} alt={it.title} referrerPolicy="no-referrer" loading="lazy" />
+                <img className="ai-clip-poster" src={it.poster || thumbSources(it)[1] || thumbSources(it)[0]} alt={it.title} referrerPolicy="no-referrer" loading="lazy" />
                 <span className="ai-clip-play" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
                 </span>
@@ -222,6 +224,18 @@ export default function AILabPage() {
           })}
         </div>
       </section>
+
+      {/* AI micro dramas — a format of their own (9:16 series), so they get a
+          section apart from the AI Animation / AI Cinematic Films / AI VFX
+          reels, and lead the page (the strongest search opportunity). */}
+      <AISection
+        id="section-micro"
+        eyebrow={COPY.aiLab.microEyebrow}
+        title={COPY.aiLab.microTitle}
+        items={LAB.microDramas}
+        blurb={COPY.aiLab.microBlurb}
+        onOpen={openReel}
+      />
 
       <FeaturedIP item={LAB.featured} onOpen={() => openReel(LAB.featured, 'Featured IP')} />
 

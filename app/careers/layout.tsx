@@ -6,12 +6,13 @@ import './careers.css';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Careers — Join the Crew',
+  title: { absolute: "Film & AI Jobs in Noida | Careers at S'QB Pictures" },
+  twitter: { card: 'summary_large_image', title: "Film & AI Jobs in Noida | Careers at S'QB Pictures" },
   description:
     "We're hiring at S'QB Pictures — a film and video production house in Delhi NCR making ad films, documentaries, web shows, music videos and AI films. Creative and operations roles building original content.",
   alternates: { canonical: '/careers' },
   openGraph: {
-    title: "Careers — S'QB Pictures",
+    title: "Film & AI Jobs in Noida | Careers at S'QB Pictures",
     description: 'Open roles at a full-service film & video production house in Delhi NCR.',
     url: 'https://sqbpictures.com/careers',
   },

@@ -374,14 +374,19 @@
   font-size: 12.5px; letter-spacing: 0.06em; line-height: 1.95;
   color: var(--fg-dim);
 }
-.ai-caps span { white-space: nowrap; }
-.ai-caps span + span::before {
+/* Each tag is an atomic inline-block so the line can break BETWEEN tags (the
+   spans render with no whitespace between them, so plain inline spans gave the
+   line nowhere to wrap and it ran off the right edge on phones). The separator
+   trails each tag rather than leading the next, so a wrapped line never starts
+   with a stray dot. */
+.ai-caps span { white-space: nowrap; display: inline-block; }
+.ai-caps span:not(:last-child)::after {
   content: "·"; color: var(--accent); opacity: 0.7;
   margin: 0 12px; font-weight: 700;
 }
 @media (max-width: 600px) {
   .ai-caps { font-size: 12px; letter-spacing: 0.04em; line-height: 1.85; }
-  .ai-caps span + span::before { margin: 0 9px; }
+  .ai-caps span:not(:last-child)::after { margin: 0 9px; }
 }
 
 .ai-picker {
@@ -560,38 +565,19 @@
    edge with no letterbox bars and no cropping. */
 .ai-track-section .ai-clip { aspect-ratio: 16 / 9; }
 
-/* Realistic section. Row 1: two large landscape reels (half the section each,
-   ~Animated size). Row 2: the 3rd landscape reel + the two vertical showcase
-   reels (Unexpected Pregnancy + Win the Lottery) side by side — the verticals
-   sized to match the landscape's height so the row reads as one neat band. */
-#section-real .ai-track-grid {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px 26px;
-  align-items: start;
-  justify-items: center;
+/* Realistic section: three landscape reels in one row. (The two vertical AI
+   shows that used to sit here moved to #section-micro.) */
+#section-real .ai-track-grid { grid-template-columns: repeat(3, 1fr); gap: 24px 26px; }
+#section-real .ai-clip { aspect-ratio: 1600 / 843; }
+
+/* AI micro dramas — their own section: four 9:16 posters in a row, capped so
+   portrait cards don't grow taller than a screen on wide monitors. */
+.ats-eyebrow {
+  font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
 }
-#section-real .ai-clip { width: 100%; aspect-ratio: 1600 / 843; }
-#section-real .ai-clip.vertical {
-  aspect-ratio: 9 / 16;
-  width: 100%;
-  max-width: 300px;
-}
-@media (min-width: 901px) {
-  /* 4 columns: r1|r2 across the top; r3 (2 cols) + the two verticals on row 2. */
-  #section-real .ai-track-grid {
-    grid-template-columns: repeat(4, 1fr);
-    align-items: stretch;
-  }
-  #section-real .ai-clip:nth-child(1) { grid-column: 1 / 3; }
-  #section-real .ai-clip:nth-child(2) { grid-column: 3 / 5; }
-  #section-real .ai-clip:nth-child(3) { grid-column: 1 / 3; }   /* r3 sets row height */
-  #section-real .ai-clip.vertical {
-    width: auto; height: 100%; max-width: none;   /* match the landscape height */
-    justify-self: center;
-  }
-  #section-real .ai-clip.vertical:nth-child(4) { grid-column: 3; }
-  #section-real .ai-clip.vertical:nth-child(5) { grid-column: 4; }
-}
+#section-micro .ai-track-grid { grid-template-columns: repeat(4, 1fr); max-width: 1180px; }
+#section-micro .ai-clip { aspect-ratio: 9 / 16; }
 /* VFX reels are also natively ~1.9:1 — match the card so they fill cleanly. */
 #section-vfx .ai-clip { aspect-ratio: 1600 / 843; }
 .ai-clip:hover { transform: translateY(-4px); border-color: var(--accent); }
@@ -2012,9 +1998,11 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   .ai-track-section { padding: 70px 18px; }
   .ai-track-section h2 { font-size: clamp(40px, 11vw, 64px); }
   .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  /* id beats the class rule above, so the realistic grid needs its own
-     tablet override or it would stay locked at 3 columns. */
-  #section-real .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; }
+  /* ids beat the class rule above, so these grids need their own tablet
+     overrides. Realistic: 2-up, the third reel spans the row. */
+  #section-real .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  #section-real .ai-clip:nth-child(3) { grid-column: 1 / -1; }
+  #section-micro .ai-track-grid { grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; }
 
   /* SOCIAL */
   .social-hero { padding: 90px 18px 70px; }
@@ -2036,8 +2024,11 @@ a.creator-thumb { text-decoration: none; color: inherit; display: block; }
   .wc-grid { grid-template-columns: 1fr; }
   .wf-grid { grid-template-columns: 1fr; }
   .ai-track-grid { grid-template-columns: 1fr; }
-  #section-real .ai-track-grid { grid-template-columns: 1fr; max-width: 380px; }
-  #section-real .ai-clip.vertical { width: 100%; max-width: 300px; }
+  #section-real .ai-track-grid { grid-template-columns: 1fr; }
+  /* Portrait posters stay 2-up on phones — one per row would be ~2,400px of scroll. */
+  #section-micro .ai-track-grid { grid-template-columns: 1fr 1fr; }
+  /* ~160px-wide cards: tighter labels so the longest title still fits. */
+  #section-micro .ac-label { left: 8px; bottom: 8px; font-size: 9px; letter-spacing: 0.1em; padding: 4px 7px; }
   .ws-barrel-stage.main { height: 260px; }
   .vc-ticket { width: 78vw; }
 }

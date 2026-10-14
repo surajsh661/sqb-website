@@ -39,13 +39,15 @@ export interface Film {
   episodes?: Episode[];
 }
 
-export interface AILabItem { id: string; title: string; type: VideoType; videoId: string; vertical?: boolean; /** if set, clicking the clip opens this film's full case study (via /work?case=<id>) instead of the reel lightbox */ caseId?: string }
+export interface AILabItem { id: string; title: string; type: VideoType; videoId: string; vertical?: boolean; /** portrait poster for a vertical card, when the host's own thumbnail isn't usable */ poster?: string; /** if set, clicking the clip opens this film's full case study (via /work?case=<id>) instead of the reel lightbox */ caseId?: string }
 export interface AILabData {
   /** Flagship original IP, shown in its own dedicated section above the reels. */
   featured: AILabItem;
   animated: AILabItem[];
   realistic: AILabItem[];
   vfx: AILabItem[];
+  /** AI micro dramas: 9:16 series, shown in their own section apart from the reels. */
+  microDramas: AILabItem[];
 }
 
 export interface Vertical {

@@ -166,7 +166,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['vertical', 'show'], aspect: '9:16',
     type: 'vm', videoId: '1127751934',
     client: "S'QB Originals", talent: 'Ensemble',
-    lede: 'Phone-shaped drama that respects the medium.',
+    lede: 'Vertical micro drama that respects the phone-shaped medium.',
     body: 'Serialised hooks every 90 seconds. 9:16.',
     timeline: '4 weeks', release: 'Vertical — 2025', impact: '3× retention',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'FORMAT', name: '9:16' }],
@@ -177,7 +177,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['vertical', 'show'], aspect: '9:16',
     type: 'vm', videoId: '1080608698',
     client: "S'QB Originals", talent: 'Ensemble',
-    lede: 'Tech comedy built natively for vertical.',
+    lede: 'Tech-comedy micro drama built natively for vertical.',
     body: 'Tight 90-second beats, hook–payoff–button.',
     timeline: '3 weeks', release: 'Vertical — 2025', impact: 'Top-3 trending',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'FORMAT', name: '9:16' }],
@@ -188,7 +188,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['vertical'], aspect: '9:16',
     type: 'gd', videoId: '1Rlu8IlJdnLYbQdj4Rh0lnrfI7uddA2qd',
     client: "S'QB Originals", talent: 'AI Ensemble',
-    lede: 'AI-generated vertical action drama with full VFX scale shots.',
+    lede: 'AI micro drama: vertical action with full VFX scale shots.',
     body: 'Generative pipeline for action, set extensions, and VFX — directed, not prompted.',
     timeline: '6 weeks', release: 'Vertical — 2026', impact: 'Spec piece',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'AI SUPERVISOR', name: "S'QB LABS" }],
@@ -199,7 +199,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['vertical', 'show'], aspect: '9:16',
     type: 'vm', videoId: '1127747874',
     client: "S'QB Originals", talent: 'Ensemble',
-    lede: 'Vertical action-trailer designed to hit in three seconds.',
+    lede: 'Trailer for a vertical action micro drama, designed to hit in three seconds.',
     body: 'Ninety-second cut, edited to land hooks at every 12-second beat.',
     timeline: '2 weeks', release: 'Vertical — 2026', impact: 'Vertical preview drop',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'FORMAT', name: '9:16' }],
@@ -210,7 +210,7 @@ export const SQB_FILMS: Film[] = [
     genres: ['vertical', 'ai', 'show'], aspect: '9:16',
     type: 'vm', videoId: '1127752962',
     client: "S'QB Originals", talent: 'AI Ensemble',
-    lede: 'AI-built vertical horror — atmosphere over jump-scare.',
+    lede: 'AI micro drama in vertical horror — atmosphere over jump-scare.',
     body: 'Practical sound design fused with synthetic visuals.',
     timeline: '5 weeks', release: 'Vertical — 2026', impact: 'Genre opener',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }, { role: 'AI SUPERVISOR', name: "S'QB LABS" }],
@@ -441,12 +441,18 @@ export const SQB_AI_LAB: AILabData = {
     { id: 'a2', title: 'ANIM REEL 02', type: 'gd', videoId: '14G6XsrS2aj9nQrugnFb593xMwdWmCh_F' },
   ],
   realistic: [
-    // Exactly 5 items — the #section-real grid places these by nth-child.
     { id: 'r1', title: 'REAL REEL 01', type: 'gd', videoId: '1F-iqYy4IoBWw9tZSn3krZqEXf-vYxsKJ' },
     { id: 'r2', title: 'REAL REEL 02', type: 'gd', videoId: '1nNoeWOrdM8dksmsggRx1nwU_rY7O245J' },
     { id: 'r3', title: 'REAL REEL 03', type: 'gd', videoId: '1N_Ia4SnPfNbhOd4n1RAvhJeW8fXXaN-a' },
-    { id: 'r4', title: 'UNEXPECTED PREGNANCY', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS', vertical: true },
-    { id: 'r5', title: 'WIN THE LOTTERY', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', vertical: true },
+  ],
+  // The four titles the site labels AI — their own section, apart from the
+  // reels. Woh Aa Gayi carries its own poster: the baked 16:9 Vimeo still crops
+  // the title off, so this is the title-card frame (0:50) from the trailer.
+  microDramas: [
+    { id: 'md-antim-yudh', title: 'ANTIM YUDH', type: 'gd', videoId: '1Rlu8IlJdnLYbQdj4Rh0lnrfI7uddA2qd', vertical: true },
+    { id: 'md-woh-aa-gayi', title: 'WOH AA GAYI', type: 'vm', videoId: '1127752962', vertical: true, poster: '/posters/woh-aa-gayi-v.jpg' },
+    { id: 'md-win-the-lottery', title: 'WIN THE LOTTERY', type: 'gd', videoId: '1CbpkJ9C_4kZnIgTyUQEOs-bU09n1-PL5', vertical: true },
+    { id: 'md-unexpected-pregnancy', title: 'UNEXPECTED PREGNANCY', type: 'gd', videoId: '1GXAXdIp3VpyEPlr-4qZJWgwaSyAWFVqS', vertical: true },
   ],
   vfx: [
     { id: 'x1', title: 'VFX REEL 01', type: 'gd', videoId: '1y-faRtLuVRYEuE0OjZWLLZgb3I4prLMf' },
@@ -601,16 +607,16 @@ export const SQB_LOGOS: ClientLogo[] = [
 // rest of the reel, so it gets its own band on the home and Video pages rather
 // than a tile in the library grid.
 //
-// The credit below is taken verbatim from the film's own poster ("ANIMATION —
-// S'QB PICTURES"). VFX on this film is credited to ASR VFX, so we deliberately
-// do NOT claim it: overstating a credit on a released feature is the fastest
-// way to lose the next one.
+// Credit wording set by Suraj (Oct 2026): S'QB delivered the AI animation, VFX
+// and AI VFX on this film. Note for anyone fielding press or distributor
+// questions: the poster's printed credit block lists "animation — S'QB
+// PICTURES" and "vfx — ASR VFX".
 // ─────────────────────────────────────────────────────────────────────────────
 export const SQB_FEATURE: FeatureFilm = {
   id: 'navya-chakra',
   title: 'NAVYA CHAKRA',
   subtitle: 'PSYCON WORLD',
-  credit: 'AI ANIMATION BY S’QB PICTURES',
+  credit: 'AI ANIMATION, VFX & AI VFX BY\u00A0S’QB\u00A0PICTURES', // nbsp keeps "BY S’QB PICTURES" together when it wraps
   studios: 'First Film Studios LLP · Low Agers Production & Cine Arts (LAPCA)',
   status: 'IN CINEMAS · 26 JUNE 2026',
   year: '2026',
@@ -622,7 +628,7 @@ export const SQB_FEATURE: FeatureFilm = {
   trailerId: 'Y11Zsw6DzZU',
   poster: '/posters/navya-chakra.jpg',
   wide: '/posters/navya-chakra-wide.jpg',
-  lede: 'Our animation went to the big screen.',
+  lede: 'Our AI animation and VFX went to the big screen.',
   body:
-    'A Hindi psychological thriller about a chain of killings with no visible thread between them — and the investigation that follows the pattern into somewhere stranger. Released nationwide in cinemas on 26 June 2026. S’QB Pictures built the AI animation for the film: our first theatrical credit, and proof the pipeline holds at feature length and cinema scale.',
+    'A Hindi psychological thriller about a chain of killings with no visible thread between them — and the investigation that follows the pattern into somewhere stranger. Released nationwide in cinemas on 26 June 2026. S’QB Pictures delivered the AI animation, VFX and AI VFX for the film: our first theatrical credit, and proof the pipeline holds at feature length and cinema scale.',
 };

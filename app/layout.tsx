@@ -15,7 +15,10 @@ const inter = Inter({ subsets: ['latin'], style: ['normal', 'italic'], variable:
 const jbMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
 const SITE = 'https://sqbpictures.com';
-const TITLE = "S'QB Pictures — Tell Your Story Today! | Film & AI Production House";
+// Location sits inside the ~60-char window Google shows. The tagline "Tell Your
+// Story Today!" lives on the page, not in the title — it pushed "Delhi NCR"
+// past the cut-off.
+const TITLE = "S'QB Pictures | AI Film & Video Production House, Delhi NCR";
 
 // ── Google Search Console verification ───────────────────────────────────────
 // 1. Go to https://search.google.com/search-console → add property
@@ -26,7 +29,7 @@ const TITLE = "S'QB Pictures — Tell Your Story Today! | Film & AI Production H
 //    then commit/deploy and click "Verify" in Search Console.
 const GOOGLE_SITE_VERIFICATION = ''; // e.g. 'AbC123_paste_your_code_here_xyz'
 const DESCRIPTION =
-  "S'QB Pictures is a video production house in Delhi NCR and Mumbai — ad films, TVCs, documentaries, web shows, music videos, AI films and branded series for India's biggest brands. Filmmakers first, AI second.";
+  "S'QB Pictures: AI-enabled film & video production house in Delhi NCR & Mumbai, India — ad films, AI ads, micro dramas, documentaries, web shows, music videos.";
 const SAME_AS = [
   'https://www.instagram.com/sqbpictures/',
   'https://www.linkedin.com/company/sqbpictures/',
@@ -109,6 +112,8 @@ const JSONLD = {
       knowsAbout: [
         'AI video production', 'video production', 'ad films', 'TVC production',
         'AI films', 'VFX', 'music videos', 'vertical cinema', 'branded series',
+        'film production', 'AI ad films', 'micro dramas', 'AI micro dramas',
+        'AI cinematic films', 'AI VFX', 'visual effects', '3D',
       ],
       areaServed: ['Delhi NCR', 'Mumbai', 'India', 'IN', 'AE', 'SA', 'SG', 'GB', 'US'],
       address: { '@type': 'PostalAddress', addressCountry: 'IN', addressRegion: 'Delhi NCR / Mumbai' },
@@ -155,6 +160,7 @@ const JSONLD = {
         'AI video production', 'Video production', 'Ad film production',
         'TVC production', 'AI film production', 'Music video production',
         'VFX', 'Vertical and short-form content',
+        'Film production', 'AI ad film production', 'Micro drama production', 'AI VFX',
       ],
       sameAs: SAME_AS,
     },

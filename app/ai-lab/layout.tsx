@@ -2,14 +2,15 @@ import type { Metadata } from 'next';
 import { breadcrumbJsonLd } from '@/lib/breadcrumbs';
 
 export const metadata: Metadata = {
-  title: 'AI Films, VFX & Animation',
+  title: { absolute: "AI Films, AI VFX & Animation | S'QB Pictures, Delhi NCR" },
+  twitter: { card: 'summary_large_image', title: "AI Films, AI VFX & Animation | S'QB Pictures, Delhi NCR" },
   description:
-    "The AI Lab at S'QB Pictures — AI films, AI creatives, AI influencers, 2D/3D animation and VFX. Built alongside the rest of the studio's work: live-action ad films, documentaries, web shows, art films and brand content, from a Delhi NCR & Mumbai studio.",
+    "AI micro dramas, AI cinematic films, AI ad films, AI VFX and animation from S'QB Pictures, a film and video production house in Delhi NCR and Mumbai.",
   alternates: { canonical: '/ai-lab' },
   openGraph: {
-    title: "Film, AI & Content Production — S'QB Pictures",
+    title: "AI Films, AI VFX & Animation | S'QB Pictures, Delhi NCR",
     description:
-      'Ad films, TVCs, documentaries, web shows, art films and brand content — live-action and AI, including AI creatives, 2D/3D animation and VFX. A full-service film & video production house in Delhi NCR & Mumbai.',
+      "AI micro dramas, AI cinematic films, AI ad films, AI VFX and animation from S'QB Pictures, a film and video production house in Delhi NCR and Mumbai.",
     url: 'https://sqbpictures.com/ai-lab',
   },
 };

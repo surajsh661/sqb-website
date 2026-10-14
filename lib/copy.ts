@@ -46,7 +46,7 @@ export const COPY = {
     // NOTE: the big animated headline ("We love filmmaking first and AI
     // second…") has moving icons baked in, so it lives in
     // components/ManifestoHeadline.tsx — ask the developer to change that line.
-    paragraph: `We're filmmakers who happen to be very good with AI. From Delhi and Mumbai to locations across the globe, we create films, commercials, and original content for the world's most ambitious brands. With a seasoned crew, world-class production expertise, and AI-powered creative workflows, we deliver work that is bigger, faster, and louder. But technology is never the story. Story comes first. Performance comes first. Craft comes first.`,
+    paragraph: `We're filmmakers who happen to be very good with AI. S'QB Pictures is an AI-enabled film and video production house in Delhi NCR (Noida) and Mumbai, shooting on locations across the globe. We create ad films, AI ads, music videos and original content for the world's most ambitious brands. With a seasoned crew, world-class film production expertise, and AI-powered creative workflows, we deliver work that is bigger, faster, and louder. But technology is never the story. Story comes first. Performance comes first. Craft comes first.`,
   },
 
   // ── Section 03 · Clients ──────────────────────────────────────────────────
@@ -110,7 +110,7 @@ export const COPY = {
     cta: `TELL YOUR *STORY*\nTODAY`,
     studioHeading: `OFFICE`,
     // We link out to the map pin instead of printing the street address.
-    hqLabel: `HEADQUARTERS`,
+    hqLabel: `HQ · NOIDA, DELHI NCR`,
     hqUrl: `https://maps.app.goo.gl/UMu6pMeGdJUDYo4Y6`,
     foundersHeading: `FOUNDERS`,
     contactHeading: `CONTACT`,
@@ -170,7 +170,7 @@ export const COPY = {
   // ── Home page · Vertical works strip ──────────────────────────────────────
   verticalsHome: {
     heading: `VERTICAL *CINEMA*`,
-    blurb: `Full-blown web shows, built for the phone in your hand. We own every frame — script, cast, shoot, edit, grade, sound, VFX. And when it's AI, we go from a blank page to finished animation without ever leaving the studio.`,
+    blurb: `Micro dramas and full-blown web shows, built for the phone in your hand. We own every frame — script, cast, shoot, edit, grade, sound, VFX. And for AI micro dramas, we go from a blank page to finished animation without ever leaving the studio.`,
   },
 
   // ── "Trusted by global brands" block (shown on Video / AI Lab / Social) ────
@@ -184,7 +184,7 @@ export const COPY = {
   work: {
     visionEyebrow: ``,
     visionTitle: `THE CONTENT *STUDIO*`,
-    visionBlurb: `Bring us a one-line idea or a finished script. We take it to screen — AI films, camera-shot TVCs, vertical micro-dramas, long-form documentary.`,
+    visionBlurb: `Bring us a one-line idea or a finished script. We take it to screen — AI films, camera-shot TVCs, vertical micro dramas, long-form documentary.`,
     // The arrow → after the button is added automatically.
     visionCta: `START PROJECT`,
 
@@ -221,7 +221,7 @@ export const COPY = {
 
     vcEyebrow: `9:16 · BUILT FOR PHONES`,
     vcTitle: `VERTICAL *CINEMA*`,
-    vcBlurb: `We make vertical web shows end to end. For an AI show we go from script and storyboard all the way to the final AI animation; for live-action we own ideation, writing, casting and the shoot, then deliver the finished cut with BGM, colour grade and any VFX the OTT needs. Built for OTT platforms and global brands — and delivered straight to the vertical platforms they live on.`,
+    vcBlurb: `We make vertical web shows end to end. For an AI micro drama we go from script and storyboard all the way to the final AI animation; for live-action we own ideation, writing, casting and the shoot, then deliver the finished cut with BGM, colour grade and any VFX the OTT needs. Built for OTT platforms and global brands — and delivered straight to the vertical platforms they live on.`,
     vcTallyLabel: `VERTICAL FILMS`,
   },
 
@@ -232,21 +232,26 @@ export const COPY = {
     heroEyebrow: `S'QB AI LABS`,
     heroTitle: `AI BUILT TO *SCALE*`,
     // Capabilities shown under the AI Lab headline as a quiet, boxless index line.
-    heroTags: [`AI Creatives`, `AI Influencers`, `AI Films`, `2D & 3D Animation`, `VFX`, `AI IP Creation`],
-    heroBlurb: `We build AI shows, films, and animation series for OTT platforms, theatrical, and broadcast — alongside original YouTube IPs like Sunheri Soch S4: docu-films directed and generated entirely with our AI pipeline. Story first. Generative second. Always cinema-grade.`,
+    heroTags: [`AI Creatives`, `AI Ad Films`, `AI Influencers`, `AI Films`, `AI Cinematic Films`, `AI Micro Dramas`, `2D & 3D Animation`, `AI VFX`, `AI IP Creation`],
+    heroBlurb: `We build AI ad films, AI micro dramas, films, and animation series for brands, OTT platforms, theatrical, and broadcast — alongside original YouTube IPs like Sunheri Soch S4: docu-films directed and generated entirely with our AI pipeline. Story first. Generative second. Always cinema-grade.`,
 
     // The 3 hover panels at the top of the page (short descriptions).
     paneAnim: `Stylised AI animation built like illustration in motion — character, frame and pacing carry the story.`,
     paneReal: `Generative cinema indistinguishable from a shot film — real-reference performances, art-directed worlds.`,
     paneVfx: `Action, scale shots, effects. The impossible day on set turned into the inevitable shot in the cut.`,
 
+    // AI micro dramas — their own section, above the reels (9:16 series).
+    microEyebrow: `AI Originals · 9:16`,
+    microTitle: `AI Micro Dramas`,
+    microBlurb: `AI-generated vertical dramas made for the phone, like Antim Yudh and Woh Aa Gayi.`,
+
     // The 3 reel sections lower down (a title + a longer blurb each).
-    animTitle: `Animated AI`,
+    animTitle: `AI Animation`,
     animBlurb: `Stylised AI animation — illustration in motion. Character, frame, and pacing carry the story.`,
-    realTitle: `Realistic AI`,
-    realBlurb: `Generative cinema indistinguishable from a shot film. Real-reference performances staged inside art-directed worlds — including OTT-grade docu-films like Sunheri Soch S4.`,
-    vfxTitle: `VFX & Action`,
-    vfxBlurb: `Action and scale shots, effects, set extensions. The impossible day on set turned into the inevitable shot in the cut.`,
+    realTitle: `AI Cinematic Films`,
+    realBlurb: `Photoreal AI brand films and docu-series, built on real-reference performances and finished to the standard of a shot film.`,
+    vfxTitle: `Visual Effects and\u00A03D`, // \u00A0 keeps "and 3D" together so "3D" never wraps onto a line alone
+    vfxBlurb: `AI-assisted VFX and 3D for action sequences, scale shots and set extensions on films, series and ads — including our theatrical feature Navya Chakra.`,
 
     // Flagship IP section — Muthoot "Sunheri Soch". Video left, summary right.
     featEyebrow: `Flagship Original IP`,

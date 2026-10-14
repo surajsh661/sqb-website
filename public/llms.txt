@@ -1,6 +1,6 @@
 # S'QB Pictures
 
-> A film and video production house based in Delhi NCR and Mumbai, India. We produce ad films and TVCs, documentaries, web shows, music videos, branded and original series, VFX and AI films for brands and platforms across India. Filmmakers first, AI second — we pair a working crew and conventional production craft with generative-AI pipelines.
+> An AI-enabled film and video production house based in Delhi NCR (Noida) and Mumbai, India. We produce ad films and TVCs, AI ads, micro dramas, documentaries, web shows, music videos, branded and original series, VFX and AI films for brands and platforms across India. Filmmakers first, AI second — we pair a working crew and conventional production craft with generative-AI pipelines.
 
 Founded by Suraj Sharma and Shubham Shah. Tagline: "Tell Your Story Today."
 
@@ -8,10 +8,10 @@ Founded by Suraj Sharma and Shubham Shah. Tagline: "Tell Your Story Today."
 
 - **Ad films & TVCs** — full cinematic script-to-screen production
 - **Documentaries & long-form** — long-form stories people actually finish
-- **Web shows & vertical cinema** — 9:16 series built for phones and OTT platforms, owned end to end (script, cast, shoot, edit, grade, sound, VFX)
+- **Web shows, micro dramas & vertical cinema** — 9:16 series and AI micro dramas built for phones and OTT platforms, owned end to end (script, cast, shoot, edit, grade, sound, VFX)
 - **Music videos** — for artists and labels
-- **AI films & animation** — cinema-grade AI film, AI creatives, AI influencers, 2D/3D animation
-- **CGI, VFX & 3D** — visual effects and motion graphics
+- **AI films & animation** — AI ad films, AI cinematic films, AI micro dramas, AI creatives, AI influencers, 2D/3D animation
+- **CGI, VFX, AI VFX & 3D** — visual effects and motion graphics, including the AI animation, VFX and AI VFX for the theatrical feature *Navya Chakra* (2026)
 - **Short-form & social** — content built for the feed, plus creator IPs and YouTube channel engines
 - **Launch films & explainers**
 
