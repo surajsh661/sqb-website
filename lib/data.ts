@@ -160,10 +160,9 @@ export const SQB_FILMS: Film[] = [
     impact: 'Indie staple',
     credits: [{ role: 'DIRECTOR', name: "S'QB" }],
   },
-  // Latest AI micro drama (Oct 2026) leads the vertical films. Client and
+  // Latest AI micro dramas (Oct 2026) lead the vertical films. Client and
   // production stats aren't confirmed, so client is left blank and no
-  // timeline/impact claims are made. ("When Love Breaks Through" joins here
-  // once its link is in.)
+  // timeline/impact claims are made.
   {
     id: 'vertical-ladaku-nanny', title: 'LADAKU NANNY',
     category: 'AI VERTICAL DRAMA', year: '2026', runtime: '2:37',
@@ -171,6 +170,15 @@ export const SQB_FILMS: Film[] = [
     type: 'vm', videoId: '1225563087',
     client: '', talent: 'AI Ensemble',
     lede: 'AI micro drama in Hindi, made vertical-first for the phone.',
+    credits: [{ role: 'AI PRODUCTION', name: "S'QB PICTURES" }, { role: 'FORMAT', name: '9:16' }],
+  },
+  {
+    id: 'vertical-ceo-mommy', title: 'BEWARE MY CEO MOMMY',
+    category: 'AI VERTICAL DRAMA', year: '2026', runtime: '1:15',
+    genres: ['vertical', 'ai', 'show'], aspect: '9:16',
+    type: 'vm', videoId: '1225563757',
+    client: '', talent: 'AI Ensemble',
+    lede: 'AI micro drama preview, made vertical-first for the phone.',
     credits: [{ role: 'AI PRODUCTION', name: "S'QB PICTURES" }, { role: 'FORMAT', name: '9:16' }],
   },
   {
