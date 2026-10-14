@@ -250,7 +250,7 @@ export const COPY = {
     realBlurb: `Photoreal AI brand films and docu-series, built on real-reference performances and finished to the standard of a shot film.`,
     // Animation and VFX share one section. The \u00A0s keep "VFX & 3D" together on one line.
     animVfxTitle: `AI Animation, VFX\u00A0&\u00A03D`,
-    animVfxBlurb: `Stylised 2D and 3D AI animation that moves like illustration, plus AI-assisted VFX for action sequences, scale shots and set extensions on films, series and ads. That includes the AI animation and VFX on our theatrical feature Navya Chakra.`,
+    animVfxBlurb: `Stylised 2D and 3D AI animation that moves like illustration, plus AI-assisted visual effects (VFX) for action sequences, scale shots and set extensions on films, series and ads. That includes the AI animation and VFX on our theatrical feature Navya Chakra.`,
 
     // Flagship IP section — Muthoot "Sunheri Soch". Video left, summary right.
     featEyebrow: `Flagship Original IP`,
